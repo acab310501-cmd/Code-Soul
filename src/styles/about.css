@@ -1,0 +1,662 @@
+/* ========================================
+   CODE & SOUL
+   ABOUT
+======================================== */
+
+.about-section {
+  position: relative;
+
+  padding:
+    clamp(130px, 16vw, 230px)
+    var(--page-padding)
+    clamp(130px, 16vw, 230px);
+
+  background: var(--color-paper);
+  color: var(--color-void);
+
+  overflow: hidden;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.about__header {
+  max-width: var(--container-width);
+
+  margin: 0 auto;
+}
+
+
+.about__eyebrow {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  letter-spacing: .1em;
+
+  color: #666;
+}
+
+
+.about__line {
+  width: 70px;
+
+  height: 1px;
+
+  background: rgba(0,0,0,.18);
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.about__hero {
+  max-width: var(--container-width);
+
+  margin:
+    clamp(80px, 11vw, 150px)
+    auto
+    0;
+}
+
+
+.about__title {
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  font-family: var(--font-display);
+
+  font-size:
+    clamp(58px, 9vw, 145px);
+
+  font-weight: 500;
+
+  line-height: .83;
+
+  letter-spacing: -.075em;
+
+  text-transform: uppercase;
+}
+
+
+.about__title-line {
+  display: block;
+
+  overflow: hidden;
+}
+
+
+.about__title-line--indent {
+  margin-left: 15%;
+}
+
+
+.about__title-line--accent {
+  margin-left: 4%;
+
+  color: var(--color-acid);
+}
+
+
+/* ========================================
+   MANIFESTO
+======================================== */
+
+.about__manifesto {
+  display: grid;
+
+  grid-template-columns: 80px minmax(200px, 360px);
+
+  gap: 30px;
+
+  margin:
+    70px
+    0
+    0
+    55%;
+}
+
+
+.about__manifesto-number {
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  color: #888;
+}
+
+
+.about__manifesto p {
+  margin: 0;
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+
+  line-height: 1.8;
+
+  text-transform: uppercase;
+
+  color: #666;
+}
+
+
+/* ========================================
+   CODE & SOUL
+======================================== */
+
+.about__philosophy {
+
+  max-width: var(--container-width);
+
+  margin:
+    clamp(180px, 23vw, 340px)
+    auto
+    0;
+
+  display: grid;
+
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+
+  gap: 30px;
+}
+
+
+.about__philosophy-word {
+
+  font-family: var(--font-display);
+
+  font-size:
+    clamp(60px, 12vw, 190px);
+
+  line-height: .8;
+
+  letter-spacing: -.08em;
+
+  color: #111;
+}
+
+
+.about__philosophy-word--right {
+  text-align: right;
+}
+
+
+.about__philosophy-center {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+
+.about__ampersand {
+
+  font-family: var(--font-display);
+
+  font-size:
+    clamp(50px, 7vw, 110px);
+
+  font-weight: 400;
+
+  color: var(--color-acid);
+
+  line-height: .8;
+}
+
+
+.about__dot {
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--color-void);
+
+  transition:
+    transform .8s
+    cubic-bezier(.22,1,.36,1),
+    background-color .5s ease;
+}
+
+
+.about__philosophy:hover
+.about__dot:first-child {
+
+  transform:
+    translateX(-15px)
+    scale(1.5);
+
+  background: var(--color-acid);
+}
+
+
+.about__philosophy:hover
+.about__dot:last-child {
+
+  transform:
+    translateX(15px)
+    scale(1.5);
+
+  background: var(--color-acid);
+}
+
+
+/* ========================================
+   BODY
+======================================== */
+
+.about__body {
+
+  max-width: var(--container-width);
+
+  margin:
+    clamp(180px, 22vw, 320px)
+    auto
+    0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, .4fr)
+    minmax(300px, 1fr);
+
+  gap: 100px;
+
+  border-top:
+    1px solid rgba(0,0,0,.18);
+
+  padding-top: 25px;
+}
+
+
+.about__body-label {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  line-height: 1.5;
+
+  color: #777;
+}
+
+
+.about__body-content {
+
+  max-width: 760px;
+}
+
+
+.about__lead {
+
+  margin: 0;
+
+  font-family: var(--font-display);
+
+  font-size:
+    clamp(34px, 4.5vw, 70px);
+
+  line-height: .98;
+
+  letter-spacing: -.05em;
+}
+
+
+.about__text {
+
+  max-width: 550px;
+
+  margin:
+    50px
+    0
+    0;
+
+  font-family: var(--font-mono);
+
+  font-size: 10px;
+
+  line-height: 1.9;
+
+  text-transform: uppercase;
+
+  color: #666;
+}
+
+
+/* ========================================
+   VALUES
+======================================== */
+
+.about__values {
+
+  max-width: var(--container-width);
+
+  margin:
+    clamp(150px, 18vw, 260px)
+    auto
+    0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  border-top:
+    1px solid rgba(0,0,0,.18);
+
+  border-left:
+    1px solid rgba(0,0,0,.18);
+}
+
+
+.about-value {
+
+  min-height: 330px;
+
+  padding: 25px;
+
+  border-right:
+    1px solid rgba(0,0,0,.18);
+
+  border-bottom:
+    1px solid rgba(0,0,0,.18);
+
+  transition:
+    background-color .6s
+    cubic-bezier(.22,1,.36,1),
+    color .6s
+    cubic-bezier(.22,1,.36,1);
+}
+
+
+.about-value:hover {
+
+  background: var(--color-void);
+
+  color: var(--color-paper);
+}
+
+
+.about-value__number {
+
+  display: block;
+
+  margin-bottom: 100px;
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  color: #777;
+}
+
+
+.about-value h3 {
+
+  margin: 0 0 18px;
+
+  font-family: var(--font-display);
+
+  font-size: 30px;
+
+  font-weight: 500;
+
+  letter-spacing: -.04em;
+}
+
+
+.about-value p {
+
+  max-width: 220px;
+
+  margin: 0;
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  line-height: 1.8;
+
+  text-transform: uppercase;
+
+  color: #666;
+}
+
+
+.about-value:hover p {
+
+  color: #aaa;
+}
+
+
+/* ========================================
+   FINAL STATEMENT
+======================================== */
+
+.about__statement {
+
+  max-width: var(--container-width);
+
+  margin:
+    clamp(180px, 22vw, 320px)
+    auto
+    0;
+
+  text-align: center;
+}
+
+
+.about__statement-small {
+
+  display: block;
+
+  margin-bottom: 35px;
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+
+  letter-spacing: .12em;
+
+  color: #777;
+}
+
+
+.about__statement h3 {
+
+  margin: 0;
+
+  font-family: var(--font-display);
+
+  font-size:
+    clamp(60px, 11vw, 180px);
+
+  font-weight: 500;
+
+  line-height: .78;
+
+  letter-spacing: -.08em;
+
+  text-transform: uppercase;
+}
+
+
+.about__statement h3::after {
+
+  content: "";
+
+  display: block;
+
+  width: 8px;
+
+  height: 8px;
+
+  margin:
+    45px
+    auto
+    0;
+
+  border-radius: 50%;
+
+  background: var(--color-acid);
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 900px) {
+
+  .about__manifesto {
+
+    margin-left: 25%;
+
+  }
+
+
+  .about__philosophy {
+
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+  }
+
+
+  .about__philosophy-word {
+
+    font-size: 18vw;
+  }
+
+
+  .about__philosophy-word--right {
+
+    text-align: left;
+
+    margin-left: 18%;
+  }
+
+
+  .about__philosophy-center {
+
+    margin-left: 10%;
+  }
+
+
+  .about__body {
+
+    grid-template-columns: 1fr;
+
+    gap: 50px;
+  }
+
+
+  .about__values {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .about-section {
+
+    padding-top: 100px;
+  }
+
+
+  .about__title {
+
+    font-size: 16vw;
+  }
+
+
+  .about__title-line--indent {
+
+    margin-left: 8%;
+  }
+
+
+  .about__title-line--accent {
+
+    margin-left: 0;
+  }
+
+
+  .about__manifesto {
+
+    grid-template-columns: 40px 1fr;
+
+    margin-left: 0;
+
+    gap: 15px;
+  }
+
+
+  .about__philosophy {
+
+    margin-top: 170px;
+  }
+
+
+  .about__philosophy-word {
+
+    font-size: 22vw;
+  }
+
+
+  .about__philosophy-center {
+
+    margin-left: 5%;
+  }
+
+
+  .about__values {
+
+    grid-template-columns: 1fr;
+  }
+
+
+  .about-value {
+
+    min-height: 280px;
+  }
+
+
+  .about-value__number {
+
+    margin-bottom: 70px;
+  }
+
+
+  .about__statement h3 {
+
+    font-size: 17vw;
+  }
+
+}

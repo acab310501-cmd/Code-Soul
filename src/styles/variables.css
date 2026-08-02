@@ -1,0 +1,86 @@
+:root {
+  /* COLORS */
+
+  --color-void: #050505;
+  --color-ink: #0d0d0d;
+
+  --color-paper: #f1f0eb;
+  --color-white: #ffffff;
+
+  --color-muted: #858585;
+  --color-muted-dark: #505050;
+
+  --color-acid: #d7ff3f;
+
+
+  /* TYPOGRAPHY */
+
+  --font-display:
+    "Space Grotesk",
+    Arial,
+    sans-serif;
+
+  --font-body:
+    Inter,
+    Arial,
+    sans-serif;
+
+  --font-mono:
+    "IBM Plex Mono",
+    monospace;
+
+
+  /* LAYOUT */
+
+  --page-padding: clamp(20px, 3.2vw, 56px);
+
+  --container-width: 1440px;
+
+
+  /* MOTION */
+
+  --ease-out:
+    cubic-bezier(0.16, 1, 0.3, 1);
+
+  --ease-in-out:
+    cubic-bezier(0.65, 0, 0.35, 1);
+
+
+  /* UI */
+
+  --border-subtle:
+    rgba(255, 255, 255, 0.12);
+
+  --border-medium:
+    rgba(255, 255, 255, 0.2);
+
+
+  /* Z INDEX */
+
+  --z-content: 10;
+  --z-header: 100;
+  --z-cursor: 1000;
+  --z-grain: 1100;
+}
+
+
+/* LIGHT THEME */
+
+html[data-theme="light"] {
+  --color-void: #f1f0eb;
+  --color-ink: #ffffff;
+
+  --color-paper: #050505;
+  --color-white: #050505;
+
+  --color-muted: #686868;
+  --color-muted-dark: #999999;
+
+  --color-acid: #8eac00;
+
+  --border-subtle:
+    rgba(5, 5, 5, 0.12);
+
+  --border-medium:
+    rgba(5, 5, 5, 0.2);
+}
