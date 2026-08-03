@@ -1,107 +1,131 @@
 import gsap from "gsap";
+import { ParticleText } from "./ParticleText.js";
 
 export function initLoader() {
   const loader = document.querySelector("[data-loader]");
+
+  if (!loader) return;
+
   const canvas = document.getElementById("loaderCanvas");
 
-  if (!loader || !canvas) return;
+  const logo = loader.querySelector(".loader__logo");
+  const lines = loader.querySelectorAll(".loader__line");
 
-  const ctx = canvas.getContext("2d");
+  if (!canvas) return;
 
-  let width = 0;
-  let height = 0;
 
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
+  const particleText = new ParticleText({
+    canvas,
+    text: "CODE & SOUL",
+    fontSize: window.innerWidth < 768 ? 70 : 120,
+    color: "#f5f5f0",
+  });
 
-  resize();
-  window.addEventListener("resize", resize);
 
-  const particles = [];
+  const tl = gsap.timeline();
 
-  const COUNT =
-    window.innerWidth < 768
-      ? 450
-      : 900;
 
-  for (let i = 0; i < COUNT; i++) {
-    particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
+  /*
+    Initial state
+  */
 
-      tx: width / 2,
-      ty: height / 2,
+  gsap.set(
+    [logo, lines],
+    {
+      opacity: 0,
+      y: 20,
+    }
+  );
 
-      size:
-        Math.random() * 2 + 1,
 
-      alpha: 0,
+  /*
+    Boot sequence
+  */
 
-      color:
-        Math.random() > 0.15
-          ? "#f1f0eb"
-          : "#d7ff3f",
-    });
-  }
+  tl.to(lines[0], {
+    opacity: 1,
+    y: 0,
+    duration: .6,
+    ease: "power3.out",
+  })
 
-  function draw() {
-    ctx.clearRect(0, 0, width, height);
+  .to(lines[1], {
+    opacity: 1,
+    y: 0,
+    duration: .6,
+    ease: "power3.out",
+  },
+  "-=.25")
 
-    particles.forEach((p) => {
-      p.x += (p.tx - p.x) * 0.08;
-      p.y += (p.ty - p.y) * 0.08;
+  .to(lines[2], {
+    opacity: 1,
+    y: 0,
+    duration: .6,
+    ease: "power3.out",
+  },
+  "-=.25")
 
-      ctx.globalAlpha = p.alpha;
+  .to(lines[3], {
+    opacity: 1,
+    y: 0,
+    duration: .6,
+    ease: "power3.out",
+  },
+  "-=.25")
 
-      ctx.beginPath();
-      ctx.fillStyle = p.color;
 
-      ctx.arc(
-        p.x,
-        p.y,
-        p.size,
-        0,
-        Math.PI * 2
+  /*
+    Show real logo
+  */
+
+  .to(logo, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    ease: "power3.out",
+  },
+  "-=.2")
+
+
+  /*
+    Hold
+  */
+
+  .to({}, {
+    duration: .8
+  })
+
+
+  /*
+    Exit
+  */
+
+  .call(() => {
+
+    particleText.scatter(22);
+
+  })
+
+
+  .to(loader, {
+
+    opacity:0,
+
+    duration:1.2,
+
+    ease:"power3.inOut",
+
+    onComplete(){
+
+      particleText.stop();
+
+      loader.classList.add(
+        "is-hidden"
       );
 
-      ctx.fill();
-    });
+    }
 
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-
-  gsap.to(particles, {
-    alpha: 1,
-    duration: 1.1,
-    stagger: {
-      each: 0.001,
-      from: "random",
-    },
   });
 
-  gsap.delayedCall(2.2, () => {
-    particles.forEach((p) => {
-      p.tx =
-        Math.random() * width;
 
-      p.ty =
-        Math.random() * height;
-    });
-
-    gsap.to(loader, {
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-
-      onComplete() {
-        loader.classList.add(
-          "is-hidden"
-        );
-      },
-    });
-  });
 }

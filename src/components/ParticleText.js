@@ -16,6 +16,7 @@ export class ParticleText {
 
     this.particles = [];
     this.targets = [];
+    this.running = true;
 
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -333,11 +334,11 @@ export class ParticleText {
   }
 
 
-  animate = () => {
+animate = () => {
 
-    this.ctx.clearRect(
-      0,
-      0,
+    if (!this.running) return;
+
+    this.ctx.clearRect(0,0,
       this.width,
       this.height
     );
@@ -393,6 +394,20 @@ export class ParticleText {
     );
   }
 
+  stop(){
+
+  this.running = false;
+
+  this.destroy();
+
+  this.ctx.clearRect(
+    0,
+    0,
+    this.width,
+    this.height
+  );
+
+}
 
   destroy() {
 
