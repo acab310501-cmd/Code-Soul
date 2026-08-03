@@ -65,22 +65,21 @@
 
 
 /* LIGHT THEME */
+[data-theme="paper"],
+[data-theme="light"] {
+  /* Тёплый премиальный цвет слоновой кости вместо белого #FFFFFF */
+  --bg-primary: #F5F3EE;
+  --bg-secondary: #EBE8E0;
+  --bg-glass: rgba(245, 243, 238, 0.85);
 
-html[data-theme="light"] {
-  --color-void: #f1f0eb;
-  --color-ink: #ffffff;
+  /* Глубокий читаемый цвет текста */
+  --text-primary: #121316;
+  --text-secondary: #4A4E58;
+  --text-muted: #6C727E;
 
-  --color-paper: #050505;
-  --color-white: #050505;
+  /* Границы элементов */
+  --border-subtle: rgba(18, 19, 22, 0.08);
+  --border-strong: rgba(18, 19, 22, 0.18);
 
-  --color-muted: #686868;
-  --color-muted-dark: #999999;
-
-  --color-acid: #8eac00;
-
-  --border-subtle:
-    rgba(5, 5, 5, 0.12);
-
-  --border-medium:
-    rgba(5, 5, 5, 0.2);
+  --accent-glow: rgba(18, 19, 22, 0.05);
 }

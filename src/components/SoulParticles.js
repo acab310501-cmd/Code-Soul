@@ -1,642 +1,336 @@
 /* ========================================
-   CODE & SOUL
-   SOUL PARTICLE ENGINE
+   CODE & SOUL — HALFTONE PARTICLE ENGINE
 ======================================== */
 
 export class SoulParticles {
-  constructor({
-    canvas,
-    image,
-    density = 5,
-    maxParticles = 18000,
-    mouseRadius = 140,
-    mouseForce = 7,
-  }) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+  constructor(options = {}) {
+    // Поддержка передаваемого элемента или селектора
+    this.canvas = typeof options.canvas === 'string' 
+      ? document.querySelector(options.canvas) 
+      : options.canvas;
 
-    this.imageSrc = image;
+    if (!this.canvas) {
+      console.error("SoulParticles: Canvas element not found!");
+      return;
+    }
 
-    this.density = density;
-    this.maxParticles = maxParticles;
+    this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
 
-    this.mouseRadius = mouseRadius;
-    this.mouseForce = mouseForce;
+    // Список всех 5 фаз (HUMAN -> CODE -> VISION -> SOUL -> DIGITAL WORLD)
+    this.imageSources = options.images || [
+      '/half tone/01-hand.webp',
+      '/half tone/02-code.webp',
+      '/half tone/03-eye.webp',
+      '/half tone/04-heart.webp',
+      '/half tone/05-digital-world.webp'
+    ];
 
+    this.maxParticles = options.maxParticles || 2800;
+    this.mouseRadius = options.mouseRadius || 100;
+    this.mouseForce = options.mouseForce || 8;
+    this.theme = options.theme || 'dark';
+
+    this.currentIndex = 0;
+    this.targetIndex = 0;
+    this.cachedTargets = []; // Кэшированные координаты пикселей
     this.particles = [];
-
+    
     this.mouse = {
       x: -9999,
       y: -9999,
-      active: false,
+      active: false
     };
 
     this.time = 0;
+    this.isLoaded = false;
+    this.animationFrame = null;
 
-    this.resize();
-
-    this.loadImage();
+    this.init();
   }
 
+  async init() {
+    this.resize();
+    this.bindEvents();
+
+    // Загрузка и анализ всех изображений при старте
+    await this.preloadAndSampleImages();
+    this.initParticlePool();
+    
+    this.isLoaded = true;
+    this.animate();
+  }
 
   /* ========================================
-     RESIZE
+     RESIZE & ADAPTIVE DENSITY
   ======================================== */
-
   resize() {
-    const rect =
-      this.canvas.getBoundingClientRect();
+    if (!this.canvas.parentElement) return;
 
-    const dpr =
-      Math.min(window.devicePixelRatio || 1, 2);
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     this.width = rect.width;
     this.height = rect.height;
 
-    this.canvas.width =
-      this.width * dpr;
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
 
-    this.canvas.height =
-      this.height * dpr;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    this.ctx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-    if (this.image) {
-      this.createParticles();
-    }
-  }
-
-
-  /* ========================================
-     IMAGE
-  ======================================== */
-
-  loadImage() {
-    this.image = new Image();
-
-    this.image.crossOrigin = "anonymous";
-
-    this.image.onload = () => {
-      this.createParticles();
-      this.bindEvents();
-      this.animate();
-    };
-
-    this.image.onerror = () => {
-      console.warn(
-        "SoulParticles: image failed to load:",
-        this.imageSrc
-      );
-    };
-
-    this.image.src = this.imageSrc;
-  }
-
-
-  /* ========================================
-     PARTICLE CREATION
-  ======================================== */
-
-  createParticles() {
-    if (!this.image) return;
-    if (this.width <= 0 || this.height <= 0) return;
-
-    const sourceCanvas =
-      document.createElement("canvas");
-
-    const sourceCtx =
-      sourceCanvas.getContext("2d", {
-        willReadFrequently: true,
-      });
-
-
-    /* Image aspect ratio */
-
-    const imageRatio =
-      this.image.naturalWidth /
-      this.image.naturalHeight;
-
-    const canvasRatio =
-      this.width / this.height;
-
-
-    let drawWidth;
-    let drawHeight;
-    let offsetX = 0;
-    let offsetY = 0;
-
-
-    if (imageRatio > canvasRatio) {
-
-      drawHeight = this.height;
-
-      drawWidth =
-        drawHeight * imageRatio;
-
-      offsetX =
-        (this.width - drawWidth) / 2;
-
+    // Адаптивная плотность точек под мобильные и десктоп
+    if (this.width < 480) {
+      this.sampleStep = 7;
+      this.maxParticles = 1200;
+    } else if (this.width < 1024) {
+      this.sampleStep = 5;
+      this.maxParticles = 2000;
     } else {
-
-      drawWidth = this.width;
-
-      drawHeight =
-        drawWidth / imageRatio;
-
-      offsetY =
-        (this.height - drawHeight) / 2;
+      this.sampleStep = 4;
+      this.maxParticles = 2800;
     }
 
+    if (this.isLoaded) {
+      this.preloadAndSampleImages().then(() => {
+        this.setStage(this.targetIndex, true);
+      });
+    }
+  }
 
-    /*
-      Reduce source resolution.
-      We don't need to analyse
-      thousands of pixels.
-    */
+  /* ========================================
+     PRELOAD & SAMPLING (PERFORMANCE OPTIMIZED)
+  ======================================== */
+  async preloadAndSampleImages() {
+    const offscreen = document.createElement("canvas");
+    const offCtx = offscreen.getContext("2d", { willReadFrequently: true });
+    this.cachedTargets = [];
 
-    const sampleWidth =
-      Math.max(
-        1,
-        Math.floor(this.width / this.density)
-      );
+    for (let i = 0; i < this.imageSources.length; i++) {
+      try {
+        const img = await this.loadImage(this.imageSources[i]);
+        const targets = this.extractTargetsFromImage(img, offscreen, offCtx);
+        this.cachedTargets.push(targets);
+      } catch (err) {
+        console.warn(err);
+        this.cachedTargets.push([]);
+      }
+    }
+  }
 
-    const sampleHeight =
-      Math.max(
-        1,
-        Math.floor(this.height / this.density)
-      );
+  loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`SoulParticles: Failed to load image at ${src}`));
+      img.src = src;
+    });
+  }
 
+  extractTargetsFromImage(img, offCanvas, offCtx) {
+    const scale = Math.min((this.width * 0.6) / img.naturalWidth, (this.height * 0.6) / img.naturalHeight);
+    const w = Math.floor(img.naturalWidth * scale);
+    const h = Math.floor(img.naturalHeight * scale);
 
-    sourceCanvas.width =
-      sampleWidth;
+    if (w <= 0 || h <= 0) return [];
 
-    sourceCanvas.height =
-      sampleHeight;
+    offCanvas.width = w;
+    offCanvas.height = h;
+    offCtx.clearRect(0, 0, w, h);
+    offCtx.drawImage(img, 0, 0, w, h);
 
+    const imgData = offCtx.getImageData(0, 0, w, h).data;
+    const targets = [];
+    const offsetX = (this.width - w) / 2;
+    const offsetY = (this.height - h) / 2;
 
-    sourceCtx.drawImage(
-      this.image,
-      offsetX,
-      offsetY,
-      drawWidth,
-      drawHeight
-    );
+    for (let y = 0; y < h; y += this.sampleStep) {
+      for (let x = 0; x < w; x += this.sampleStep) {
+        const index = (y * w + x) * 4;
+        const r = imgData[index];
+        const g = imgData[index + 1];
+        const b = imgData[index + 2];
+        const a = imgData[index + 3];
 
+        if (a < 40) continue;
 
-    const imageData =
-      sourceCtx.getImageData(
-        0,
-        0,
-        sampleWidth,
-        sampleHeight
-      );
+        // Яркость / Яркостная характеристика
+        const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
 
+        targets.push({
+          x: offsetX + x,
+          y: offsetY + y,
+          size: 0.8 + luminance * 2.6,
+          alpha: Math.min(1.0, luminance + 0.2)
+        });
+      }
+    }
 
-    const pixels =
-      imageData.data;
+    return targets.slice(0, this.maxParticles);
+  }
 
-
+  initParticlePool() {
+    const initialTargets = this.cachedTargets[0] || [];
     this.particles = [];
 
+    for (let i = 0; i < this.maxParticles; i++) {
+      const target = initialTargets[i % initialTargets.length] || {
+        x: this.width / 2 + (Math.random() - 0.5) * 100,
+        y: this.height / 2 + (Math.random() - 0.5) * 100,
+        size: 2,
+        alpha: 0.8
+      };
 
-    for (
-      let y = 0;
-      y < sampleHeight;
-      y++
-    ) {
+      this.particles.push({
+        x: target.x + (Math.random() - 0.5) * 50,
+        y: target.y + (Math.random() - 0.5) * 50,
+        originX: target.x,
+        originY: target.y,
+        targetX: target.x,
+        targetY: target.y,
+        vx: 0,
+        vy: 0,
+        size: target.size,
+        targetSize: target.size,
+        alpha: target.alpha,
+        targetAlpha: target.alpha,
+        phase: Math.random() * Math.PI * 2,
+        drift: 0.1 + Math.random() * 0.3
+      });
+    }
+  }
 
-      for (
-        let x = 0;
-        x < sampleWidth;
-        x++
-      ) {
+  /* ========================================
+     STAGE SWITCHING (MORPHING CONTROLLER)
+  ======================================== */
+  setStage(index, immediate = false) {
+    if (index < 0 || index >= this.imageSources.length) return;
 
-        const index =
-          (y * sampleWidth + x) * 4;
+    this.currentIndex = this.targetIndex;
+    this.targetIndex = index;
+    const nextTargets = this.cachedTargets[this.targetIndex];
 
+    if (!nextTargets || nextTargets.length === 0) return;
 
-        const r = pixels[index];
-        const g = pixels[index + 1];
-        const b = pixels[index + 2];
-        const a = pixels[index + 3];
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      const target = nextTargets[i % nextTargets.length];
 
+      p.targetX = target.x;
+      p.targetY = target.y;
+      p.targetSize = target.size;
+      p.targetAlpha = target.alpha;
 
-        if (a < 30) continue;
-
-
-        /*
-          Perceived luminance
-        */
-
-        const brightness =
-          (
-            r * 0.299 +
-            g * 0.587 +
-            b * 0.114
-          ) / 255;
-
-
-        /*
-          Dark areas = stronger particles.
-          This creates the halftone feeling.
-        */
-
-        const darkness =
-          1 - brightness;
-
-
-        /*
-          Don't completely remove
-          bright areas — otherwise
-          the image becomes too fragmented.
-        */
-
-        if (
-          darkness < 0.08 &&
-          Math.random() > 0.12
-        ) {
-          continue;
-        }
-
-
-        const px =
-          x * this.density;
-
-        const py =
-          y * this.density;
-
-
-        const size =
-          0.45 +
-          darkness * 2.8;
-
-
-        const particle = {
-
-          x: px,
-          y: py,
-
-          homeX: px,
-          homeY: py,
-
-          vx: 0,
-          vy: 0,
-
-          size,
-
-          alpha:
-            0.12 +
-            darkness * 0.88,
-
-          brightness,
-
-          phase:
-            Math.random() * Math.PI * 2,
-
-          drift:
-            0.15 +
-            Math.random() * 0.4,
-        };
-
-
-        this.particles.push(
-          particle
-        );
-
-
-        if (
-          this.particles.length >=
-          this.maxParticles
-        ) {
-          break;
-        }
-      }
-
-
-      if (
-        this.particles.length >=
-        this.maxParticles
-      ) {
-        break;
+      if (immediate) {
+        p.originX = target.x;
+        p.originY = target.y;
+        p.x = target.x;
+        p.y = target.y;
+        p.size = target.size;
+        p.alpha = target.alpha;
       }
     }
   }
 
+  setTheme(themeName) {
+    this.theme = themeName;
+  }
 
   /* ========================================
      EVENTS
   ======================================== */
-
   bindEvents() {
+    this.onMouseMove = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = e.clientX - rect.left;
+      this.mouse.y = e.clientY - rect.top;
+      this.mouse.active = true;
+    };
 
-    this.onMouseMove =
-      (event) => {
+    this.onMouseLeave = () => {
+      this.mouse.active = false;
+      this.mouse.x = -9999;
+      this.mouse.y = -9999;
+    };
 
-        const rect =
-          this.canvas.getBoundingClientRect();
+    this.canvas.addEventListener("mousemove", this.onMouseMove);
+    this.canvas.addEventListener("mouseleave", this.onMouseLeave);
 
-        this.mouse.x =
-          event.clientX - rect.left;
-
-        this.mouse.y =
-          event.clientY - rect.top;
-
-        this.mouse.active = true;
-      };
-
-
-    this.onMouseLeave =
-      () => {
-
-        this.mouse.active = false;
-
-        this.mouse.x = -9999;
-        this.mouse.y = -9999;
-      };
-
-
-    this.canvas.addEventListener(
-      "mousemove",
-      this.onMouseMove
-    );
-
-    this.canvas.addEventListener(
-      "mouseleave",
-      this.onMouseLeave
-    );
-
-
-    this.onResize =
-      () => this.resize();
-
-
-    window.addEventListener(
-      "resize",
-      this.onResize
-    );
+    this.onResize = () => this.resize();
+    window.addEventListener("resize", this.onResize);
   }
 
-
   /* ========================================
-     UPDATE
+     UPDATE & DRAW LOOP
   ======================================== */
-
   update() {
-
     this.time += 0.016;
 
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
 
-    for (
-      const particle of this.particles
-    ) {
+      // 1. Morphing LERP (Интерполяция перемещения)
+      p.originX += (p.targetX - p.originX) * 0.06;
+      p.originY += (p.targetY - p.originY) * 0.06;
+      p.size += (p.targetSize - p.size) * 0.06;
+      p.alpha += (p.targetAlpha - p.alpha) * 0.06;
 
-      /*
-        Organic micro movement
-      */
+      // 2. Органический микро-дрифт
+      const driftX = Math.sin(this.time * p.drift + p.phase) * 0.15;
+      const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.15;
 
-      const driftX =
-        Math.sin(
-          this.time *
-            particle.drift +
-            particle.phase
-        ) * 0.12;
-
-      const driftY =
-        Math.cos(
-          this.time *
-            particle.drift * 0.8 +
-            particle.phase
-        ) * 0.12;
-
-
-      /*
-        Return to original position
-      */
-
-      const dx =
-        particle.homeX -
-        particle.x;
-
-      const dy =
-        particle.homeY -
-        particle.y;
-
-
-      particle.vx +=
-        dx * 0.018;
-
-      particle.vy +=
-        dy * 0.018;
-
-
-      /*
-        Mouse interaction
-      */
-
+      // 3. Интерактивное отталкивание курсором
       if (this.mouse.active) {
+        const dx = p.x - this.mouse.x;
+        const dy = p.y - this.mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-        const mx =
-          particle.x -
-          this.mouse.x;
-
-        const my =
-          particle.y -
-          this.mouse.y;
-
-        const distance =
-          Math.sqrt(
-            mx * mx +
-            my * my
-          );
-
-
-        if (
-          distance <
-          this.mouseRadius
-        ) {
-
-          const force =
-            (
-              1 -
-              distance /
-                this.mouseRadius
-            );
-
-
-          const angle =
-            Math.atan2(
-              my,
-              mx
-            );
-
-
-          particle.vx +=
-            Math.cos(angle) *
-            force *
-            this.mouseForce;
-
-          particle.vy +=
-            Math.sin(angle) *
-            force *
-            this.mouseForce;
+        if (dist < this.mouseRadius && dist > 0) {
+          const force = (1 - dist / this.mouseRadius) * this.mouseForce;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
         }
       }
 
+      // Возврат к целевым координатам
+      p.vx *= 0.82;
+      p.vy *= 0.82;
 
-      /*
-        Apply velocity
-      */
-
-      particle.x +=
-        particle.vx +
-        driftX;
-
-      particle.y +=
-        particle.vy +
-        driftY;
-
-
-      /*
-        Friction
-      */
-
-      particle.vx *= 0.82;
-      particle.vy *= 0.82;
+      p.x = p.originX + p.vx + driftX;
+      p.y = p.originY + p.vy + driftY;
     }
   }
 
-
-  /* ========================================
-     DRAW
-  ======================================== */
-
   draw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.ctx.clearRect(
-      0,
-      0,
-      this.width,
-      this.height
-    );
+    const isPaper = this.theme === 'paper' || this.theme === 'light';
+    // Тёмно-угольный цвет точек для темы Paper, светлый цвет — для Dark mode
+    const rgb = isPaper ? [18, 19, 22] : [240, 242, 255];
 
-
-    /*
-      Subtle paper-like atmosphere
-    */
-
-    for (
-      const particle of this.particles
-    ) {
-
-      const distance =
-        Math.hypot(
-          particle.x -
-            this.mouse.x,
-
-          particle.y -
-            this.mouse.y
-        );
-
-
-      let alpha =
-        particle.alpha;
-
-
-      /*
-        Mouse makes particles brighter
-      */
-
-      if (
-        distance <
-        this.mouseRadius
-      ) {
-
-        alpha +=
-          (
-            1 -
-            distance /
-              this.mouseRadius
-          ) * 0.35;
-      }
-
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
 
       this.ctx.beginPath();
-
-
-      this.ctx.arc(
-        particle.x,
-        particle.y,
-        particle.size,
-        0,
-        Math.PI * 2
-      );
-
-
-      /*
-        Acid-green soul particles
-      */
-
-      this.ctx.fillStyle =
-        `rgba(198, 255, 0, ${Math.min(
-          alpha,
-          1
-        )})`;
-
-
+      this.ctx.arc(p.x, p.y, Math.max(0.4, p.size), 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${p.alpha * (isPaper ? 0.85 : 0.9)})`;
       this.ctx.fill();
     }
   }
 
-
-  /* ========================================
-     LOOP
-  ======================================== */
-
   animate() {
-
-    this.update();
-
-    this.draw();
-
-
-    this.animationFrame =
-      requestAnimationFrame(
-        () => this.animate()
-      );
+    if (this.isLoaded) {
+      this.update();
+      this.draw();
+    }
+    this.animationFrame = requestAnimationFrame(() => this.animate());
   }
 
-
-  /* ========================================
-     DESTROY
-  ======================================== */
-
   destroy() {
-
-    cancelAnimationFrame(
-      this.animationFrame
-    );
-
-
-    this.canvas.removeEventListener(
-      "mousemove",
-      this.onMouseMove
-    );
-
-    this.canvas.removeEventListener(
-      "mouseleave",
-      this.onMouseLeave
-    );
-
-    window.removeEventListener(
-      "resize",
-      this.onResize
-    );
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+    }
+    this.canvas.removeEventListener("mousemove", this.onMouseMove);
+    this.canvas.removeEventListener("mouseleave", this.onMouseLeave);
+    window.removeEventListener("resize", this.onResize);
   }
 }

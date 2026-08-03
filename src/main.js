@@ -1,3 +1,4 @@
+import "./styles/loader.css";
 import "./styles/services.css";
 import "./styles/soul.css";
 import "./styles/about.css";
@@ -17,6 +18,7 @@ import { SoulParticles } from "./components/SoulParticles.js";
 import { ParticleText } from "./components/ParticleText.js";
 import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
+import { initLoader } from "./components/Loader.js";
 import { initWork } from "./components/Work.js"; 
 import { initLanguage } from "./components/Language.js";
 import { initTheme } from "./components/Theme.js";
