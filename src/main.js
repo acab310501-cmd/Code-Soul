@@ -28,6 +28,35 @@ import { initLoader } from "./components/Loader.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// =============================================
+//  Performance optimisation:
+//  All animation loops now check document.hidden
+//  to pause when tab is not visible.
+// =============================================
+
+// 1. Patch ParticleSystem.render()
+const origParticleSystemRender = ParticleSystem.prototype.render;
+ParticleSystem.prototype.render = function(time) {
+  if (!document.hidden) {
+    origParticleSystemRender.call(this, time);
+  } else {
+    // Keep the loop alive but skip drawing
+    requestAnimationFrame(this.render.bind(this));
+  }
+};
+
+// 2. Patch SoulParticles.animate()
+const origSoulParticlesAnimate = SoulParticles.prototype.animate;
+SoulParticles.prototype.animate = function() {
+  if (!document.hidden && this.isLoaded) {
+    this.update();
+    this.draw();
+  }
+  this.animationFrame = requestAnimationFrame(() => this.animate());
+};
+
+// 3. Patch ParticleText.animate() – we'll override per instance later
+
 document.addEventListener(
   "DOMContentLoaded",
   () => {
@@ -47,13 +76,18 @@ document.addEventListener(
     initWork();
     initSoulParticles();
     initAboutAnimation();
+    initAboutDepth();         
+    initAboutMagneticDots();
+    initServicesBlob(); 
     initJournalAnimation();
 
     initHeader();
     initHeroAnimation();
+    initHeader();
+    initHeroAnimation();
+    initHeroGridKinetics(); 
   }
 );
-
 /* ========================================
    HEADER
 ======================================== */
@@ -85,6 +119,52 @@ function initHeader() {
 /* ========================================
    HERO INTRO (исправлено)
 ======================================== */
+
+/* ========================================
+   HERO — 3D KINETIC GRID & PARALLAX
+======================================== */
+
+function initHeroGridKinetics() {
+  const grid = document.querySelector('.hero__grid');
+  const particleCanvas = document.querySelector('#particleCanvas');
+  
+  if (!grid && !particleCanvas) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetX = 0;
+  let targetY = 0;
+
+  // Следим за движением мыши
+  window.addEventListener('mousemove', (e) => {
+    // Нормализуем координаты от -1 до 1 (где 0 — центр экрана)
+    targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+    targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  // Плавное обновление через GSAP ticker (работает при 60fps)
+  gsap.ticker.add(() => {
+    // Интерполяция для плавного "прилипания" к курсору
+    mouseX += (targetX - mouseX) * 0.08;
+    mouseY += (targetY - mouseY) * 0.08;
+
+    if (grid) {
+      // Сетка "убегает" от курсора (создаёт объём)
+      const rotateY = mouseX * 6;   // Максимальный наклон по Y
+      const rotateX = -mouseY * 6;  // Максимальный наклон по X
+      
+      grid.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    if (particleCanvas) {
+      // Частицы двигаются синхронно, но чуть меньше (эффект параллакса слоев)
+      const translateX = mouseX * -30;
+      const translateY = mouseY * -30;
+      
+      particleCanvas.style.transform = `translate(${translateX}px, ${translateY}px)`;
+    }
+  });
+}
 
 function initHeroAnimation() {
   const pretitle =
@@ -237,53 +317,96 @@ function initParticleText() {
 
   window.__codeSoulParticles =
     systems;
-}
 
-/* ========================================
-   SOUL PARTICLE ENGINE
-======================================== */
-
-function initSoulParticles() {
-  const canvases =
-    document.querySelectorAll(
-      "[data-soul-particles]"
-    );
-
-  if (!canvases.length) return;
-
-  canvases.forEach((canvas) => {
-    const image =
-      canvas.dataset.soulImage;
-
-    if (!image) return;
-
-    const system =
-      new SoulParticles({
-        canvas,
-        image,
-        density:
-          window.innerWidth < 700
-            ? 6
-            : 5,
-        maxParticles:
-          window.innerWidth < 700
-            ? 7000
-            : 16000,
-        mouseRadius:
-          window.innerWidth < 700
-            ? 100
-            : 150,
-        mouseForce:
-          window.innerWidth < 700
-            ? 4
-            : 7,
-      });
-
-    canvas.__soulParticles =
-      system;
+  // ---- Patch each instance's animate method ----
+  systems.forEach((system) => {
+    const origAnimate = system.animate;
+    system.animate = function() {
+      if (!document.hidden && this.running) {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.globalAlpha = 1;
+        this.particles.forEach((p) => {
+          this.updateParticle(p);
+          this.drawParticle(p);
+        });
+        this.ctx.globalAlpha = 1;
+      }
+      requestAnimationFrame(this.animate);
+    };
   });
 }
 
+/* ========================================
+   SOUL PARTICLE ENGINE (TRANSITION SYSTEM)
+======================================== */
+
+function initSoulParticles() {
+  const canvases = document.querySelectorAll("[data-soul-particles]");
+  if (!canvases.length) return;
+
+  // Получаем пути к картинкам (динамически через Vite)
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const getAsset = (path) => {
+    const clean = path.replace(/^\/+/, '');
+    return `${baseUrl}${clean}`;
+  };
+
+  // Массив этапов эволюции: HUMAN -> CODE -> VISION -> SOUL -> DIGITAL WORLD
+  const images = [
+    getAsset('images/halftone/01-hand.webp'),
+    getAsset('images/halftone/02-code.webp'),
+    getAsset('images/halftone/03-eye.webp'),
+    getAsset('images/halftone/04-heart.webp'),
+    getAsset('images/halftone/05-digital-world.webp')
+  ];
+
+  canvases.forEach((canvas) => {
+    const system = new SoulParticles({
+      canvas,
+      images: images, // Передаём массив
+      density: window.innerWidth < 700 ? 6 : 5,
+      maxParticles: window.innerWidth < 700 ? 7000 : 16000,
+      mouseRadius: window.innerWidth < 700 ? 100 : 150,
+      mouseForce: window.innerWidth < 700 ? 4 : 7,
+      transitionSpeed: 0.035 // Скорость перетекания (0.035 = плавно, 0.06 = быстрее)
+    });
+
+    canvas.__soulParticles = system;
+
+    /* ========================================
+       SCROLL TRIGGER ИНТЕГРАЦИЯ
+       Переключение этапов при скролле секции
+    ======================================== */
+
+    const section = canvas.closest('.soul-section');
+    if (!section) return;
+
+    // Создаём триггер на всю секцию, который двигает индекс от 0 до 4
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top center",
+      end: "bottom top",
+      scrub: 0.5, // Плавный скролл-связыватель
+      onUpdate: (self) => {
+        // Получаем прогресс от 0 до 1
+        const progress = self.progress;
+        
+        // Вычисляем, на каком мы этапе (0, 1, 2, 3, 4)
+        // Мы хотим переключать этапы, когда прогресс пересекает 20%, 40%, 60%, 80%
+        const totalStages = images.length; // 5
+        const targetIndex = Math.min(
+          Math.floor(progress * totalStages),
+          totalStages - 1
+        );
+
+        // Если индекс изменился, запускаем переход
+        if (system.currentIndex !== targetIndex) {
+          system.transitionTo(targetIndex);
+        }
+      }
+    });
+  });
+}
 /* ========================================
    ABOUT ANIMATION
 ======================================== */
@@ -369,6 +492,135 @@ function initAboutAnimation() {
     );
 
   observer.observe(section);
+}
+
+/* ========================================
+   SERVICES MAGNETIC BLOB
+======================================== */
+
+function initServicesBlob() {
+  const cards = document.querySelectorAll('.service-card');
+  if (!cards.length) return;
+
+  cards.forEach((card) => {
+    // Если мышь покинула карточку, сбрасываем позицию
+    card.addEventListener("mouseleave", () => {
+      card.style.setProperty('--blob-x', '50%');
+      card.style.setProperty('--blob-y', '50%');
+    });
+
+    // Отслеживаем движение мыши внутри карточки
+    card.addEventListener("mousemove", (event) => {
+      const rect = card.getBoundingClientRect();
+      
+      // Вычисляем процентное положение курсора внутри карточки (0% - 100%)
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+      // Передаем значения в CSS переменные (без использования GSAP — это максимально легко для производительности)
+      card.style.setProperty('--blob-x', `${x}%`);
+      card.style.setProperty('--blob-y', `${y}%`);
+    });
+  });
+}
+
+/* ========================================
+   ABOUT — MANIFESTO DEPTH & MAGNETIC DOTS
+======================================== */
+
+// Эффект "Всплытие из глубины" для текстов Манифеста
+function initAboutDepth() {
+  const section = document.querySelector(".about-section");
+  if (!section) return;
+
+  // Целевые элементы: заголовки и главный оффер (lead)
+  const targets = section.querySelectorAll(
+    ".about__title-line, .about__manifesto p, .about__lead"
+  );
+
+  // Скрываем и добавляем размытие изначально
+  gsap.set(targets, {
+    opacity: 0,
+    y: 80,
+    filter: "blur(12px)",
+  });
+
+  // Запускаем по скроллу
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top 80%",
+    once: true,
+    onEnter: () => {
+      gsap.to(targets, {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 1.4,
+        stagger: 0.12, // Строки выходят одна за другой с небольшой задержкой
+        ease: "power4.out",
+        // Настройка для разных строк: если это about__lead, делаем его чуть медленнее
+        overwrite: "auto",
+      });
+    },
+  });
+}
+
+// Эффект "Магнитные точки" для блока CODE & SOUL
+function initAboutMagneticDots() {
+  const container = document.querySelector(".about__philosophy");
+  if (!container) return;
+
+  const dot1 = container.querySelector(".about__dot:first-child");
+  const dot2 = container.querySelector(".about__dot:last-child");
+  const amp = container.querySelector(".about__ampersand");
+  
+  if (!dot1 || !dot2) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetX = 0;
+  let targetY = 0;
+
+  container.addEventListener("mousemove", (e) => {
+    const rect = container.getBoundingClientRect();
+    // Нормализуем от -1 до 1 относительно центра контейнера
+    targetX = (e.clientX - rect.left) / rect.width - 0.5;
+    targetY = (e.clientY - rect.top) / rect.height - 0.5;
+  });
+
+  // Анимируем через GSAP Ticker
+  gsap.ticker.add(() => {
+    // Плавное сглаживание
+    mouseX += (targetX - mouseX) * 0.12;
+    mouseY += (targetY - mouseY) * 0.12;
+
+    const dist = Math.min(1, Math.abs(mouseX) + Math.abs(mouseY));
+    
+    // Точки "разбегаются" от курсора (или притягиваются, тут эффект разбегания)
+    // Направление движения: от центра в разные стороны
+    const force = dist * 30; 
+
+    // Левая точка
+    gsap.set(dot1, {
+      x: mouseX * -force,
+      y: mouseY * -force,
+    });
+
+    // Правая точка
+    gsap.set(dot2, {
+      x: mouseX * -force,
+      y: mouseY * -force,
+    });
+
+    // Амперсанд слегка "дрожит" и двигается в сторону мыши
+    if (amp) {
+       gsap.set(amp, {
+         x: mouseX * 10,
+         y: mouseY * 5,
+         rotate: mouseX * 5,
+       });
+    }
+  });
 }
 
 /* ========================================

@@ -1,5 +1,5 @@
 /* ========================================
-   CODE & SOUL — HALFTONE PARTICLE ENGINE
+   CODE & SOUL — HALFTONE PARTICLE ENGINE (TRANSITION READY)
 ======================================== */
 
 export class SoulParticles {
@@ -15,45 +15,21 @@ export class SoulParticles {
 
     this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
 
-    // ---- ИСПРАВЛЕНИЕ: динамический base URL ----
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    const getAssetPath = (path) => {
-      if (path.startsWith('http') || path.startsWith('//')) return path;
-      // Если путь начинается с '/', убираем его, чтобы не было двойного слеша
-      const cleanPath = path.replace(/^\/+/, '');
-      return `${baseUrl}${cleanPath}`;
-    };
+    // Поддержка массива изображений
+    this.imageSources = options.images || [];
 
-    // Список всех 5 фаз (HUMAN -> CODE -> VISION -> SOUL -> DIGITAL WORLD)
-    this.imageSources = options.images || [
-      getAssetPath('images/halftone/01-hand.webp'),
-      getAssetPath('images/halftone/02-code.webp'),
-      getAssetPath('images/halftone/03-eye.webp'),
-      getAssetPath('images/halftone/04-heart.webp'),
-      getAssetPath('images/halftone/05-digital-world.webp')
-    ];
-
-    // Если передан одиночный image (для секции SOUL), используем его как первый элемент
-    if (options.image) {
-      this.imageSources = [getAssetPath(options.image), ...this.imageSources.slice(1)];
-    }
-
+    // Параметры
     this.maxParticles = options.maxParticles || 2800;
     this.mouseRadius = options.mouseRadius || 100;
     this.mouseForce = options.mouseForce || 8;
     this.theme = options.theme || 'dark';
+    this.transitionSpeed = options.transitionSpeed || 0.035; // Скорость перетекания
 
     this.currentIndex = 0;
-    this.targetIndex = 0;
     this.cachedTargets = [];
     this.particles = [];
     
-    this.mouse = {
-      x: -9999,
-      y: -9999,
-      active: false
-    };
-
+    this.mouse = { x: -9999, y: -9999, active: false };
     this.time = 0;
     this.isLoaded = false;
     this.animationFrame = null;
@@ -65,7 +41,10 @@ export class SoulParticles {
     this.resize();
     this.bindEvents();
 
-    await this.preloadAndSampleImages();
+    // Загружаем и сэмплируем ВСЕ изображения
+    await this.preloadAndSampleAllImages();
+    
+    // Инициализируем пул частиц из первого изображения
     this.initParticlePool();
     
     this.isLoaded = true;
@@ -74,18 +53,16 @@ export class SoulParticles {
 
   resize() {
     if (!this.canvas.parentElement) return;
-
     const rect = this.canvas.parentElement.getBoundingClientRect();
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
-
     this.width = rect.width;
     this.height = rect.height;
 
     this.canvas.width = this.width * this.dpr;
     this.canvas.height = this.height * this.dpr;
-
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
+    // Адаптивная плотность
     if (this.width < 480) {
       this.sampleStep = 7;
       this.maxParticles = 1200;
@@ -97,14 +74,15 @@ export class SoulParticles {
       this.maxParticles = 2800;
     }
 
+    // Если уже загружено, пересэмплируем изображения
     if (this.isLoaded) {
-      this.preloadAndSampleImages().then(() => {
-        this.setStage(this.targetIndex, true);
+      this.preloadAndSampleAllImages().then(() => {
+        this.transitionTo(this.currentIndex, true);
       });
     }
   }
 
-  async preloadAndSampleImages() {
+  async preloadAndSampleAllImages() {
     const offscreen = document.createElement("canvas");
     const offCtx = offscreen.getContext("2d", { willReadFrequently: true });
     this.cachedTargets = [];
@@ -116,17 +94,11 @@ export class SoulParticles {
         this.cachedTargets.push(targets);
       } catch (err) {
         console.warn(err);
-        // Fallback: создаём сетку точек, чтобы не было пустого экрана
+        // Фоллбэк: случайные точки
         const fallbackTargets = [];
-        const step = 10;
-        for (let y = 0; y < this.height; y += step) {
-          for (let x = 0; x < this.width; x += step) {
-            fallbackTargets.push({
-              x: x,
-              y: y,
-              size: 1.2,
-              alpha: 0.5
-            });
+        for (let y = 0; y < this.height; y += 15) {
+          for (let x = 0; x < this.width; x += 15) {
+            fallbackTargets.push({ x: x, y: y, size: 1.5, alpha: 0.4 });
           }
         }
         this.cachedTargets.push(fallbackTargets.slice(0, this.maxParticles));
@@ -139,7 +111,7 @@ export class SoulParticles {
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error(`SoulParticles: Failed to load image at ${src}`));
+      img.onerror = () => reject(new Error(`SoulParticles: Failed to load ${src}`));
       img.src = src;
     });
   }
@@ -148,7 +120,6 @@ export class SoulParticles {
     const scale = Math.min((this.width * 0.6) / img.naturalWidth, (this.height * 0.6) / img.naturalHeight);
     const w = Math.floor(img.naturalWidth * scale);
     const h = Math.floor(img.naturalHeight * scale);
-
     if (w <= 0 || h <= 0) return [];
 
     offCanvas.width = w;
@@ -170,7 +141,6 @@ export class SoulParticles {
         const a = imgData[index + 3];
 
         if (a < 40) continue;
-
         const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
 
         targets.push({
@@ -181,7 +151,6 @@ export class SoulParticles {
         });
       }
     }
-
     return targets.slice(0, this.maxParticles);
   }
 
@@ -190,22 +159,17 @@ export class SoulParticles {
     this.particles = [];
 
     for (let i = 0; i < this.maxParticles; i++) {
-      const target = initialTargets[i % initialTargets.length] || {
-        x: this.width / 2 + (Math.random() - 0.5) * 100,
-        y: this.height / 2 + (Math.random() - 0.5) * 100,
-        size: 2,
-        alpha: 0.8
-      };
+      const target = initialTargets[i % initialTargets.length] || { x: this.width/2, y: this.height/2, size: 2, alpha: 0.8 };
 
       this.particles.push({
-        x: target.x + (Math.random() - 0.5) * 50,
-        y: target.y + (Math.random() - 0.5) * 50,
+        // Начальная позиция с небольшим разбросом для красоты старта
+        x: target.x + (Math.random() - 0.5) * 100,
+        y: target.y + (Math.random() - 0.5) * 100,
         originX: target.x,
         originY: target.y,
         targetX: target.x,
         targetY: target.y,
-        vx: 0,
-        vy: 0,
+        vx: 0, vy: 0,
         size: target.size,
         targetSize: target.size,
         alpha: target.alpha,
@@ -216,12 +180,12 @@ export class SoulParticles {
     }
   }
 
-  setStage(index, immediate = false) {
-    if (index < 0 || index >= this.imageSources.length) return;
-
-    this.currentIndex = this.targetIndex;
-    this.targetIndex = index;
-    const nextTargets = this.cachedTargets[this.targetIndex];
+  // ВЫЗЫВАЕТСЯ ДЛЯ ПЕРЕХОДА МЕЖДУ ИЗОБРАЖЕНИЯМИ
+  transitionTo(index, immediate = false) {
+    if (index < 0 || index >= this.cachedTargets.length) return;
+    
+    this.currentIndex = index;
+    const nextTargets = this.cachedTargets[index];
 
     if (!nextTargets || nextTargets.length === 0) return;
 
@@ -229,6 +193,7 @@ export class SoulParticles {
       const p = this.particles[i];
       const target = nextTargets[i % nextTargets.length];
 
+      // Обновляем точки назначения
       p.targetX = target.x;
       p.targetY = target.y;
       p.targetSize = target.size;
@@ -265,7 +230,6 @@ export class SoulParticles {
 
     this.canvas.addEventListener("mousemove", this.onMouseMove);
     this.canvas.addEventListener("mouseleave", this.onMouseLeave);
-
     this.onResize = () => this.resize();
     window.addEventListener("resize", this.onResize);
   }
@@ -276,14 +240,17 @@ export class SoulParticles {
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
 
-      p.originX += (p.targetX - p.originX) * 0.06;
-      p.originY += (p.targetY - p.originY) * 0.06;
-      p.size += (p.targetSize - p.size) * 0.06;
-      p.alpha += (p.targetAlpha - p.alpha) * 0.06;
+      // Плавное перетекание в новые координаты
+      p.originX += (p.targetX - p.originX) * this.transitionSpeed;
+      p.originY += (p.targetY - p.originY) * this.transitionSpeed;
+      p.size += (p.targetSize - p.size) * this.transitionSpeed;
+      p.alpha += (p.targetAlpha - p.alpha) * this.transitionSpeed;
 
+      // Микро-дрейф (живое дыхание)
       const driftX = Math.sin(this.time * p.drift + p.phase) * 0.15;
       const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.15;
 
+      // Отталкивание от курсора
       if (this.mouse.active) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
@@ -312,6 +279,9 @@ export class SoulParticles {
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
+      
+      // Оптимизация: не рисуем полностью прозрачные частицы
+      if (p.alpha < 0.01) continue;
 
       this.ctx.beginPath();
       this.ctx.arc(p.x, p.y, Math.max(0.4, p.size), 0, Math.PI * 2);
@@ -329,9 +299,7 @@ export class SoulParticles {
   }
 
   destroy() {
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-    }
+    if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
     this.canvas.removeEventListener("mousemove", this.onMouseMove);
     this.canvas.removeEventListener("mouseleave", this.onMouseLeave);
     window.removeEventListener("resize", this.onResize);

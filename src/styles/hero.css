@@ -60,7 +60,17 @@
       black 75%,
       transparent
     );
+
+    width: 130%;
+  height: 130%;
+  top: -15%;
+  left: -15%;
+  
+  /* Плавность для JS-трансформаций */
+  transition: transform 0.05s linear; 
 }
+
+
 
 
 /* GLOW */

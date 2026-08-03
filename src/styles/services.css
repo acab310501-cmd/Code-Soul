@@ -647,3 +647,54 @@
   }
 
 }
+
+/* ========================================
+   MAGNETIC BLOB EFFECT FOR SERVICES
+======================================== */
+
+.service-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Само пятно-линза */
+.service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  
+  /* Начальное состояние — полностью прозрачное и скрытое */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  
+  background: radial-gradient(
+    circle at var(--blob-x, 50%) var(--blob-y, 50%),
+    color-mix(in srgb, var(--color-acid) 25%, transparent) 0%,
+    transparent 60%
+  );
+  
+  /* Фильтр размытия для мягкого свечения */
+  filter: blur(20px);
+}
+
+/* Активируем линзу при наведении */
+.service-card:hover::before {
+  opacity: 1;
+}
+
+/* Поднимаем контент выше псевдо-элемента (чтобы линза была фоном, а не перекрывала текст) */
+.service-card__top,
+.service-card__visual,
+.service-card__content,
+.service-card__footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Убедимся, что визуальные элементы не блокируют линзу */
+.service-card__visual {
+  position: relative;
+  z-index: 2;
+}

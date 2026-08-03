@@ -88,6 +88,10 @@
   text-transform: uppercase;
 }
 
+.about__title-line,
+.about__lead {
+  will-change: transform, opacity, filter;
+}
 
 .about__title-line {
   display: block;
