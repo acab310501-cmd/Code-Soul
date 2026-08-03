@@ -124,11 +124,10 @@ export class ParticleText {
 
     this.targets = [];
 
-    const step =
+const step =
       window.innerWidth < 700
-        ? 5
-        : 4;
-
+        ? 8
+        : 7;
 
     for (
       let y = 0;

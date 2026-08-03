@@ -28,6 +28,14 @@
 
 }
 
+.loader {
+
+  transition:
+    opacity 1s ease,
+    visibility 1s;
+
+}
+
 
 .loader__canvas {
 

@@ -18,11 +18,11 @@ export class SoulParticles {
 
     // Список всех 5 фаз (HUMAN -> CODE -> VISION -> SOUL -> DIGITAL WORLD)
     this.imageSources = options.images || [
-      '/half tone/01-hand.webp',
-      '/half tone/02-code.webp',
-      '/half tone/03-eye.webp',
-      '/half tone/04-heart.webp',
-      '/half tone/05-digital-world.webp'
+      '/halftone/01-hand.webp',
+      '/halftone/02-code.webp',
+      '/halftone/03-eye.webp',
+      '/halftone/04-heart.webp',
+      '/halftone/05-digital-world.webp'
     ];
 
     this.maxParticles = options.maxParticles || 2800;

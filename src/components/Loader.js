@@ -102,7 +102,7 @@ export function initLoader() {
 
 .call(() => {
 
-  particleText.scatter(30);
+  particleText.stop();
 
 })
 
@@ -113,19 +113,15 @@ export function initLoader() {
 
   duration:1,
 
-  delay:0.5,
-
   ease:"power3.inOut",
 
   onComplete(){
 
-    particleText.stop();
-
-    loader.style.display = "none";
-
-    document.body.classList.add(
-      "loaded"
+    loader.classList.add(
+      "is-hidden"
     );
+
+    loader.remove();
 
   }
 
