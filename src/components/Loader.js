@@ -100,32 +100,35 @@ export function initLoader() {
     Exit
   */
 
-  .call(() => {
+.call(() => {
 
-    particleText.scatter(22);
+  particleText.scatter(30);
 
-  })
+})
 
 
-  .to(loader, {
+.to(loader, {
 
-    opacity:0,
+  opacity:0,
 
-    duration:1.2,
+  duration:1,
 
-    ease:"power3.inOut",
+  delay:0.5,
 
-    onComplete(){
+  ease:"power3.inOut",
 
-      particleText.stop();
+  onComplete(){
 
-      loader.classList.add(
-        "is-hidden"
-      );
+    particleText.stop();
 
-    }
+    loader.style.display = "none";
 
-  });
+    document.body.classList.add(
+      "loaded"
+    );
 
+  }
+
+});
 
 }

@@ -18,12 +18,13 @@ import { SoulParticles } from "./components/SoulParticles.js";
 import { ParticleText } from "./components/ParticleText.js";
 import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
-import { initLoader } from "./components/Loader.js";
-import { initWork } from "./components/Work.js"; 
-import { initLanguage } from "./components/Language.js";
 import { initTheme } from "./components/Theme.js";
+import { initLanguage } from "./components/Language.js";
+import { initWork } from "./components/Work.js"; 
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
+
+import { initLoader } from "./components/Loader.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
