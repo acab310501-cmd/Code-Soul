@@ -4,7 +4,6 @@
 
 export class SoulParticles {
   constructor(options = {}) {
-    // Поддержка передаваемого элемента или селектора
     this.canvas = typeof options.canvas === 'string' 
       ? document.querySelector(options.canvas) 
       : options.canvas;
@@ -16,14 +15,28 @@ export class SoulParticles {
 
     this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
 
+    // ---- ИСПРАВЛЕНИЕ: динамический base URL ----
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    const getAssetPath = (path) => {
+      if (path.startsWith('http') || path.startsWith('//')) return path;
+      // Если путь начинается с '/', убираем его, чтобы не было двойного слеша
+      const cleanPath = path.replace(/^\/+/, '');
+      return `${baseUrl}${cleanPath}`;
+    };
+
     // Список всех 5 фаз (HUMAN -> CODE -> VISION -> SOUL -> DIGITAL WORLD)
     this.imageSources = options.images || [
-      '/halftone/01-hand.webp',
-      '/halftone/02-code.webp',
-      '/halftone/03-eye.webp',
-      '/halftone/04-heart.webp',
-      '/halftone/05-digital-world.webp'
+      getAssetPath('images/halftone/01-hand.webp'),
+      getAssetPath('images/halftone/02-code.webp'),
+      getAssetPath('images/halftone/03-eye.webp'),
+      getAssetPath('images/halftone/04-heart.webp'),
+      getAssetPath('images/halftone/05-digital-world.webp')
     ];
+
+    // Если передан одиночный image (для секции SOUL), используем его как первый элемент
+    if (options.image) {
+      this.imageSources = [getAssetPath(options.image), ...this.imageSources.slice(1)];
+    }
 
     this.maxParticles = options.maxParticles || 2800;
     this.mouseRadius = options.mouseRadius || 100;
@@ -32,7 +45,7 @@ export class SoulParticles {
 
     this.currentIndex = 0;
     this.targetIndex = 0;
-    this.cachedTargets = []; // Кэшированные координаты пикселей
+    this.cachedTargets = [];
     this.particles = [];
     
     this.mouse = {
@@ -52,7 +65,6 @@ export class SoulParticles {
     this.resize();
     this.bindEvents();
 
-    // Загрузка и анализ всех изображений при старте
     await this.preloadAndSampleImages();
     this.initParticlePool();
     
@@ -60,9 +72,6 @@ export class SoulParticles {
     this.animate();
   }
 
-  /* ========================================
-     RESIZE & ADAPTIVE DENSITY
-  ======================================== */
   resize() {
     if (!this.canvas.parentElement) return;
 
@@ -77,7 +86,6 @@ export class SoulParticles {
 
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    // Адаптивная плотность точек под мобильные и десктоп
     if (this.width < 480) {
       this.sampleStep = 7;
       this.maxParticles = 1200;
@@ -96,9 +104,6 @@ export class SoulParticles {
     }
   }
 
-  /* ========================================
-     PRELOAD & SAMPLING (PERFORMANCE OPTIMIZED)
-  ======================================== */
   async preloadAndSampleImages() {
     const offscreen = document.createElement("canvas");
     const offCtx = offscreen.getContext("2d", { willReadFrequently: true });
@@ -111,7 +116,20 @@ export class SoulParticles {
         this.cachedTargets.push(targets);
       } catch (err) {
         console.warn(err);
-        this.cachedTargets.push([]);
+        // Fallback: создаём сетку точек, чтобы не было пустого экрана
+        const fallbackTargets = [];
+        const step = 10;
+        for (let y = 0; y < this.height; y += step) {
+          for (let x = 0; x < this.width; x += step) {
+            fallbackTargets.push({
+              x: x,
+              y: y,
+              size: 1.2,
+              alpha: 0.5
+            });
+          }
+        }
+        this.cachedTargets.push(fallbackTargets.slice(0, this.maxParticles));
       }
     }
   }
@@ -153,7 +171,6 @@ export class SoulParticles {
 
         if (a < 40) continue;
 
-        // Яркость / Яркостная характеристика
         const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
 
         targets.push({
@@ -199,9 +216,6 @@ export class SoulParticles {
     }
   }
 
-  /* ========================================
-     STAGE SWITCHING (MORPHING CONTROLLER)
-  ======================================== */
   setStage(index, immediate = false) {
     if (index < 0 || index >= this.imageSources.length) return;
 
@@ -235,9 +249,6 @@ export class SoulParticles {
     this.theme = themeName;
   }
 
-  /* ========================================
-     EVENTS
-  ======================================== */
   bindEvents() {
     this.onMouseMove = (e) => {
       const rect = this.canvas.getBoundingClientRect();
@@ -259,26 +270,20 @@ export class SoulParticles {
     window.addEventListener("resize", this.onResize);
   }
 
-  /* ========================================
-     UPDATE & DRAW LOOP
-  ======================================== */
   update() {
     this.time += 0.016;
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
 
-      // 1. Morphing LERP (Интерполяция перемещения)
       p.originX += (p.targetX - p.originX) * 0.06;
       p.originY += (p.targetY - p.originY) * 0.06;
       p.size += (p.targetSize - p.size) * 0.06;
       p.alpha += (p.targetAlpha - p.alpha) * 0.06;
 
-      // 2. Органический микро-дрифт
       const driftX = Math.sin(this.time * p.drift + p.phase) * 0.15;
       const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.15;
 
-      // 3. Интерактивное отталкивание курсором
       if (this.mouse.active) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
@@ -291,7 +296,6 @@ export class SoulParticles {
         }
       }
 
-      // Возврат к целевым координатам
       p.vx *= 0.82;
       p.vy *= 0.82;
 
@@ -304,7 +308,6 @@ export class SoulParticles {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     const isPaper = this.theme === 'paper' || this.theme === 'light';
-    // Тёмно-угольный цвет точек для темы Paper, светлый цвет — для Dark mode
     const rgb = isPaper ? [18, 19, 22] : [240, 242, 255];
 
     for (let i = 0; i < this.particles.length; i++) {

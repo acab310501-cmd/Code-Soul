@@ -28,11 +28,13 @@ import { initLoader } from "./components/Loader.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+    // 1. Запускаем лоадер
+    initLoader();
 
+    // 2. Остальные компоненты
     initSmoothScroll();
     initCursor();
     initLanguage();
@@ -49,9 +51,9 @@ document.addEventListener(
 
     initHeader();
     initHeroAnimation();
-
   }
 );
+
 /* ========================================
    HEADER
 ======================================== */
@@ -64,14 +66,12 @@ function initHeader() {
 
   if (!header) return;
 
-
   function update() {
     header.classList.toggle(
       "is-scrolled",
       window.scrollY > 50
     );
   }
-
 
   window.addEventListener(
     "scroll",
@@ -82,21 +82,14 @@ function initHeader() {
   update();
 }
 
-
 /* ========================================
-   HERO INTRO
+   HERO INTRO (исправлено)
 ======================================== */
 
 function initHeroAnimation() {
-
   const pretitle =
     document.querySelector(
       ".hero__pretitle"
-    );
-
-  const lines =
-    document.querySelectorAll(
-      ".hero__line"
     );
 
   const meta =
@@ -119,7 +112,6 @@ function initHeroAnimation() {
       ".hero__side-word"
     );
 
-
   gsap.set(
     [
       pretitle,
@@ -133,14 +125,6 @@ function initHeroAnimation() {
     }
   );
 
-
-  gsap.set(lines, {
-    opacity: 0,
-    yPercent: 115,
-    filter: "blur(10px)",
-  });
-
-
   const tl =
     gsap.timeline({
       defaults: {
@@ -148,60 +132,38 @@ function initHeroAnimation() {
       },
     });
 
-
   tl.to(
     pretitle,
     {
       opacity: 1,
       duration: 0.8,
     }
-  );
-
-
-  tl.to(
-    lines,
-    {
-      opacity: 1,
-      yPercent: 0,
-      filter: "blur(0px)",
-      duration: 1.35,
-      stagger: 0.12,
-    },
-    "-=0.3"
-  );
-
-
-  tl.to(
+  )
+  .to(
     meta,
     {
       opacity: 1,
       duration: 0.8,
     },
-    "-=0.8"
-  );
-
-
-  tl.to(
+    "-=0.3"
+  )
+  .to(
     manifesto,
     {
       opacity: 1,
       duration: 0.8,
     },
-    "-=0.65"
-  );
-
-
-  tl.to(
+    "-=0.5"
+  )
+  .to(
     scroll,
     {
       opacity: 1,
       duration: 0.8,
     },
     "-=0.5"
-  );
-
-
-  tl.to(
+  )
+  .to(
     sideWord,
     {
       opacity: 0.5,
@@ -210,21 +172,7 @@ function initHeroAnimation() {
     "-=0.7"
   );
 
-
-  /* subtle breathing */
-
-  gsap.to(
-    ".hero__line--accent",
-    {
-      x: 7,
-      duration: 4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    }
-  );
-
-
+  // subtle breathing
   gsap.to(
     ".hero__glow",
     {
@@ -237,7 +185,6 @@ function initHeroAnimation() {
     }
   );
 }
-
 
 /* ========================================
    DEV
@@ -258,32 +205,25 @@ console.log(
 ======================================== */
 
 function initParticleText() {
-
   const canvases =
     document.querySelectorAll(
       "[data-particle-text]"
     );
 
-
   const systems = [];
 
-
   canvases.forEach((canvas) => {
-
     const text =
       canvas.dataset.particleText;
-
 
     const system =
       new ParticleText({
         canvas,
         text,
-
         fontSize:
           window.innerWidth < 700
             ? 70
             : 150,
-
         color:
           canvas.classList.contains(
             "particle-title__canvas--accent"
@@ -292,10 +232,8 @@ function initParticleText() {
             : "#f1f0eb",
       });
 
-
     systems.push(system);
   });
-
 
   window.__codeSoulParticles =
     systems;
@@ -306,62 +244,44 @@ function initParticleText() {
 ======================================== */
 
 function initSoulParticles() {
-
   const canvases =
     document.querySelectorAll(
       "[data-soul-particles]"
     );
 
-
   if (!canvases.length) return;
 
-
   canvases.forEach((canvas) => {
-
     const image =
       canvas.dataset.soulImage;
 
-
     if (!image) return;
-
 
     const system =
       new SoulParticles({
         canvas,
         image,
-
-        /*
-          Lower = more particles
-          Higher = fewer particles
-        */
-
         density:
           window.innerWidth < 700
             ? 6
             : 5,
-
         maxParticles:
           window.innerWidth < 700
             ? 7000
             : 16000,
-
         mouseRadius:
           window.innerWidth < 700
             ? 100
             : 150,
-
         mouseForce:
           window.innerWidth < 700
             ? 4
             : 7,
       });
 
-
     canvas.__soulParticles =
       system;
-
   });
-
 }
 
 /* ========================================
@@ -369,7 +289,6 @@ function initSoulParticles() {
 ======================================== */
 
 function initAboutAnimation() {
-
   const section =
     document.querySelector(
       ".about-section"
@@ -377,118 +296,79 @@ function initAboutAnimation() {
 
   if (!section) return;
 
-
   const lines =
     section.querySelectorAll(
       "[data-about-reveal]"
     );
-
 
   gsap.set(lines, {
     opacity: 0,
     yPercent: 100,
   });
 
-
   const values =
     section.querySelectorAll(
       ".about-value"
     );
-
 
   gsap.set(values, {
     opacity: 0,
     y: 40,
   });
 
-
   const statement =
     section.querySelector(
       ".about__statement"
     );
-
 
   gsap.set(statement, {
     opacity: 0,
     y: 50,
   });
 
-
   const observer =
     new IntersectionObserver(
       (entries) => {
-
         entries.forEach((entry) => {
-
           if (!entry.isIntersecting)
             return;
 
-
           gsap.to(lines, {
-
             opacity: 1,
-
             yPercent: 0,
-
             duration: 1.15,
-
             stagger: .12,
-
-            ease:
-              "power4.out",
-
+            ease: "power4.out",
           });
-
 
           gsap.to(values, {
-
             opacity: 1,
-
             y: 0,
-
             duration: .9,
-
             stagger: .1,
-
             delay: .3,
-
-            ease:
-              "power3.out",
-
+            ease: "power3.out",
           });
-
 
           gsap.to(statement, {
-
             opacity: 1,
-
             y: 0,
-
             duration: 1,
-
             delay: .55,
-
-            ease:
-              "power3.out",
-
+            ease: "power3.out",
           });
-
 
           observer.unobserve(
             section
           );
-
         });
-
       },
       {
         threshold: .15,
       }
     );
 
-
   observer.observe(section);
-
 }
 
 /* ========================================
@@ -496,7 +376,6 @@ function initAboutAnimation() {
 ======================================== */
 
 function initJournalAnimation() {
-
   const section =
     document.querySelector(
       ".journal-section"
@@ -504,28 +383,20 @@ function initJournalAnimation() {
 
   if (!section) return;
 
-
   const revealElements =
     section.querySelectorAll(
       "[data-journal-reveal]"
     );
-
 
   const cards =
     section.querySelectorAll(
       "[data-journal-card]"
     );
 
-
   const footer =
     section.querySelector(
       ".journal__footer"
     );
-
-
-  /* ----------------------------------------
-     INITIAL STATE
-  ---------------------------------------- */
 
   gsap.set(
     revealElements,
@@ -535,7 +406,6 @@ function initJournalAnimation() {
     }
   );
 
-
   gsap.set(
     cards,
     {
@@ -543,7 +413,6 @@ function initJournalAnimation() {
       y: 60,
     }
   );
-
 
   gsap.set(
     footer,
@@ -553,224 +422,155 @@ function initJournalAnimation() {
     }
   );
 
-
-  /* ----------------------------------------
-     SCROLL REVEAL
-  ---------------------------------------- */
-
   const observer =
     new IntersectionObserver(
       (entries) => {
-
         entries.forEach(
           (entry) => {
-
             if (!entry.isIntersecting)
               return;
 
-
             const timeline =
               gsap.timeline();
-
 
             timeline.to(
               revealElements,
               {
                 opacity: 1,
-
                 y: 0,
-
                 duration: 1.1,
-
                 stagger: .12,
-
-                ease:
-                  "power4.out",
+                ease: "power4.out",
               }
             );
-
 
             timeline.to(
               cards,
               {
                 opacity: 1,
-
                 y: 0,
-
                 duration: .9,
-
                 stagger: .12,
-
-                ease:
-                  "power3.out",
+                ease: "power3.out",
               },
               "-=.55"
             );
-
 
             timeline.to(
               footer,
               {
                 opacity: 1,
-
                 y: 0,
-
                 duration: .8,
-
-                ease:
-                  "power3.out",
+                ease: "power3.out",
               },
               "-=.45"
             );
 
-
             observer.unobserve(
               section
             );
-
           }
         );
-
       },
       {
         threshold: .12,
       }
     );
 
-
   observer.observe(section);
 
-
-  /* ----------------------------------------
-     CARD MOUSE PARALLAX
-  ---------------------------------------- */
-
+  // Card mouse parallax
   cards.forEach(
     (card) => {
-
       const visual =
         card.querySelector(
           ".journal-card__visual"
         );
-
 
       const symbol =
         card.querySelector(
           ".journal-card__visual-code, .journal-card__visual-symbol"
         );
 
-
       if (!visual) return;
-
 
       card.addEventListener(
         "mousemove",
         (event) => {
-
           const rect =
             card.getBoundingClientRect();
-
 
           const x =
             event.clientX -
             rect.left;
 
-
           const y =
             event.clientY -
             rect.top;
 
-
           const rotateX =
             ((y / rect.height) - .5) * -5;
 
-
           const rotateY =
             ((x / rect.width) - .5) * 5;
-
 
           gsap.to(
             visual,
             {
               rotateX,
               rotateY,
-
               duration: .5,
-
-              ease:
-                "power2.out",
-
+              ease: "power2.out",
               transformPerspective:
                 900,
             }
           );
 
-
           if (symbol) {
-
             gsap.to(
               symbol,
               {
                 x:
                   ((x / rect.width) - .5) * 12,
-
                 y:
                   ((y / rect.height) - .5) * 12,
-
                 duration: .5,
-
-                ease:
-                  "power2.out",
+                ease: "power2.out",
               }
             );
-
           }
-
         }
       );
-
 
       card.addEventListener(
         "mouseleave",
         () => {
-
           gsap.to(
             visual,
             {
               rotateX: 0,
               rotateY: 0,
-
               duration: .8,
-
-              ease:
-                "power3.out",
+              ease: "power3.out",
             }
           );
 
-
           if (symbol) {
-
             gsap.to(
               symbol,
               {
                 x: 0,
                 y: 0,
-
                 duration: .8,
-
-                ease:
-                  "power3.out",
+                ease: "power3.out",
               }
             );
-
           }
-
         }
       );
-
     }
   );
-
 }
 
 function initContactAnimation() {

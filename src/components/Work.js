@@ -8,6 +8,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function initWork() {
 
+  const baseUrl = import.meta.env.BASE_URL || '/';
+const getAssetPath = (path) => {
+  if (path.startsWith('http')) return path;
+  const clean = path.replace(/^\/+/, '');
+  return `${baseUrl}${clean}`;
+};
+
   const container =
     document.querySelector("[data-projects]");
 
@@ -89,7 +96,7 @@ function renderProjects(
                   <div class="work-project__image-wrap">
 
                     <img
-                      src="${project.image}"
+                      src="${getAssetPath(project.image)}"
                       alt="${project.title}"
                       class="work-project__image"
                       loading="${index === 0 ? "eager" : "lazy"}"
