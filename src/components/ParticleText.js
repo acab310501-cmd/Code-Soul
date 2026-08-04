@@ -87,10 +87,23 @@ export class ParticleText {
     const ctx =
       offscreen.getContext("2d");
 
+    /*
+      ИСПРАВЛЕНО (мобильная нечитабельность заголовка Hero):
+      fontSize раньше ограничивался только шириной канваса
+      (this.width * 0.85). На мобильных высота каждой строки
+      заголовка — это clamp(...)/15vw из hero.css, и она может
+      быть заметно меньше, чем фиксированный fontSize (70px),
+      который main.js передаёт для window.innerWidth < 700.
+      Буквы обрезались сверху/снизу и соседние строки визуально
+      сливались в нечитаемое пятно точек. Теперь размер шрифта
+      дополнительно ограничен высотой самого канваса — на любом
+      экране текст гарантированно помещается в свою строку.
+    */
     const size =
       Math.min(
         this.fontSize,
-        this.width * 0.85
+        this.width * 0.85,
+        this.height * 0.78
       );
 
     offscreen.width =
@@ -240,6 +253,18 @@ const step =
     }
   }
 
+
+  /*
+    Все три canvas'а заголовка Hero создаются с acidGradient:true,
+    из-за чего почти все частицы красятся через кэшированный
+    this._baseRgb, а не через живое чтение this.color при отрисовке.
+    При смене темы (VOID/PAPER) нужно обновить и то, и другое,
+    иначе текст останется светлым и станет невидимым на светлом фоне.
+  */
+  setColor(hex) {
+    this.color = hex;
+    this._baseRgb = this.hexToRgb(hex);
+  }
 
   hexToRgb(hex) {
     const clean = hex.replace("#", "");

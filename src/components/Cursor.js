@@ -13,6 +13,11 @@ export function initCursor() {
   let mouseY = innerHeight / 2;
   let currentX = mouseX;
   let currentY = mouseY;
+  // Позиция самой точки (dot) — следует почти мгновенно, без
+  // задержки; лерпится только внешнее кольцо (ring), чтобы
+  // сохранить мягкость, но убрать ощущение "курсор не успевает".
+  let dotX = mouseX;
+  let dotY = mouseY;
 
   // Логика "Затухание при выходе за пределы окна"
   document.addEventListener("mouseleave", () => {
@@ -27,11 +32,28 @@ export function initCursor() {
     mouseY = event.clientY;
   });
 
+  const dot = cursor.querySelector(".cursor__dot");
+
   function render() {
     if (!document.hidden) {
-      currentX += (mouseX - currentX) * 0.12;
-      currentY += (mouseY - currentY) * 0.12;
+      // ИСПРАВЛЕНО: 0.12 давало заметный лаг — курсор "не успевал"
+      // за настоящей мышью на быстрых движениях. Внешнее кольцо
+      // (ring) теперь лерпится быстрее (0.32), а маленькая точка
+      // (dot) следует за реальной позицией мыши практически без
+      // задержки — так пропадает ощущение отставания, но
+      // сохраняется мягкое, "живое" движение кольца.
+      currentX += (mouseX - currentX) * 0.32;
+      currentY += (mouseY - currentY) * 0.32;
       gsap.set(cursor, { x: currentX, y: currentY });
+
+      if (dot) {
+        gsap.set(dot, {
+          xPercent: -50,
+          yPercent: -50,
+          x: mouseX - currentX,
+          y: mouseY - currentY,
+        });
+      }
     }
     requestAnimationFrame(render);
   }

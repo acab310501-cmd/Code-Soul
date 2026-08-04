@@ -486,6 +486,28 @@
   text-transform: uppercase;
 
   color: var(--color-muted);
+
+  flex-wrap: wrap;
+}
+
+.site-footer__telegram {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-footer__telegram a {
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.3s var(--ease-out);
+}
+
+.site-footer__telegram a:hover {
+  color: var(--color-acid);
+}
+
+.site-footer__dot {
+  opacity: 0.5;
 }
 
 
@@ -636,8 +658,19 @@
 
 @media (max-width: 600px) {
 
+  /*
+    ИСПРАВЛЕНО: строки заголовка раньше стояли впритык (без
+    отступа), из-за чего при малейшей неточности в высоте канваса
+    соседние строки визуально склеивались в одно пятно точек.
+    Небольшой gap + чуть большая высота дают каждой строке
+    собственное "дыхание" и делают текст читаемым.
+  */
+  .particle-title {
+    gap: 4px;
+  }
+
   .particle-title__canvas {
-    height: 15vw;
+    height: 19vw;
   }
 
   .particle-title__canvas:nth-child(2) {
@@ -645,6 +678,6 @@
   }
 
   .particle-title__canvas--accent {
-    margin-left: 8%;
+    margin-left: 4%;
   }
 }

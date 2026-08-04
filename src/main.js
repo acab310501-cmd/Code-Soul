@@ -172,12 +172,25 @@ function initParticleText() {
   const canvases = document.querySelectorAll("[data-particle-text]");
   const systems = [];
 
+  const lightTextColor = "#121316";
+  const darkTextColor = "#f1f0eb";
+  const isLightTheme = () =>
+    document.documentElement.dataset.theme === "light" ||
+    document.documentElement.dataset.theme === "paper";
+
   canvases.forEach((canvas) => {
     const text = canvas.dataset.particleText;
     const system = new ParticleText({
       canvas, text,
-      fontSize: window.innerWidth < 700 ? 70 : 150,
-      color: canvas.classList.contains("particle-title__canvas--accent") ? "#d7ff3f" : "#f1f0eb",
+      // ИСПРАВЛЕНО: на мобильных строка заголовка теперь выше
+      // (19vw вместо 15vw, см. hero.css), поэтому базовый
+      // fontSize можно вернуть к более крупному — итоговый
+      // размер всё равно safety-капается высотой канваса внутри
+      // ParticleText, так что переполнения не будет.
+      fontSize: window.innerWidth < 700 ? 92 : 150,
+      color: canvas.classList.contains("particle-title__canvas--accent")
+        ? "#d7ff3f"
+        : (isLightTheme() ? lightTextColor : darkTextColor),
       // Кислотный градиент + свечение снизу — только для
       // заголовка Hero, не для лоадера (у него свой инстанс).
       acidGradient: true,
@@ -186,6 +199,16 @@ function initParticleText() {
   });
 
   window.__codeSoulParticles = systems;
+
+  // Перекрашиваем частицы заголовка при переключении VOID/PAPER —
+  // иначе текст остаётся светлым и становится невидимым на светлом фоне.
+  window.addEventListener("code-soul:theme", (event) => {
+    const nextColor = event.detail.theme === "light" ? lightTextColor : darkTextColor;
+    systems.forEach((system) => {
+      if (system.canvas.classList.contains("particle-title__canvas--accent")) return;
+      system.setColor(nextColor);
+    });
+  });
 }
 
 /* ========================================
@@ -251,6 +274,18 @@ function initSoulParticles() {
     });
 
     canvas.__soulParticles = system;
+
+    // Частицы halftone тоже не читают CSS-переменные темы —
+    // перекрашиваем их явно при переключении VOID/PAPER.
+    system.setTheme(
+      document.documentElement.dataset.theme === "light" ||
+      document.documentElement.dataset.theme === "paper"
+        ? "paper" : "dark"
+    );
+    window.addEventListener("code-soul:theme", (event) => {
+      system.setTheme(event.detail.theme);
+    });
+
     const section = canvas.closest('.soul-section');
     if (!section) return;
 

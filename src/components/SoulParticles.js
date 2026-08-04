@@ -116,16 +116,88 @@ export class SoulParticles {
     });
   }
 
+  /*
+    Source images (e.g. 01-hand.webp) often carry a lot of dead
+    black canvas around the actual subject — a tall portrait with
+    the hands sitting in a thin band in the middle, for instance.
+    Sampling the full frame at a uniform scale squeezes the real
+    subject into a small, sparse cluster that reads as noise, not
+    as a hand. So before sampling we find the subject's own
+    bounding box (anything meaningfully brighter than the black
+    background) and sample *that* crop, scaled to fill the target
+    area consistently for every image regardless of how much
+    padding the source file happens to have.
+  */
+  findContentBounds(imgData, w, h) {
+    const threshold = 14; // luminance below this counts as "background"
+    let minX = w, minY = h, maxX = 0, maxY = 0;
+    let found = false;
+
+    // Scan on a coarse grid for speed — this only runs once per
+    // image load, not per frame, so it doesn't need to be exact.
+    const scanStep = Math.max(1, Math.floor(Math.min(w, h) / 200));
+
+    for (let y = 0; y < h; y += scanStep) {
+      for (let x = 0; x < w; x += scanStep) {
+        const index = (y * w + x) * 4;
+        const r = imgData[index];
+        const g = imgData[index + 1];
+        const b = imgData[index + 2];
+        const a = imgData[index + 3];
+        if (a < 40) continue;
+
+        const luminance = r * 0.299 + g * 0.587 + b * 0.114;
+        if (luminance > threshold) {
+          found = true;
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+
+    if (!found) return { x: 0, y: 0, w, h };
+
+    // Small breathing-room padding around the detected subject.
+    const padX = (maxX - minX) * 0.06;
+    const padY = (maxY - minY) * 0.06;
+    minX = Math.max(0, minX - padX);
+    minY = Math.max(0, minY - padY);
+    maxX = Math.min(w, maxX + padX);
+    maxY = Math.min(h, maxY + padY);
+
+    return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+  }
+
   extractTargetsFromImage(img, offCanvas, offCtx) {
-    const scale = Math.min((this.width * 0.6) / img.naturalWidth, (this.height * 0.6) / img.naturalHeight);
-    const w = Math.floor(img.naturalWidth * scale);
-    const h = Math.floor(img.naturalHeight * scale);
-    if (w <= 0 || h <= 0) return [];
+    // Step 1 — draw the full image once at native resolution so we
+    // can measure exactly where the real subject sits.
+    offCanvas.width = img.naturalWidth;
+    offCanvas.height = img.naturalHeight;
+    offCtx.clearRect(0, 0, img.naturalWidth, img.naturalHeight);
+    offCtx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+
+    const fullData = offCtx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data;
+    const bounds = this.findContentBounds(fullData, img.naturalWidth, img.naturalHeight);
+    if (bounds.w <= 0 || bounds.h <= 0) return [];
+
+    // Step 2 — scale the CROPPED subject (not the padded original
+    // frame) to fill the same target area for every image, so a
+    // tall image with lots of margin and a square image both end
+    // up equally dense and equally recognisable.
+    const scale = Math.min((this.width * 0.62) / bounds.w, (this.height * 0.62) / bounds.h);
+    const w = Math.max(1, Math.floor(bounds.w * scale));
+    const h = Math.max(1, Math.floor(bounds.h * scale));
 
     offCanvas.width = w;
     offCanvas.height = h;
     offCtx.clearRect(0, 0, w, h);
-    offCtx.drawImage(img, 0, 0, w, h);
+    offCtx.drawImage(
+      img,
+      bounds.x, bounds.y, bounds.w, bounds.h, // source crop
+      0, 0, w, h                               // destination (cropped, scaled)
+    );
 
     const imgData = offCtx.getImageData(0, 0, w, h).data;
     const targets = [];
@@ -142,6 +214,7 @@ export class SoulParticles {
 
         if (a < 40) continue;
         const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+        if (luminance < 0.05) continue; // skip near-black background pixels
 
         targets.push({
           x: offsetX + x,

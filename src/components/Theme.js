@@ -33,6 +33,15 @@ export function initTheme() {
       "code-soul-theme",
       value
     );
+
+    // Уведомляем canvas-based эффекты (SoulParticles, ParticleText),
+    // у которых цвет частиц не читается из CSS-переменных — их
+    // нужно перекрасить явно при смене темы.
+    window.dispatchEvent(
+      new CustomEvent("code-soul:theme", {
+        detail: { theme: isLight ? "light" : "dark" },
+      })
+    );
   }
 
 

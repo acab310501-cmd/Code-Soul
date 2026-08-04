@@ -67,6 +67,28 @@
 /* LIGHT THEME */
 [data-theme="paper"],
 [data-theme="light"] {
+  /*
+    ИСПРАВЛЕНО: этот блок объявлял --bg-primary/--text-primary и
+    т.д., но ни один файл в src/styles/ эти переменные не читает —
+    везде используется --color-void/--color-paper/--color-ink/
+    --color-muted/--border-subtle/--border-medium. Из-за этого
+    переключатель темы менял data-theme и текст кнопки (VOID →
+    PAPER), но ни один реальный цвет на странице не менялся.
+    Теперь переопределяем именно те переменные, которые реально
+    используются во всех .css файлах.
+  */
+  --color-void: #F5F3EE;
+  --color-ink: #EBE8E0;
+
+  --color-paper: #121316;
+  --color-white: #121316;
+
+  --color-muted: #6C727E;
+  --color-muted-dark: #93989F;
+
+  --border-subtle: rgba(18, 19, 22, 0.08);
+  --border-medium: rgba(18, 19, 22, 0.18);
+
   /* Тёплый премиальный цвет слоновой кости вместо белого #FFFFFF */
   --bg-primary: #F5F3EE;
   --bg-secondary: #EBE8E0;
@@ -78,7 +100,6 @@
   --text-muted: #6C727E;
 
   /* Границы элементов */
-  --border-subtle: rgba(18, 19, 22, 0.08);
   --border-strong: rgba(18, 19, 22, 0.18);
 
   --accent-glow: rgba(18, 19, 22, 0.05);
