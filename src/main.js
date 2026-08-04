@@ -29,22 +29,10 @@ import { initLoader } from "./components/Loader.js";
 gsap.registerPlugin(ScrollTrigger);
 
 // =============================================
-//  Performance optimisation (ИСПРАВЛЕНО):
-//  Убрана фатальная ошибка с ParticleSystem.prototype,
-//  так как ParticleSystem — это функция, а не класс.
+//  Performance optimisation (БЕЗОПАСНО):
+//  Все проверки document.hidden теперь
+//  находятся внутри самих классов компонентов.
 // =============================================
-
-// 1. Patch SoulParticles.animate()
-const origSoulParticlesAnimate = SoulParticles.prototype.animate;
-SoulParticles.prototype.animate = function() {
-  if (!document.hidden && this.isLoaded) {
-    this.update();
-    this.draw();
-  }
-  this.animationFrame = requestAnimationFrame(() => this.animate());
-};
-
-// 2. Patch ParticleText.animate() – per instance patch is done inside initParticleText()
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -63,8 +51,8 @@ document.addEventListener(
     initContactAnimation();
     initContactMagic();
 
-    initWork();
-    initSoulParticles();
+    initWork(); // Запускает секцию проектов
+    initSoulParticles(); // Запускает анимацию SOUL
     initAboutAnimation();
     initAboutDepth();         
     initAboutMagneticDots();
@@ -72,7 +60,7 @@ document.addEventListener(
     initJournalAnimation();
     initJournalCinematicFocus();
 
-    // 3. Header и Hero (исправлено: убраны дублирующиеся вызовы)
+    // 3. Header и Hero
     initHeader();
     initHeroAnimation();
     initHeroGridKinetics(); 
@@ -84,26 +72,14 @@ document.addEventListener(
 ======================================== */
 
 function initHeader() {
-  const header =
-    document.querySelector(
-      "[data-header]"
-    );
-
+  const header = document.querySelector("[data-header]");
   if (!header) return;
 
   function update() {
-    header.classList.toggle(
-      "is-scrolled",
-      window.scrollY > 50
-    );
+    header.classList.toggle("is-scrolled", window.scrollY > 50);
   }
 
-  window.addEventListener(
-    "scroll",
-    update,
-    { passive: true }
-  );
-
+  window.addEventListener("scroll", update, { passive: true });
   update();
 }
 
@@ -114,21 +90,15 @@ function initHeader() {
 function initHeroGridKinetics() {
   const grid = document.querySelector('.hero__grid');
   const particleCanvas = document.querySelector('#particleCanvas');
-  
   if (!grid && !particleCanvas) return;
 
-  let mouseX = 0;
-  let mouseY = 0;
-  let targetX = 0;
-  let targetY = 0;
+  let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
 
-  // Следим за движением мыши
   window.addEventListener('mousemove', (e) => {
     targetX = (e.clientX / window.innerWidth - 0.5) * 2;
     targetY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  // Плавное обновление через GSAP ticker
   gsap.ticker.add(() => {
     mouseX += (targetX - mouseX) * 0.08;
     mouseY += (targetY - mouseY) * 0.08;
@@ -154,14 +124,9 @@ function initHeroAnimation() {
   const scroll = document.querySelector(".hero__scroll");
   const sideWord = document.querySelector(".hero__side-word");
 
-  gsap.set(
-    [ pretitle, meta, manifesto, scroll, sideWord ],
-    { opacity: 0 }
-  );
+  gsap.set([ pretitle, meta, manifesto, scroll, sideWord ], { opacity: 0 });
 
-  const tl = gsap.timeline({
-    defaults: { ease: "power4.out" },
-  });
+  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
   tl.to(pretitle, { opacity: 1, duration: 0.8 })
     .to(meta, { opacity: 1, duration: 0.8 }, "-=0.3")
@@ -169,32 +134,13 @@ function initHeroAnimation() {
     .to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5")
     .to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
 
-  gsap.to(
-    ".hero__glow",
-    {
-      scale: 1.12,
-      opacity: 0.7,
-      duration: 5,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    }
-  );
+  gsap.to(".hero__glow", {
+    scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut"
+  });
 }
 
-/* ========================================
-   DEV
-======================================== */
-
-console.log(
-  "%cCODE & SOUL",
-  "font-size: 24px; font-weight: 700;"
-);
-
-console.log(
-  "%cTechnology with a soul.",
-  "font-size: 12px;"
-);
+console.log("%cCODE & SOUL", "font-size: 24px; font-weight: 700;");
+console.log("%cTechnology with a soul.", "font-size: 12px;");
 
 /* ========================================
    PARTICLE TEXT
@@ -207,8 +153,7 @@ function initParticleText() {
   canvases.forEach((canvas) => {
     const text = canvas.dataset.particleText;
     const system = new ParticleText({
-      canvas,
-      text,
+      canvas, text,
       fontSize: window.innerWidth < 700 ? 70 : 150,
       color: canvas.classList.contains("particle-title__canvas--accent") ? "#d7ff3f" : "#f1f0eb",
     });
@@ -216,22 +161,6 @@ function initParticleText() {
   });
 
   window.__codeSoulParticles = systems;
-
-  systems.forEach((system) => {
-    const origAnimate = system.animate;
-    system.animate = function() {
-      if (!document.hidden && this.running) {
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        this.ctx.globalAlpha = 1;
-        this.particles.forEach((p) => {
-          this.updateParticle(p);
-          this.drawParticle(p);
-        });
-        this.ctx.globalAlpha = 1;
-      }
-      requestAnimationFrame(this.animate);
-    };
-  });
 }
 
 /* ========================================
@@ -258,8 +187,7 @@ function initSoulParticles() {
 
   canvases.forEach((canvas) => {
     const system = new SoulParticles({
-      canvas,
-      images: images,
+      canvas, images: images,
       density: window.innerWidth < 700 ? 6 : 5,
       maxParticles: window.innerWidth < 700 ? 7000 : 16000,
       mouseRadius: window.innerWidth < 700 ? 100 : 150,
@@ -273,16 +201,11 @@ function initSoulParticles() {
 
     ScrollTrigger.create({
       trigger: section,
-      start: "top center",
-      end: "bottom top",
-      scrub: 0.5,
+      start: "top center", end: "bottom top", scrub: 0.5,
       onUpdate: (self) => {
         const progress = self.progress;
         const totalStages = images.length;
-        const targetIndex = Math.min(
-          Math.floor(progress * totalStages),
-          totalStages - 1
-        );
+        const targetIndex = Math.min(Math.floor(progress * totalStages), totalStages - 1);
         if (system.currentIndex !== targetIndex) {
           system.transitionTo(targetIndex);
         }
@@ -312,38 +235,13 @@ function initAboutAnimation() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-
-        gsap.to(lines, {
-          opacity: 1,
-          yPercent: 0,
-          duration: 1.15,
-          stagger: .12,
-          ease: "power4.out",
-        });
-
-        gsap.to(values, {
-          opacity: 1,
-          y: 0,
-          duration: .9,
-          stagger: .1,
-          delay: .3,
-          ease: "power3.out",
-        });
-
-        gsap.to(statement, {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          delay: .55,
-          ease: "power3.out",
-        });
-
+        gsap.to(lines, { opacity: 1, yPercent: 0, duration: 1.15, stagger: .12, ease: "power4.out" });
+        gsap.to(values, { opacity: 1, y: 0, duration: .9, stagger: .1, delay: .3, ease: "power3.out" });
+        gsap.to(statement, { opacity: 1, y: 0, duration: 1, delay: .55, ease: "power3.out" });
         observer.unobserve(section);
       });
-    },
-    { threshold: .15 }
+    }, { threshold: .15 }
   );
-
   observer.observe(section);
 }
 
@@ -361,13 +259,8 @@ function initJournalCinematicFocus() {
 
     card.addEventListener("mouseenter", () => {
       gsap.to(card, { scale: 1.02, y: -12, zIndex: 10, duration: 0.5, ease: "power3.out" });
-
-      if (content) {
-        gsap.to(content, { x: 6, color: "#d7ff3f", duration: 0.4, ease: "power2.out" });
-      }
-      if (visual) {
-        gsap.to(visual, { scale: 1.05, boxShadow: "0 20px 60px rgba(215, 255, 63, 0.15)", duration: 0.6, ease: "power3.out" });
-      }
+      if (content) gsap.to(content, { x: 6, color: "#d7ff3f", duration: 0.4, ease: "power2.out" });
+      if (visual) gsap.to(visual, { scale: 1.05, boxShadow: "0 20px 60px rgba(215, 255, 63, 0.15)", duration: 0.6, ease: "power3.out" });
 
       articles.forEach((other) => {
         if (other !== card) {
@@ -378,13 +271,8 @@ function initJournalCinematicFocus() {
 
     card.addEventListener("mouseleave", () => {
       gsap.to(card, { scale: 1, y: 0, zIndex: 1, duration: 0.5, ease: "power3.out" });
-
-      if (content) {
-        gsap.to(content, { x: 0, color: "", duration: 0.4, ease: "power2.out" });
-      }
-      if (visual) {
-        gsap.to(visual, { scale: 1, boxShadow: "none", duration: 0.6, ease: "power3.out" });
-      }
+      if (content) gsap.to(content, { x: 0, color: "", duration: 0.4, ease: "power2.out" });
+      if (visual) gsap.to(visual, { scale: 1, boxShadow: "none", duration: 0.6, ease: "power3.out" });
 
       articles.forEach((other) => {
         if (other !== card) {
@@ -413,7 +301,6 @@ function initServicesBlob() {
       const rect = card.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
-
       card.style.setProperty('--blob-x', `${x}%`);
       card.style.setProperty('--blob-y', `${y}%`);
     });
@@ -428,27 +315,16 @@ function initAboutDepth() {
   const section = document.querySelector(".about-section");
   if (!section) return;
 
-  const targets = section.querySelectorAll(
-    ".about__title-line, .about__manifesto p, .about__lead"
-  );
-
+  const targets = section.querySelectorAll(".about__title-line, .about__manifesto p, .about__lead");
   gsap.set(targets, { opacity: 0, y: 80, filter: "blur(12px)" });
 
   ScrollTrigger.create({
-    trigger: section,
-    start: "top 80%",
-    once: true,
+    trigger: section, start: "top 80%", once: true,
     onEnter: () => {
       gsap.to(targets, {
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1.4,
-        stagger: 0.12,
-        ease: "power4.out",
-        overwrite: "auto",
+        opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
       });
-    },
+    }
   });
 }
 
@@ -459,13 +335,9 @@ function initAboutMagneticDots() {
   const dot1 = container.querySelector(".about__dot:first-child");
   const dot2 = container.querySelector(".about__dot:last-child");
   const amp = container.querySelector(".about__ampersand");
-  
   if (!dot1 || !dot2) return;
 
-  let mouseX = 0;
-  let mouseY = 0;
-  let targetX = 0;
-  let targetY = 0;
+  let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
 
   container.addEventListener("mousemove", (e) => {
     const rect = container.getBoundingClientRect();
@@ -476,13 +348,11 @@ function initAboutMagneticDots() {
   gsap.ticker.add(() => {
     mouseX += (targetX - mouseX) * 0.12;
     mouseY += (targetY - mouseY) * 0.12;
-
     const dist = Math.min(1, Math.abs(mouseX) + Math.abs(mouseY));
     const force = dist * 30; 
 
     gsap.set(dot1, { x: mouseX * -force, y: mouseY * -force });
     gsap.set(dot2, { x: mouseX * -force, y: mouseY * -force });
-
     if (amp) {
        gsap.set(amp, { x: mouseX * 10, y: mouseY * 5, rotate: mouseX * 5 });
     }
@@ -505,125 +375,69 @@ function initJournalAnimation() {
   gsap.set(cards, { opacity: 0, y: 60 });
   gsap.set(footer, { opacity: 0, y: 30 });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-
-        const timeline = gsap.timeline();
-
-        timeline.to(revealElements, {
-          opacity: 1,
-          y: 0,
-          duration: 1.1,
-          stagger: .12,
-          ease: "power4.out",
-        });
-
-        timeline.to(cards, {
-          opacity: 1,
-          y: 0,
-          duration: .9,
-          stagger: .12,
-          ease: "power3.out",
-        }, "-=.55");
-
-        timeline.to(footer, {
-          opacity: 1,
-          y: 0,
-          duration: .8,
-          ease: "power3.out",
-        }, "-=.45");
-
-        observer.unobserve(section);
-      });
-    },
-    { threshold: .12 }
-  );
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const timeline = gsap.timeline();
+      timeline.to(revealElements, { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: "power4.out" })
+        .to(cards, { opacity: 1, y: 0, duration: .9, stagger: .12, ease: "power3.out" }, "-=.55")
+        .to(footer, { opacity: 1, y: 0, duration: .8, ease: "power3.out" }, "-=.45");
+      observer.unobserve(section);
+    });
+  }, { threshold: .12 });
 
   observer.observe(section);
 
   cards.forEach((card) => {
     const visual = card.querySelector(".journal-card__visual");
     const symbol = card.querySelector(".journal-card__visual-code, .journal-card__visual-symbol");
-
     if (!visual) return;
 
     card.addEventListener("mousemove", (event) => {
       const rect = card.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const rotateX = ((y / rect.height) - .5) * -5;
-      const rotateY = ((x / rect.width) - .5) * 5;
-
-      gsap.to(visual, {
-        rotateX, rotateY,
-        duration: .5,
-        ease: "power2.out",
-        transformPerspective: 900,
-      });
-
+      gsap.to(visual, { rotateX: ((y / rect.height) - .5) * -5, rotateY: ((x / rect.width) - .5) * 5, duration: .5, ease: "power2.out", transformPerspective: 900 });
       if (symbol) {
-        gsap.to(symbol, {
-          x: ((x / rect.width) - .5) * 12,
-          y: ((y / rect.height) - .5) * 12,
-          duration: .5,
-          ease: "power2.out",
-        });
+        gsap.to(symbol, { x: ((x / rect.width) - .5) * 12, y: ((y / rect.height) - .5) * 12, duration: .5, ease: "power2.out" });
       }
     });
 
     card.addEventListener("mouseleave", () => {
       gsap.to(visual, { rotateX: 0, rotateY: 0, duration: .8, ease: "power3.out" });
-      if (symbol) {
-        gsap.to(symbol, { x: 0, y: 0, duration: .8, ease: "power3.out" });
-      }
+      if (symbol) gsap.to(symbol, { x: 0, y: 0, duration: .8, ease: "power3.out" });
     });
   });
 }
+
+/* ========================================
+   CONTACT ANIMATION
+======================================== */
 
 function initContactAnimation() {
   const section = document.querySelector('#contact');
   if (!section) return;
 
   const elements = section.querySelectorAll('.reveal-contact');
-
   gsap.set(elements, { opacity: 0, y: 35 });
 
   ScrollTrigger.create({
-    trigger: section,
-    start: 'top 75%',
-    once: true,
+    trigger: section, start: 'top 75%', once: true,
     onEnter: () => {
-      gsap.to(elements, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        stagger: 0.08,
-        ease: 'power3.out'
-      });
+      gsap.to(elements, { opacity: 1, y: 0, duration: 1, stagger: 0.08, ease: 'power3.out' });
     }
   });
 
   const orbOne = section.querySelector('.contact__orb--one');
   const orbTwo = section.querySelector('.contact__orb--two');
 
-  if (orbOne) {
-    gsap.to(orbOne, { y: -80, x: -30, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-  }
-  if (orbTwo) {
-    gsap.to(orbTwo, { y: 70, x: 35, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-  }
+  if (orbOne) gsap.to(orbOne, { y: -80, x: -30, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+  if (orbTwo) gsap.to(orbTwo, { y: 70, x: 35, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
   const options = section.querySelectorAll('.contact__option');
-
   options.forEach((option) => {
-    option.addEventListener('mouseenter', () => {
-      gsap.to(option, { y: -2, duration: 0.25, ease: 'power2.out' });
-    });
-    option.addEventListener('mouseleave', () => {
-      gsap.to(option, { y: 0, duration: 0.25, ease: 'power2.out' });
-    });
+    option.addEventListener('mouseenter', () => gsap.to(option, { y: -2, duration: 0.25, ease: 'power2.out' }));
+    option.addEventListener('mouseleave', () => gsap.to(option, { y: 0, duration: 0.25, ease: 'power2.out' }));
   });
 
   const form = section.querySelector('#contactForm');
@@ -632,31 +446,16 @@ function initContactAnimation() {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const button = form.querySelector('.contact__button');
     if (!button) return;
 
     gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
-      opacity: 0,
-      y: -20,
-      duration: 0.45,
-      stagger: 0.05,
-      ease: 'power2.in',
+      opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
       onComplete: () => {
-        form.querySelectorAll('.contact__step, .contact__submit')
-          .forEach((element) => {
-            element.style.display = 'none';
-          });
-
+        form.querySelectorAll('.contact__step, .contact__submit').forEach(el => el.style.display = 'none');
         success.classList.add('is-visible');
         success.setAttribute('aria-hidden', 'false');
-
-        gsap.to(success, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out'
-        });
+        gsap.to(success, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
       }
     });
   });
@@ -680,11 +479,9 @@ function initContactMagic() {
 
     const startTypewriter = () => {
       if (typewriterInterval) return;
-      
       if (textarea.value === "") {
         currentText = "";
         textarea.setAttribute("placeholder", "");
-        
         let charIndex = 0;
         typewriterInterval = setInterval(() => {
           if (charIndex < placeholderText.length) {
@@ -705,7 +502,6 @@ function initContactMagic() {
     };
 
     textarea.addEventListener("focus", startTypewriter);
-
     textarea.addEventListener("input", () => {
       if (typewriterInterval) {
         clearInterval(typewriterInterval);
@@ -713,7 +509,6 @@ function initContactMagic() {
         textarea.setAttribute("placeholder", placeholderText);
       }
     });
-
     textarea.addEventListener("blur", () => {
       if (typewriterInterval) {
         clearInterval(typewriterInterval);
@@ -726,20 +521,15 @@ function initContactMagic() {
   }
 
   const allInputs = form.querySelectorAll("input, textarea");
-  
   allInputs.forEach((input) => {
     gsap.set(input, { borderBottomColor: "rgba(255, 255, 255, 0.2)" });
-
     input.addEventListener("focus", () => {
       if (input.classList.contains("contact__option") || input.classList.contains("contact__budget-option")) return;
-      
       gsap.to(input, { borderBottomColor: "#d7ff3f", duration: 0.6, ease: "power3.out" });
       gsap.to(input, { boxShadow: "0 4px 20px rgba(215, 255, 63, 0.1)", duration: 0.4 });
     });
-
     input.addEventListener("blur", () => {
       if (input.classList.contains("contact__option") || input.classList.contains("contact__budget-option")) return;
-      
       gsap.to(input, { borderBottomColor: "rgba(255, 255, 255, 0.2)", duration: 0.6, ease: "power3.out" });
       gsap.to(input, { boxShadow: "none", duration: 0.4 });
     });

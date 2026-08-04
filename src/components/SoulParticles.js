@@ -291,13 +291,12 @@ export class SoulParticles {
   }
 
   animate() {
-    if (this.isLoaded) {
+    if (!document.hidden && this.isLoaded) {
       this.update();
       this.draw();
     }
     this.animationFrame = requestAnimationFrame(() => this.animate());
   }
-
   destroy() {
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
     this.canvas.removeEventListener("mousemove", this.onMouseMove);

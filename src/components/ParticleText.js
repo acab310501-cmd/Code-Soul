@@ -333,40 +333,21 @@ const step =
   }
 
 
-animate = () => {
+  animate = () => {
+    // Добавлена проверка document.hidden для экономии ресурсов
+    if (!document.hidden && this.running) {
+      this.ctx.clearRect(0,0, this.width, this.height);
+      this.ctx.globalAlpha = 1;
 
-    if (!this.running) return;
+      this.particles.forEach((particle) => {
+        this.updateParticle(particle);
+        this.drawParticle(particle);
+      });
 
-    this.ctx.clearRect(0,0,
-      this.width,
-      this.height
-    );
-
-
-    this.ctx.globalAlpha = 1;
-
-
-    this.particles.forEach(
-      (particle) => {
-
-        this.updateParticle(
-          particle
-        );
-
-        this.drawParticle(
-          particle
-        );
-      }
-    );
-
-
-    this.ctx.globalAlpha = 1;
-
-    requestAnimationFrame(
-      this.animate
-    );
+      this.ctx.globalAlpha = 1;
+    }
+    requestAnimationFrame(this.animate);
   };
-
 
   scatter(power = 15) {
 

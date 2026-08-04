@@ -121,7 +121,6 @@ function initProjectHover() {
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-      // Эффект 3D наклона
       gsap.to(project, {
         rotateX: -y * 8,
         rotateY: x * 8,
@@ -130,7 +129,6 @@ function initProjectHover() {
         transformPerspective: 1000,
       });
 
-      // Параллакс картинки внутри (противоположное движение)
       gsap.to(image, {
         x: x * 20,
         y: y * 15,
@@ -146,7 +144,6 @@ function initProjectHover() {
     });
 
     project.addEventListener("mouseleave", () => {
-      // Возврат в исходное положение
       gsap.to(project, {
         rotateX: 0,
         rotateY: 0,
