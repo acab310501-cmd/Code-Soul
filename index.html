@@ -99,7 +99,7 @@
 
         <a
           class="logo"
-          href="#top"
+          href="#/"
           aria-label="Code & Soul"
         >
           <span class="logo__name">
@@ -116,28 +116,28 @@
         >
 
           <a
-            href="#work"
+            href="#/work"
             data-i18n="nav.work"
           >
             Проекты
           </a>
 
           <a
-            href="#services"
+            href="#/services"
             data-i18n="nav.services"
           >
             Услуги
           </a>
 
           <a
-            href="#about"
+            href="#/about"
             data-i18n="nav.about"
           >
             О нас
           </a>
 
           <a
-            href="#journal"
+            href="#/journal"
             data-i18n="nav.journal"
           >
             Журнал
@@ -149,7 +149,7 @@
         <div class="header__actions">
 
           <a
-            href="#contact"
+            href="#/contact"
             class="header-project-link"
             data-cursor="START"
           >
@@ -222,6 +222,7 @@
         <section
           class="hero"
           id="hero"
+          data-page="home"
         >
 
           <div
@@ -328,7 +329,7 @@
 
 
           <a
-            href="#work"
+            href="#soul"
             class="hero__scroll"
             data-cursor="EXPLORE"
           >
@@ -369,6 +370,7 @@
         <section
           class="work-section"
           id="work"
+          data-page="work"
         >
 
           <div class="work__header">
@@ -453,6 +455,7 @@
         <section
           class="services-section"
           id="services"
+          data-page="services"
         >
 
           <div class="services__header">
@@ -804,6 +807,7 @@
         <section
           class="soul-section"
           id="soul"
+          data-page="home"
         >
 
           <div
@@ -919,6 +923,46 @@
         </section>
 
 
+        <!-- ========================================
+             HOME — О НАС / ТЕХНОЛОГИИ (первая страница)
+        ======================================== -->
+
+        <section class="home-teaser" data-page="home">
+
+          <div class="home-teaser__intro">
+            <span class="home-teaser__eyebrow" data-i18n="home.eyebrow">02 / О НАС</span>
+
+            <h2 class="home-teaser__title">
+              <span data-i18n="home.title1">ЛЮДИ,</span>
+              <span data-i18n="home.title2">КОТОРЫМ</span>
+              <span class="home-teaser__accent" data-i18n="home.title3">НЕ ВСЁ РАВНО.</span>
+            </h2>
+
+            <p class="home-teaser__text" data-i18n="home.text">
+              Мы небольшая команда, которая берёт на себя весь путь цифрового продукта — от идеи и интерфейса до анимации и запуска. Никаких конвейеров и шаблонов: каждый проект собирается вручную, под конкретную задачу.
+            </p>
+
+            <a href="#/work" class="home-teaser__cta" data-cursor="OPEN">
+              <span data-i18n="home.cta">Смотреть проекты</span>
+              <span>↗</span>
+            </a>
+          </div>
+
+          <div class="home-teaser__stack">
+            <span class="home-teaser__stack-label" data-i18n="home.stackLabel">НА ЧЁМ МЫ РАБОТАЕМ</span>
+
+            <ul class="home-teaser__stack-list">
+              <li>JavaScript / TypeScript</li>
+              <li>GSAP &amp; ScrollTrigger</li>
+              <li>Canvas / WebGL</li>
+              <li>Vite</li>
+              <li>Figma</li>
+              <li>AI-tooling</li>
+            </ul>
+          </div>
+
+        </section>
+
 
         <!-- ========================================
              05 / ABOUT
@@ -927,6 +971,7 @@
         <section
           class="about-section"
           id="about"
+          data-page="about"
         >
 
 
@@ -1216,7 +1261,7 @@
      JOURNAL
 ======================================== -->
 
-<section class="journal-section" id="journal">
+<section class="journal-section" id="journal" data-page="journal">
 
   <div class="journal__header">
 
@@ -1646,7 +1691,7 @@
 <!-- ========================================
      CONTACT
 ======================================== -->
-<section class="contact" id="contact">
+<section class="contact" id="contact" data-page="contact">
   <div class="contact__noise" aria-hidden="true"></div>
 
   <div class="contact__container">

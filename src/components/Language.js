@@ -8,6 +8,17 @@ const translations = {
       start: "Начать проект",
     },
 
+    home: {
+      eyebrow: "02 / О НАС",
+      title1: "ЛЮДИ,",
+      title2: "КОТОРЫМ",
+      title3: "НЕ ВСЁ РАВНО.",
+      text:
+        "Мы небольшая команда, которая берёт на себя весь путь цифрового продукта — от идеи и интерфейса до анимации и запуска. Никаких конвейеров и шаблонов: каждый проект собирается вручную, под конкретную задачу.",
+      stackLabel: "НА ЧЁМ МЫ РАБОТАЕМ",
+      cta: "Смотреть проекты",
+    },
+
     work: {
       selected: "ВЫБРАННЫЕ ПРОЕКТЫ",
 
@@ -278,6 +289,17 @@ journal: {
       about: "About",
       journal: "Journal",
       start: "Start a project",
+    },
+
+    home: {
+      eyebrow: "02 / ABOUT US",
+      title1: "PEOPLE WHO",
+      title2: "ACTUALLY",
+      title3: "CARE.",
+      text:
+        "We're a small studio that owns the whole path of a digital product — from idea and interface to motion and launch. No pipelines, no templates: every project is built by hand, for the task it actually has.",
+      stackLabel: "WHAT WE BUILD WITH",
+      cta: "See the work",
     },
 
     work: {

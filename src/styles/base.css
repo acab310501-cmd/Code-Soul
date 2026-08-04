@@ -31,6 +31,24 @@ body {
 }
 
 
+/* ROUTER — многостраничный режим: показываем только секции
+   активной "страницы" (см. src/components/Router.js) */
+
+/*
+  Важно: не задаём здесь display для активной страницы — у
+  .hero, .work-section и т.д. уже есть собственный display
+  (flex/grid/block) в своих файлах. Мы только прячем то, что
+  НЕ активно, а не переопределяем то, что активно.
+*/
+[data-page]:not(.is-active-page) {
+  display: none !important;
+}
+
+.navigation a.is-current {
+  color: var(--color-acid);
+}
+
+
 /* GRAIN */
 
 .grain {

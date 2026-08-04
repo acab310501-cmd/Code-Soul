@@ -1,0 +1,156 @@
+/* ========================================
+   HOME TEASER (О НАС / ТЕХНОЛОГИИ на первой странице)
+======================================== */
+
+.home-teaser {
+  position: relative;
+
+  max-width: var(--container-width);
+  margin: 0 auto;
+
+  padding: clamp(90px, 12vw, 160px) var(--page-padding) clamp(110px, 14vw, 200px);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 80px;
+
+  border-top: 1px solid var(--border-subtle);
+}
+
+.home-teaser__eyebrow {
+  display: block;
+  margin-bottom: 28px;
+
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.home-teaser__title {
+  margin: 0 0 32px;
+
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.6vw, 68px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.home-teaser__accent {
+  color: var(--color-acid);
+}
+
+.home-teaser__text {
+  max-width: 46ch;
+
+  margin: 0 0 36px;
+
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+.home-teaser__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: var(--color-paper);
+  text-decoration: none;
+
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-medium);
+
+  transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+}
+
+.home-teaser__cta:hover {
+  color: var(--color-acid);
+  border-color: var(--color-acid);
+}
+
+.home-teaser__stack {
+  padding-left: 40px;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.home-teaser__stack-label {
+  display: block;
+  margin-bottom: 22px;
+
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.home-teaser__stack-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--color-paper);
+}
+
+.home-teaser__stack-list li {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.home-teaser__stack-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .home-teaser {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .home-teaser__stack {
+    padding-left: 0;
+    border-left: none;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-subtle);
+  }
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .home-teaser {
+    padding: 70px var(--page-padding) 90px;
+  }
+
+  .home-teaser__title {
+    font-size: clamp(30px, 9vw, 44px);
+  }
+
+  .home-teaser__text {
+    font-size: 14px;
+  }
+}

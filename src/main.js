@@ -1,4 +1,5 @@
 import "./styles/loader.css";
+import "./styles/home-teaser.css";
 import "./styles/services.css";
 import "./styles/soul.css";
 import "./styles/about.css";
@@ -21,6 +22,7 @@ import { initCursor } from "./components/Cursor.js";
 import { initTheme } from "./components/Theme.js";
 import { initLanguage } from "./components/Language.js";
 import { initWork } from "./components/Work.js"; 
+import { initRouter } from "./components/Router.js";
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
 
@@ -58,6 +60,11 @@ function safeInit(name, fn) {
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+    // 0. Роутер — ДО всего остального, чтобы неактивные
+    // "страницы" уже были скрыты к моменту, когда другие модули
+    // начнут измерять layout (ScrollTrigger, IntersectionObserver).
+    safeInit("router", initRouter);
+
     // 1. Запускаем лоадер
     safeInit("loader", initLoader);
 
@@ -289,18 +296,49 @@ function initSoulParticles() {
     const section = canvas.closest('.soul-section');
     if (!section) return;
 
-    ScrollTrigger.create({
-      trigger: section,
-      start: "top center", end: "bottom top", scrub: 0.5,
-      onUpdate: (self) => {
-        const progress = self.progress;
-        const totalStages = images.length;
-        const targetIndex = Math.min(Math.floor(progress * totalStages), totalStages - 1);
-        if (system.currentIndex !== targetIndex) {
-          system.transitionTo(targetIndex);
-        }
+    /*
+      ИСПРАВЛЕНО: раньше картинка была жёстко привязана к позиции
+      скролла (progress → targetIndex) — если пользователь
+      останавливался, форма замирала и не превращалась дальше.
+      По ТЗ это должен быть бесконечный автоцикл HAND → CODE →
+      EYE → HEART → DIGITAL WORLD → HAND → ..., который идёт сам
+      по себе, пока секция видна. Скролл больше не обязателен —
+      он не мешает (частицы всё ещё мягко реагируют на курсор),
+      но и не требуется, чтобы увидеть весь цикл.
+    */
+    const stageDuration = 4200; // ms на каждую "устоявшуюся" форму
+    let cycleTimer = null;
+
+    const startCycle = () => {
+      if (cycleTimer) return;
+      cycleTimer = setInterval(() => {
+        const next = (system.currentIndex + 1) % images.length;
+        system.transitionTo(next);
+      }, stageDuration);
+    };
+
+    const stopCycle = () => {
+      if (cycleTimer) {
+        clearInterval(cycleTimer);
+        cycleTimer = null;
       }
-    });
+    };
+
+    // Цикл идёт только пока секция реально на экране — экономия
+    // производительности, когда SOUL далеко за пределами вьюпорта.
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startCycle();
+          } else {
+            stopCycle();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    visibilityObserver.observe(section);
   });
 }
 
