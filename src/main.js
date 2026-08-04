@@ -34,36 +34,57 @@ gsap.registerPlugin(ScrollTrigger);
 //  находятся внутри самих классов компонентов.
 // =============================================
 
+/*
+  ВАЖНО: раньше все init*-функции вызывались подряд одним
+  блоком. Если хотя бы одна из них бросала исключение
+  (например, из-за отсутствующего DOM-узла на конкретной
+  странице/вьюпорте), выполнение обработчика обрывалось и
+  все инициализации ПОСЛЕ неё — включая Work и Soul —
+  просто не запускались, без единой ошибки в консоли,
+  которую было бы легко связать с причиной. Оборачиваем
+  каждый вызов отдельно, чтобы сбой одного модуля никогда
+  не "гасил" остальные, и чтобы ошибка была явно видна
+  в консоли с указанием, какой именно модуль упал.
+*/
+
+function safeInit(name, fn) {
+  try {
+    fn();
+  } catch (error) {
+    console.error(`[Code & Soul] Ошибка инициализации "${name}":`, error);
+  }
+}
+
 document.addEventListener(
   "DOMContentLoaded",
   () => {
     // 1. Запускаем лоадер
-    initLoader();
+    safeInit("loader", initLoader);
 
     // 2. Остальные компоненты
-    initSmoothScroll();
-    initCursor();
-    initLanguage();
-    initTheme();
-    initPixelText();
-    initParticleSystem();
-    initParticleText();
-    initContactAnimation();
-    initContactMagic();
+    safeInit("smoothScroll", initSmoothScroll);
+    safeInit("cursor", initCursor);
+    safeInit("language", initLanguage);
+    safeInit("theme", initTheme);
+    safeInit("pixelText", initPixelText);
+    safeInit("particleSystem", initParticleSystem);
+    safeInit("particleText", initParticleText);
+    safeInit("contactAnimation", initContactAnimation);
+    safeInit("contactMagic", initContactMagic);
 
-    initWork(); // Запускает секцию проектов
-    initSoulParticles(); // Запускает анимацию SOUL
-    initAboutAnimation();
-    initAboutDepth();         
-    initAboutMagneticDots();
-    initServicesBlob(); 
-    initJournalAnimation();
-    initJournalCinematicFocus();
+    safeInit("work", initWork); // Запускает секцию проектов
+    safeInit("soulParticles", initSoulParticles); // Запускает анимацию SOUL
+    safeInit("aboutAnimation", initAboutAnimation);
+    safeInit("aboutDepth", initAboutDepth);
+    safeInit("aboutMagneticDots", initAboutMagneticDots);
+    safeInit("servicesBlob", initServicesBlob);
+    safeInit("journalAnimation", initJournalAnimation);
+    safeInit("journalCinematicFocus", initJournalCinematicFocus);
 
     // 3. Header и Hero
-    initHeader();
-    initHeroAnimation();
-    initHeroGridKinetics(); 
+    safeInit("header", initHeader);
+    safeInit("heroAnimation", initHeroAnimation);
+    safeInit("heroGridKinetics", initHeroGridKinetics);
   }
 );
 

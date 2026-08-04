@@ -94,6 +94,13 @@ export function initParticleSystem() {
 
 
   function render(time) {
+    // Пауза при скрытой вкладке — экономим CPU/GPU,
+    // как и в остальных canvas-движках проекта.
+    if (document.hidden) {
+      requestAnimationFrame(render);
+      return;
+    }
+
     ctx.clearRect(
       0,
       0,

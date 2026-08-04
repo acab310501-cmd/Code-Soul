@@ -28,9 +28,11 @@ export function initCursor() {
   });
 
   function render() {
-    currentX += (mouseX - currentX) * 0.12;
-    currentY += (mouseY - currentY) * 0.12;
-    gsap.set(cursor, { x: currentX, y: currentY });
+    if (!document.hidden) {
+      currentX += (mouseX - currentX) * 0.12;
+      currentY += (mouseY - currentY) * 0.12;
+      gsap.set(cursor, { x: currentX, y: currentY });
+    }
     requestAnimationFrame(render);
   }
   render();

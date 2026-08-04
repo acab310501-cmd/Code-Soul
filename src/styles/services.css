@@ -173,6 +173,49 @@
   justify-content: center;
 }
 
+/* ========================================
+   IDLE LIFE — субтильное "дыхание" иконок,
+   чтобы они не выглядели статичными до наведения.
+   Анимация висит на обёртке (__visual), а не на
+   самой иконке, поэтому не конфликтует с
+   transform-переходами при :hover.
+======================================== */
+
+.service-card__visual > * {
+  animation: serviceIdleFloat 6.5s ease-in-out infinite;
+}
+
+.service-card:nth-child(2) .service-card__visual > * {
+  animation-delay: -1.6s;
+}
+
+.service-card:nth-child(3) .service-card__visual > * {
+  animation-delay: -3.2s;
+}
+
+.service-card:nth-child(4) .service-card__visual > * {
+  animation-delay: -4.8s;
+}
+
+.service-card:hover .service-card__visual > * {
+  animation-play-state: paused;
+}
+
+@keyframes serviceIdleFloat {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card__visual > * {
+    animation: none;
+  }
+}
+
 
 /* DIGITAL ORBIT */
 
