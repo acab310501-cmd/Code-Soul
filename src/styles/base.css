@@ -49,6 +49,18 @@ body {
   background-image:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
 
+  /*
+    На Retina/HiDPI-экранах комбинация дробных transform-
+    сдвигов и перерисовки фона на каждом шаге steps()
+    иногда даёт заметное мерцание (браузер округляет
+    субпиксельные позиции по-разному между кадрами).
+    Явно переносим слой на GPU и фиксируем 3D-контекст —
+    это устраняет дрожание без изменения самого эффекта.
+  */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+
   animation:
     grainShift 0.25s steps(2) infinite;
 }

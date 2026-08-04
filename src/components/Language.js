@@ -151,46 +151,46 @@ journal: {
     "THE ART OF VIBE CODING",
 
   article1Text:
-    "Как создавать цифровые продукты вместе с AI и не превращать разработку в бездушную генерацию.",
+    "Как создавать цифровые продукты вместе с AI и не превращать разработку в бездушную генерацию. Промпт — это не техническое задание, а разговор о вкусе.",
 
   article1Meta:
     "AI / CODE / PROCESS",
 
 
   article2Category:
-    "PHILOSOPHY",
+    "AI PHILOSOPHY",
 
   article2Title:
-    "WHY WE STILL LOVE CODE",
+    "AI HAS NO TASTE",
 
   article2Text:
-    "О технологиях, дизайне и человеческом факторе, который делает цифровой продукт живым.",
+    "Нейросеть сгенерирует сто вариантов макета за секунды. Но решение, какой из них оставить, — то самое чувство меры, которое нельзя делегировать алгоритму. Мы используем AI как ускоритель черновика, а не как автора идеи.",
 
   article2Meta:
-    "DESIGN / HUMAN / SOUL",
+    "AI / DESIGN / JUDGMENT",
 
 
   article3Category:
-    "CODE & SOUL",
+    "DESIGN TRENDS",
 
   article3Title:
-    "BUILDING CODE & SOUL",
+    "MAXIMUM MINIMALISM",
 
   article3Text:
-    "Как появилась студия, зачем мы её создаём и каким хотим видеть её будущее.",
+    "2026 год вернул моду на пустое пространство: крупную типографику, монохромные палитры и декор только там, где он несёт смысл. Разбираем, какие тренды действительно останутся, а какие уже устарели.",
 
   article3Meta:
-    "BRAND / CULTURE / FUTURE",
+    "DESIGN / TYPE / 2026",
 
 
   article4Category:
-    "EXPERIMENTS",
+    "MOTION UX",
 
   article4Title:
     "WHEN DESIGN BECOMES ALIVE",
 
   article4Text:
-    "Почему анимация, звук, движение и взаимодействие способны превратить интерфейс в настоящий опыт.",
+    "Почему анимация, звук, движение и взаимодействие способны превратить интерфейс в настоящий опыт — и где проходит грань между «живо» и «раздражает».",
 
   article4Meta:
     "MOTION / UI / EXPERIENCE",
@@ -249,6 +249,13 @@ journal: {
 
     budgetLabel: "Какой бюджет закладываем?",
     discuss: "Обсудим",
+
+    budgetOptions: {
+      opt1: "50 000 ₽ — 100 000 ₽",
+      opt2: "100 000 ₽ — 300 000 ₽",
+      opt3: "300 000 ₽ — 500 000 ₽",
+      opt4: "500 000 ₽+",
+    },
 
     submit: "Начать проект",
 
@@ -416,46 +423,46 @@ journal: {
     "THE ART OF VIBE CODING",
 
   article1Text:
-    "How to build digital products with AI without turning the creative process into soulless generation.",
+    "How to build digital products together with AI without turning the process into soulless generation. A prompt isn't a spec — it's a conversation about taste.",
 
   article1Meta:
     "AI / CODE / PROCESS",
 
 
   article2Category:
-    "PHILOSOPHY",
+    "AI PHILOSOPHY",
 
   article2Title:
-    "WHY WE STILL LOVE CODE",
+    "AI HAS NO TASTE",
 
   article2Text:
-    "About technology, design and the human factor that makes a digital product feel alive.",
+    "A model can generate a hundred layout variants in seconds. Deciding which one to keep is a judgment call no algorithm can make for you. We treat AI as a draft accelerator, not the author of the idea.",
 
   article2Meta:
-    "DESIGN / HUMAN / SOUL",
+    "AI / DESIGN / JUDGMENT",
 
 
   article3Category:
-    "CODE & SOUL",
+    "DESIGN TRENDS",
 
   article3Title:
-    "BUILDING CODE & SOUL",
+    "MAXIMUM MINIMALISM",
 
   article3Text:
-    "How the studio started, why we are building it and what we want its future to become.",
+    "2026 brought empty space back into fashion: oversized type, monochrome palettes, and decoration only where it carries meaning. Here's what's actually sticking around — and what's already dated.",
 
   article3Meta:
-    "BRAND / CULTURE / FUTURE",
+    "DESIGN / TYPE / 2026",
 
 
   article4Category:
-    "EXPERIMENTS",
+    "MOTION UX",
 
   article4Title:
     "WHEN DESIGN BECOMES ALIVE",
 
   article4Text:
-    "Why motion, sound and interaction can transform an interface into a real experience.",
+    "Why motion, sound and interaction can turn an interface into a real experience — and where the line sits between 'alive' and 'annoying'.",
 
   article4Meta:
     "MOTION / UI / EXPERIENCE",
@@ -514,6 +521,13 @@ journal: {
 
     budgetLabel: "What's the budget?",
     discuss: "Let's discuss",
+
+    budgetOptions: {
+      opt1: "€500 — €1K",
+      opt2: "€1K — €3K",
+      opt3: "€3K — €5K",
+      opt4: "€5K+",
+    },
 
     submit: "Start a project",
 

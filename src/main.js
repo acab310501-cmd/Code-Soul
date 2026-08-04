@@ -85,6 +85,7 @@ document.addEventListener(
     safeInit("header", initHeader);
     safeInit("heroAnimation", initHeroAnimation);
     safeInit("heroGridKinetics", initHeroGridKinetics);
+    safeInit("heroTitlePulse", initHeroTitlePulse);
   }
 );
 
@@ -177,11 +178,37 @@ function initParticleText() {
       canvas, text,
       fontSize: window.innerWidth < 700 ? 70 : 150,
       color: canvas.classList.contains("particle-title__canvas--accent") ? "#d7ff3f" : "#f1f0eb",
+      // Кислотный градиент + свечение снизу — только для
+      // заголовка Hero, не для лоадера (у него свой инстанс).
+      acidGradient: true,
     });
     systems.push(system);
   });
 
   window.__codeSoulParticles = systems;
+}
+
+/* ========================================
+   HERO — "ДЫХАНИЕ ВСЕЛЕННОЙ" (МЕДЛЕННЫЙ ПУЛЬС)
+   Едва заметный scale-пульс всего блока с заголовком:
+   1.0 → 1.01 → 1.0 каждые ~7с. Настолько тонкий, что
+   не читается как "анимация", но добавляет ощущение
+   живого, дышащего объекта, а не статичной картинки.
+======================================== */
+
+function initHeroTitlePulse() {
+  const title = document.querySelector(".particle-title");
+  if (!title) return;
+
+  gsap.set(title, { transformOrigin: "center center" });
+
+  gsap.to(title, {
+    scale: 1.01,
+    duration: 3.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
 }
 
 /* ========================================
@@ -213,7 +240,14 @@ function initSoulParticles() {
       maxParticles: window.innerWidth < 700 ? 7000 : 16000,
       mouseRadius: window.innerWidth < 700 ? 100 : 150,
       mouseForce: window.innerWidth < 700 ? 4 : 7,
-      transitionSpeed: 0.035
+      // Было 0.035. Увеличено по вашему запросу — частицы
+      // догоняют новую цель заметно быстрее при скролле.
+      // Технический нюанс: чем БОЛЬШЕ это число, тем БЫСТРЕЕ
+      // (не медленнее) частицы долетают до цели, т.к. это
+      // коэффициент lerp-сближения за кадр. Если на практике
+      // 0.05 покажется резче, а не "тягучей" — попробуйте
+      // 0.02–0.025, это даст более вязкое, медленное перетекание.
+      transitionSpeed: 0.05
     });
 
     canvas.__soulParticles = system;
@@ -256,9 +290,9 @@ function initAboutAnimation() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        gsap.to(lines, { opacity: 1, yPercent: 0, duration: 1.15, stagger: .12, ease: "power4.out" });
-        gsap.to(values, { opacity: 1, y: 0, duration: .9, stagger: .1, delay: .3, ease: "power3.out" });
-        gsap.to(statement, { opacity: 1, y: 0, duration: 1, delay: .55, ease: "power3.out" });
+        gsap.to(lines, { opacity: 1, yPercent: 0, duration: 1.15, stagger: .12, delay: .1, ease: "power4.out" });
+        gsap.to(values, { opacity: 1, y: 0, duration: .9, stagger: .1, delay: .45, ease: "power3.out" });
+        gsap.to(statement, { opacity: 1, y: 0, duration: 1, delay: .75, ease: "power3.out" });
         observer.unobserve(section);
       });
     }, { threshold: .15 }
@@ -399,10 +433,10 @@ function initJournalAnimation() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      const timeline = gsap.timeline();
+      const timeline = gsap.timeline({ delay: 0.15 });
       timeline.to(revealElements, { opacity: 1, y: 0, duration: 1.1, stagger: .12, ease: "power4.out" })
-        .to(cards, { opacity: 1, y: 0, duration: .9, stagger: .12, ease: "power3.out" }, "-=.55")
-        .to(footer, { opacity: 1, y: 0, duration: .8, ease: "power3.out" }, "-=.45");
+        .to(cards, { opacity: 1, y: 0, duration: .9, stagger: .12, ease: "power3.out" }, "-=.5")
+        .to(footer, { opacity: 1, y: 0, duration: .8, ease: "power3.out" }, "-=.4");
       observer.unobserve(section);
     });
   }, { threshold: .12 });

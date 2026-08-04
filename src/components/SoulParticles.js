@@ -246,9 +246,14 @@ export class SoulParticles {
       p.size += (p.targetSize - p.size) * this.transitionSpeed;
       p.alpha += (p.targetAlpha - p.alpha) * this.transitionSpeed;
 
-      // Микро-дрейф (живое дыхание)
-      const driftX = Math.sin(this.time * p.drift + p.phase) * 0.15;
-      const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.15;
+      // Микро-дрейф (живое дыхание). Амплитуда чуть увеличена
+      // по сравнению с прошлой версией — вместе с возросшим
+      // transitionSpeed (0.035 → 0.05, задаётся в main.js) это
+      // и даёт то самое ощущение "тягучей жидкости": частицы
+      // быстрее долетают до формы, но никогда не замирают
+      // абсолютно неподвижно внутри неё.
+      const driftX = Math.sin(this.time * p.drift + p.phase) * 0.22;
+      const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.22;
 
       // Отталкивание от курсора
       if (this.mouse.active) {

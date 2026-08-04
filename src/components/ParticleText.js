@@ -8,6 +8,13 @@ export class ParticleText {
 
     this.color = options.color || "#f1f0eb";
 
+    // "Кислотный градиент": нижняя часть текста плавно
+    // переходит в акцентный #d7ff3f со свечением, верх
+    // остаётся в базовом цвете. Управляется опцией, чтобы
+    // лоадер (где эффект не нужен) оставался нейтральным.
+    this.acidGradient = options.acidGradient || false;
+    this.acidColor = options.acidColor || "#d7ff3f";
+
     this.mouse = {
       x: -9999,
       y: -9999,
@@ -17,6 +24,7 @@ export class ParticleText {
     this.particles = [];
     this.targets = [];
     this.running = true;
+    this.time = 0;
 
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -162,6 +170,9 @@ const step =
     const count =
       this.targets.length;
 
+    const baseRgb = this.hexToRgb(this.color);
+    const acidRgb = this.hexToRgb(this.acidColor);
+
     this.particles =
       Array.from(
         { length: count },
@@ -169,6 +180,13 @@ const step =
 
           const target =
             this.targets[index];
+
+          // 0 у верхнего края текста, 1 у нижнего —
+          // используется для кислотного градиента.
+          const mix =
+            this.acidGradient && this.height > 0
+              ? Math.min(1, Math.max(0, target.y / this.height))
+              : 0;
 
           return {
             x:
@@ -197,9 +215,45 @@ const step =
 
             delay:
               Math.random() * 1.2,
+
+            // Микро-дрейф: у каждой частицы своя фаза и
+            // скорость, чтобы всё поле не "дышало" синхронно,
+            // как единый организм, а выглядело органично.
+            driftPhase:
+              Math.random() * Math.PI * 2,
+
+            driftSpeed:
+              0.15 + Math.random() * 0.25,
+
+            driftAmp:
+              0.6 + Math.random() * 0.9,
+
+            colorMix: mix,
+            rgb: baseRgb,
           };
         }
       );
+
+    if (this.acidGradient) {
+      this._baseRgb = baseRgb;
+      this._acidRgb = acidRgb;
+    }
+  }
+
+
+  hexToRgb(hex) {
+    const clean = hex.replace("#", "");
+    const bigint = parseInt(
+      clean.length === 3
+        ? clean.split("").map((c) => c + c).join("")
+        : clean,
+      16
+    );
+    return {
+      r: (bigint >> 16) & 255,
+      g: (bigint >> 8) & 255,
+      b: bigint & 255,
+    };
   }
 
 
@@ -308,34 +362,72 @@ const step =
 
     particle.y +=
       particle.vy;
+
+    // Микро-дрейф поверх пружинной физики: едва заметное
+    // "плавание" даже когда частица уже осела в точке —
+    // текст выглядит живым, а не замёрзшим кадром.
+    particle.driftX =
+      Math.sin(this.time * particle.driftSpeed + particle.driftPhase) *
+      particle.driftAmp;
+
+    particle.driftY =
+      Math.cos(this.time * particle.driftSpeed * 0.8 + particle.driftPhase) *
+      particle.driftAmp;
   }
 
 
   drawParticle(particle) {
 
+    const drawX = particle.x + (particle.driftX || 0);
+    const drawY = particle.y + (particle.driftY || 0);
+
     this.ctx.beginPath();
 
     this.ctx.arc(
-      particle.x,
-      particle.y,
+      drawX,
+      drawY,
       particle.size,
       0,
       Math.PI * 2
     );
 
-    this.ctx.fillStyle =
-      this.color;
+    if (this.acidGradient && particle.colorMix > 0) {
+      const t = particle.colorMix;
+      const r = Math.round(this._baseRgb.r + (this._acidRgb.r - this._baseRgb.r) * t);
+      const g = Math.round(this._baseRgb.g + (this._acidRgb.g - this._baseRgb.g) * t);
+      const b = Math.round(this._baseRgb.b + (this._acidRgb.b - this._baseRgb.b) * t);
+      this.ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+
+      // Свечение только для нижней, наиболее "кислотной"
+      // трети текста — дешевле по производительности, чем
+      // shadowBlur на каждой частице поля.
+      if (t > 0.6) {
+        this.ctx.shadowColor = this.acidColor;
+        this.ctx.shadowBlur = 6 * ((t - 0.6) / 0.4);
+      } else {
+        this.ctx.shadowBlur = 0;
+      }
+    } else {
+      this.ctx.fillStyle =
+        this.color;
+    }
 
     this.ctx.globalAlpha =
       particle.alpha;
 
     this.ctx.fill();
+
+    if (this.acidGradient) {
+      this.ctx.shadowBlur = 0;
+    }
   }
 
 
   animate = () => {
     // Добавлена проверка document.hidden для экономии ресурсов
     if (!document.hidden && this.running) {
+      this.time += 0.016;
+
       this.ctx.clearRect(0,0, this.width, this.height);
       this.ctx.globalAlpha = 1;
 
