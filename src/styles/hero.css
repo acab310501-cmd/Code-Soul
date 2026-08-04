@@ -611,6 +611,24 @@
 
 .particle-title__canvas--accent {
   margin-left: 22%;
+
+  animation: heroAccentDrift 9s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(215, 255, 63, 0.35))
+          drop-shadow(0 0 42px rgba(215, 255, 63, 0.18));
+}
+
+@keyframes heroAccentDrift {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(2px, -3px, 0); }
+  50%  { transform: translate3d(-1px, 2px, 0); }
+  75%  { transform: translate3d(-2px, -1px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-title__canvas--accent {
+    animation: none;
+  }
 }
 
 

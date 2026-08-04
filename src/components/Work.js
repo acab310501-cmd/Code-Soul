@@ -5,14 +5,14 @@ import { projects } from "../data/projects.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function initWork() {
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  const getAssetPath = (path) => {
-    if (path.startsWith('http')) return path;
-    const clean = path.replace(/^\/+/, '');
-    return `${baseUrl}${clean}`;
-  };
+const baseUrl = import.meta.env.BASE_URL || '/';
+const getAssetPath = (path) => {
+  if (path.startsWith('http')) return path;
+  const clean = path.replace(/^\/+/, '');
+  return `${baseUrl}${clean}`;
+};
 
+export function initWork() {
   const container = document.querySelector("[data-projects]");
   if (!container) return;
 
