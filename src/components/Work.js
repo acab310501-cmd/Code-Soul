@@ -1,20 +1,33 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import { projects } from "../data/projects.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// ========================================
+// ИСПРАВЛЕНИЕ: Выносим helper-функции в глобальную область модуля,
+// чтобы renderProjects имела к ним доступ
+// ========================================
+const baseUrl = import.meta.env.BASE_URL || '/';
+const getAssetPath = (path) => {
+  if (path.startsWith('http')) return path;
+  const clean = path.replace(/^\/+/, '');
+  return `${baseUrl}${clean}`;
+};
+
 export function initWork() {
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  const getAssetPath = (path) => {
-    if (path.startsWith('http')) return path;
-    const clean = path.replace(/^\/+/, '');
-    return `${baseUrl}${clean}`;
-  };
+  console.log("[Work] initWork started");
 
   const container = document.querySelector("[data-projects]");
-  if (!container) return;
+  if (!container) {
+    console.error("[Work] ❌ Контейнер [data-projects] не найден!");
+    return;
+  }
+
+  if (!projects || projects.length === 0) {
+    console.error("[Work] ❌ Массив projects пуст или не загружен!");
+    return;
+  }
 
   const language = localStorage.getItem("code-soul-language") || "ru";
 
@@ -29,64 +42,65 @@ export function initWork() {
 }
 
 function renderProjects(container, language) {
-  container.innerHTML = projects
-    .map((project, index) => {
-      const category = project.category[language];
-      const description = project.description[language];
+  try {
+    container.innerHTML = projects
+      .map((project, index) => {
+        const category = project.category?.[language] || project.category?.ru || "Category";
+        const description = project.description?.[language] || project.description?.ru || "";
 
-      return `
-        <article
-          class="
-            work-project
-            ${project.featured ? "work-project--featured" : ""}
-          "
-          data-project
-          data-index="${index}"
-          style="--project-accent:${project.accent}"
-        >
-          <a
-            href="${project.url}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="work-project__link"
-            data-cursor="OPEN"
+        return `
+          <article
+            class="work-project ${project.featured ? "work-project--featured" : ""}"
+            data-project
+            data-index="${index}"
+            style="--project-accent:${project.accent || '#d7ff3f'}"
           >
-            <div class="work-project__visual">
-              <div class="work-project__image-wrap">
-                <img
-                  src="${getAssetPath(project.image)}"
-                  alt="${project.title}"
-                  class="work-project__image"
-                  loading="${index === 0 ? "eager" : "lazy"}"
-                />
-                <div class="work-project__halftone" aria-hidden="true"></div>
+            <a
+              href="${project.url || '#'}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="work-project__link"
+              data-cursor="OPEN"
+            >
+              <div class="work-project__visual">
+                <div class="work-project__image-wrap">
+                  <img
+                    src="${getAssetPath(project.image || '')}"
+                    alt="${project.title || ''}"
+                    class="work-project__image"
+                    loading="${index === 0 ? "eager" : "lazy"}"
+                  />
+                  <div class="work-project__halftone" aria-hidden="true"></div>
+                </div>
+                <div class="work-project__number">${project.number || ''}</div>
+                <div class="work-project__open">↗</div>
               </div>
-
-              <div class="work-project__number">${project.number}</div>
-              <div class="work-project__open">↗</div>
-            </div>
-
-            <div class="work-project__info">
-              <div class="work-project__name">
-                <h3>${project.title}</h3>
-                <span>${category}</span>
+              <div class="work-project__info">
+                <div class="work-project__name">
+                  <h3>${project.title || ''}</h3>
+                  <span>${category}</span>
+                </div>
+                <div class="work-project__details">
+                  <p>${description}</p>
+                  <span>${project.technologies || ''}</span>
+                </div>
               </div>
-
-              <div class="work-project__details">
-                <p>${description}</p>
-                <span>${project.technologies}</span>
-              </div>
-            </div>
-          </a>
-        </article>
-      `;
-    })
-    .join("");
+            </a>
+          </article>
+        `;
+      })
+      .join("");
+  } catch (error) {
+    console.error("[Work] ❌ Ошибка при рендеринге проектов:", error);
+  }
 }
 
 function animateProjects() {
   const items = document.querySelectorAll("[data-project]");
-  if (!items.length) return;
+  if (!items.length) {
+    console.warn("[Work] Нет элементов [data-project] для анимации");
+    return;
+  }
 
   gsap.set(items, { opacity: 0, y: 80 });
 
@@ -108,12 +122,10 @@ function animateProjects() {
 }
 
 function initProjectHover() {
-  const projects = document.querySelectorAll(".work-project");
-
-  projects.forEach((project) => {
+  const projectsElements = document.querySelectorAll(".work-project");
+  projectsElements.forEach((project) => {
     const image = project.querySelector(".work-project__image");
     const halftone = project.querySelector(".work-project__halftone");
-
     if (!image) return;
 
     project.addEventListener("mousemove", (event) => {
@@ -144,23 +156,9 @@ function initProjectHover() {
     });
 
     project.addEventListener("mouseleave", () => {
-      gsap.to(project, {
-        rotateX: 0,
-        rotateY: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      });
-      gsap.to(image, {
-        x: 0,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: "power3.out",
-      });
-      gsap.to(halftone, {
-        opacity: 0,
-        duration: 0.5,
-      });
+      gsap.to(project, { rotateX: 0, rotateY: 0, duration: 0.8, ease: "power3.out" });
+      gsap.to(image, { x: 0, y: 0, scale: 1, duration: 0.8, ease: "power3.out" });
+      gsap.to(halftone, { opacity: 0, duration: 0.5 });
     });
   });
 }
