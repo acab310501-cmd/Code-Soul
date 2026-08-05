@@ -25,6 +25,7 @@ export class ParticleText {
     this.targets = [];
     this.running = true;
     this.time = 0;
+    this.startRaf = null;
 
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -47,8 +48,10 @@ export class ParticleText {
     this.resize();
 
     if (this.width <= 0 || this.height <= 0) {
-      requestAnimationFrame(() => this.start());
-      return;
+this.startRaf = requestAnimationFrame(() => {
+  this.startRaf = null;
+  this.start();
+});      return;
     }
 
     this.createTarget();
@@ -328,41 +331,32 @@ const step =
 
   updateParticle(particle) {
 
-    const dx =
-      particle.x -
-      this.mouse.x;
+const dx =
+  particle.x - this.mouse.x;
 
-    const dy =
-      particle.y -
-      this.mouse.y;
+const dy =
+  particle.y - this.mouse.y;
 
-    const distance =
-      Math.sqrt(
-        dx * dx +
-        dy * dy
-      );
+const distanceSq =
+  dx * dx + dy * dy;
 
+const radiusSq =
+  this.mouse.radius * this.mouse.radius;
 
-    if (
-      distance <
-      this.mouse.radius
-    ) {
+if (distanceSq < radiusSq) {
 
-      const force =
-        (1 -
-          distance /
-            this.mouse.radius) *
-        2.8;
+  const distance =
+    Math.sqrt(distanceSq) || 1;
 
-      particle.vx +=
-        (dx / (distance || 1)) *
-        force;
+  const force =
+    (1 - distance / this.mouse.radius) * 2.8;
 
-      particle.vy +=
-        (dy / (distance || 1)) *
-        force;
-    }
+  particle.vx +=
+    (dx / distance) * force;
 
+  particle.vy +=
+    (dy / distance) * force;
+}
 
     const spring =
       0.045;
@@ -405,6 +399,15 @@ const step =
 
     const drawX = particle.x + (particle.driftX || 0);
     const drawY = particle.y + (particle.driftY || 0);
+    
+  if (
+  drawX < -10 ||
+  drawY < -10 ||
+  drawX > this.width + 10 ||
+  drawY > this.height + 10
+) {
+  return;
+}
 
     this.ctx.beginPath();
 
@@ -448,24 +451,26 @@ const step =
   }
 
 
-  animate = () => {
-    // Добавлена проверка document.hidden для экономии ресурсов
-    if (!document.hidden && this.running) {
-      this.time += 0.016;
+animate = () => {
+  if (!this.running) return;
 
-      this.ctx.clearRect(0,0, this.width, this.height);
-      this.ctx.globalAlpha = 1;
+  if (!document.hidden) {
+    this.time += 0.016;
 
-      this.particles.forEach((particle) => {
-        this.updateParticle(particle);
-        this.drawParticle(particle);
-      });
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.globalAlpha = 1;
 
-      this.ctx.globalAlpha = 1;
-    }
-    requestAnimationFrame(this.animate);
-  };
+for (let i = 0; i < this.particles.length; i++) {
+  const particle = this.particles[i];
 
+  this.updateParticle(particle);
+  this.drawParticle(particle);
+}
+    this.ctx.globalAlpha = 1;
+  }
+
+  this.rafId = requestAnimationFrame(this.animate);
+};
   scatter(power = 15) {
 
     this.particles.forEach(
@@ -491,9 +496,7 @@ const step =
     );
   }
 
-  stop(){
-
-  this.running = false;
+stop() {
 
   this.destroy();
 
@@ -506,16 +509,28 @@ const step =
 
 }
 
-  destroy() {
+destroy() {
 
-    window.removeEventListener(
-      "mousemove",
-      this.moveHandler
-    );
+  this.running = false;
+  if (this.startRaf) {
+  cancelAnimationFrame(this.startRaf);
+  this.startRaf = null;
+}
 
-    window.removeEventListener(
-      "resize",
-      this.resizeHandler
-    );
+  if (this.rafId) {
+    cancelAnimationFrame(this.rafId);
+    this.rafId = null;
   }
+
+  window.removeEventListener(
+    "mousemove",
+    this.moveHandler
+  );
+
+  window.removeEventListener(
+    "resize",
+    this.resizeHandler
+  );
+}
+
 }

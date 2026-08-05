@@ -82,15 +82,6 @@ function initHeader() {
    HERO
 ======================================== */
 
-if (!window.__kineticsActive) {
-  window.__kineticsActive = true;
-  gsap.ticker.add(() => {
-    const grid = document.querySelector('.hero__grid');
-    const particleCanvas = document.querySelector('#particleCanvas');
-    if (!grid && !particleCanvas) return;
-  });
-}
-
 function initHeroGridKinetics() {}
 
 function initHeroAnimation() {

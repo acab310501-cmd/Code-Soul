@@ -62,8 +62,38 @@ export class SoulParticles {
     this.animate();
   }
 
+  getParticleSettings() {
+    if (this.width < 480) {
+      return {
+        step: 7,
+        max: 3000
+      };
+    }
+
+    if (this.width < 768) {
+      return {
+        step: 6,
+        max: 5000
+      };
+    }
+
+    if (this.width < 1024) {
+      return {
+        step: 5,
+        max: 8000
+      };
+    }
+
+    return {
+      step: 4,
+      max: 12000
+    };
+  }
+
   resize() {
+    // ✅ Защита: если canvas не в DOM, выходим
     if (!this.canvas.parentElement) return;
+
     const rect = this.canvas.parentElement.getBoundingClientRect();
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.width = rect.width;
@@ -73,20 +103,10 @@ export class SoulParticles {
     this.canvas.height = this.height * this.dpr;
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    // Пересчёт плотности с учётом адаптивного лимита
-    if (this.width < 480) {
-      this.sampleStep = 7;
-      this.maxParticles = 3000;
-    } else if (this.width < 768) {
-      this.sampleStep = 6;
-      this.maxParticles = 5000;
-    } else if (this.width < 1024) {
-      this.sampleStep = 5;
-      this.maxParticles = 8000;
-    } else {
-      this.sampleStep = 4;
-      this.maxParticles = 12000;
-    }
+    // ✅ Используем getParticleSettings() для устранения дублирования
+    const settings = this.getParticleSettings();
+    this.sampleStep = settings.step;
+    this.maxParticles = settings.max;
 
     if (this.isLoaded) {
       this.preloadAndSampleAllImages().then(() => {
@@ -288,10 +308,26 @@ export class SoulParticles {
       this.mouse.y = -9999;
     };
 
-    this.canvas.addEventListener("mousemove", this.onMouseMove);
-    this.canvas.addEventListener("mouseleave", this.onMouseLeave);
+    // ✅ Добавлено определение this.onResize
     this.onResize = () => this.resize();
-    window.addEventListener("resize", this.onResize);
+
+    this.canvas.addEventListener(
+      "mousemove",
+      this.onMouseMove,
+      { passive: true }
+    );
+
+    this.canvas.addEventListener(
+      "mouseleave",
+      this.onMouseLeave,
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "resize",
+      this.onResize,
+      { passive: true }
+    );
   }
 
   update() {
@@ -311,10 +347,14 @@ export class SoulParticles {
       if (this.mouse.active) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < this.mouseRadius && dist > 0) {
+        const distSq = dx * dx + dy * dy;
+        const radiusSq = this.mouseRadius * this.mouseRadius;
+
+        if (distSq < radiusSq) {
+          const dist = Math.sqrt(distSq) || 1;
           const force = (1 - dist / this.mouseRadius) * this.mouseForce;
+
           p.vx += (dx / dist) * force;
           p.vy += (dy / dist) * force;
         }
@@ -336,8 +376,17 @@ export class SoulParticles {
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
-      
+
       if (p.alpha < 0.01) continue;
+
+      if (
+        p.x < -10 ||
+        p.y < -10 ||
+        p.x > this.width + 10 ||
+        p.y > this.height + 10
+      ) {
+        continue;
+      }
 
       this.ctx.beginPath();
       this.ctx.arc(p.x, p.y, Math.max(0.4, p.size), 0, Math.PI * 2);
@@ -355,9 +404,26 @@ export class SoulParticles {
   }
 
   destroy() {
-    if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
-    this.canvas.removeEventListener("mousemove", this.onMouseMove);
-    this.canvas.removeEventListener("mouseleave", this.onMouseLeave);
-    window.removeEventListener("resize", this.onResize);
+    this.isLoaded = false;
+
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = null;
+    }
+
+    this.canvas.removeEventListener(
+      "mousemove",
+      this.onMouseMove
+    );
+
+    this.canvas.removeEventListener(
+      "mouseleave",
+      this.onMouseLeave
+    );
+
+    window.removeEventListener(
+      "resize",
+      this.onResize
+    );
   }
-}
+} 
