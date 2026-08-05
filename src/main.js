@@ -121,17 +121,29 @@ console.log("%cTechnology with a soul.", "font-size: 12px;");
 function initParticleText() {
   const canvases = document.querySelectorAll("[data-particle-text]");
   const systems = [];
+
   const lightTextColor = "#121316";
   const darkTextColor = "#f1f0eb";
-  const isLightTheme = () => document.documentElement.dataset.theme === "light" || document.documentElement.dataset.theme === "paper";
+  const lightAccentColor = "#3c3e40"; // Тёмно-серый для светлой темы
+  const darkAccentColor = "#d7ff3f";  // Кислотный для тёмной
+
+  const isLightTheme = () =>
+    document.documentElement.dataset.theme === "light" ||
+    document.documentElement.dataset.theme === "paper";
 
   canvases.forEach((canvas) => {
     const text = canvas.dataset.particleText;
+    const isAccent = canvas.classList.contains("particle-title__canvas--accent");
     const system = new ParticleText({
       canvas, text,
       fontSize: window.innerWidth < 700 ? 92 : 150,
-      color: canvas.classList.contains("particle-title__canvas--accent") ? "#d7ff3f" : (isLightTheme() ? lightTextColor : darkTextColor),
+      color: isAccent
+        ? (isLightTheme() ? lightAccentColor : darkAccentColor)
+        : (isLightTheme() ? lightTextColor : darkTextColor),
       acidGradient: true,
+      acidColor: isAccent
+        ? (isLightTheme() ? lightAccentColor : darkAccentColor)
+        : "#d7ff3f"
     });
     systems.push(system);
   });
@@ -139,10 +151,17 @@ function initParticleText() {
   window.__codeSoulParticles = systems;
 
   window.addEventListener("code-soul:theme", (event) => {
-    const nextColor = event.detail.theme === "light" ? lightTextColor : darkTextColor;
+    const isLight = event.detail.theme === "light";
+    const nextColor = isLight ? lightTextColor : darkTextColor;
+    const nextAccentColor = isLight ? lightAccentColor : darkAccentColor;
+    
     systems.forEach((system) => {
-      if (system.canvas.classList.contains("particle-title__canvas--accent")) return;
-      system.setColor(nextColor);
+      if (system.canvas.classList.contains("particle-title__canvas--accent")) {
+        system.setColor(nextAccentColor);
+        system.acidColor = nextAccentColor;
+      } else {
+        system.setColor(nextColor);
+      }
     });
   });
 }
@@ -353,7 +372,6 @@ function initJournalAnimation() {
    SERVICES — Magnetic Blob (оптимизированный)
 ======================================== */
 
-// Оптимизация: используем gsap.ticker для группировки обновлений CSS-переменных
 const blobStates = new Map();
 
 function initServicesBlob() {
@@ -361,7 +379,6 @@ function initServicesBlob() {
   if (!cards.length) return;
 
   cards.forEach((card) => {
-    // Инициализируем состояние для каждой карточки
     const state = { x: 50, y: 50, targetX: 50, targetY: 50 };
     blobStates.set(card, state);
 
@@ -370,7 +387,6 @@ function initServicesBlob() {
       state.targetY = 50;
     });
 
-    // Throttled mousemove: сохраняем только координаты, применяем через rAF
     let rafId = null;
     card.addEventListener("mousemove", (event) => {
       const rect = card.getBoundingClientRect();
@@ -379,7 +395,6 @@ function initServicesBlob() {
 
       if (!rafId) {
         rafId = requestAnimationFrame(() => {
-          // Применяем интерполяцию для плавности (lerp)
           state.x += (state.targetX - state.x) * 0.1;
           state.y += (state.targetY - state.y) * 0.1;
           card.style.setProperty('--blob-x', `${state.x}%`);
@@ -451,6 +466,7 @@ function initServicesV2() {
 
     trigger.addEventListener('click', () => {
       const isOpen = body.classList.contains('service-card__body--open');
+
       cards.forEach((c) => {
         const b = c.querySelector('[data-service-body]');
         const ind = c.querySelector('.service-card__indicator');

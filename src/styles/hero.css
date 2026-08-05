@@ -681,3 +681,11 @@
     margin-left: 4%;
   }
 }
+
+/* Улучшение читаемости частиц в светлой теме */
+[data-theme="light"] .particle-title__canvas {
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.15));
+}
+[data-theme="light"] .particle-title__canvas--accent {
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.25));
+}
