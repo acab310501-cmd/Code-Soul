@@ -83,7 +83,7 @@ function initHeader() {
 }
 
 /* ========================================
-   HERO
+   HERO (ИСПРАВЛЕНА ОШИБКА NULL В GSAP)
 ======================================== */
 
 function initHeroAnimation() {
@@ -93,15 +93,25 @@ function initHeroAnimation() {
   const scroll = document.querySelector(".hero__scroll");
   const sideWord = document.querySelector(".hero__side-word");
 
-  gsap.set([ pretitle, meta, manifesto, scroll, sideWord ], { opacity: 0 });
-  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-  tl.to(pretitle, { opacity: 1, duration: 0.8 })
-    .to(meta, { opacity: 1, duration: 0.8 }, "-=0.3")
-    .to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5")
-    .to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5")
-    .to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
+  // Фильтруем null элементы, чтобы GSAP не падал с ошибкой null.gsap
+  const elements = [pretitle, meta, manifesto, scroll, sideWord].filter(el => el !== null);
 
-  gsap.to(".hero__glow", { scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  if (elements.length > 0) {
+    gsap.set(elements, { opacity: 0 });
+  }
+
+  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+  if (pretitle) tl.to(pretitle, { opacity: 1, duration: 0.8 });
+  if (meta) tl.to(meta, { opacity: 1, duration: 0.8 }, "-=0.3");
+  if (manifesto) tl.to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5");
+  if (scroll) tl.to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5");
+  if (sideWord) tl.to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
+
+  const glow = document.querySelector(".hero__glow");
+  if (glow) {
+    gsap.to(glow, { scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  }
 }
 
 console.log("%cCODE & SOUL", "font-size: 24px; font-weight: 700;");
