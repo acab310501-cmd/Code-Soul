@@ -20,12 +20,11 @@ import { ParticleText } from "./components/ParticleText.js";
 import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
 import { initTheme } from "./components/Theme.js";
-import { initLanguage } from "./components/Language.js";
-import { initWork } from "./components/Work.js"; 
+import { initLanguage, translations } from "./components/Language.js";
+import { initWork } from "./components/Work.js";
 import { initRouter } from "./components/Router.js";
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
-
 import { initLoader } from "./components/Loader.js";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -53,9 +52,11 @@ document.addEventListener(
     safeInit("particleText", initParticleText);
     safeInit("contactAnimation", initContactAnimation);
     safeInit("contactMagic", initContactMagic);
+    safeInit("mobileMenu", initMobileMenu);
 
-    safeInit("work", initWork); 
-    safeInit("soulParticles", initSoulParticles); 
+    safeInit("work", initWork);
+    safeInit("servicesV2", initServicesV2);
+    safeInit("soulParticles", initSoulParticles);
     safeInit("aboutAnimation", initAboutAnimation);
     safeInit("aboutDepth", initAboutDepth);
     safeInit("aboutMagneticDots", initAboutMagneticDots);
@@ -65,10 +66,13 @@ document.addEventListener(
 
     safeInit("header", initHeader);
     safeInit("heroAnimation", initHeroAnimation);
-    safeInit("heroGridKinetics", initHeroGridKinetics);
     safeInit("heroTitlePulse", initHeroTitlePulse);
   }
 );
+
+/* ========================================
+   HEADER
+======================================== */
 
 function initHeader() {
   const header = document.querySelector("[data-header]");
@@ -81,8 +85,6 @@ function initHeader() {
 /* ========================================
    HERO
 ======================================== */
-
-function initHeroGridKinetics() {}
 
 function initHeroAnimation() {
   const pretitle = document.querySelector(".hero__pretitle");
@@ -115,8 +117,8 @@ function initParticleText() {
 
   const lightTextColor = "#121316";
   const darkTextColor = "#f1f0eb";
-  const lightAccentColor = "#3c3e40"; // Тёмно-серый для светлой темы
-  const darkAccentColor = "#d7ff3f";  // Кислотный для тёмной
+  const lightAccentColor = "#3c3e40";
+  const darkAccentColor = "#d7ff3f";
 
   const isLightTheme = () =>
     document.documentElement.dataset.theme === "light" ||
@@ -279,6 +281,25 @@ function initAboutAnimation() {
   observer.observe(section);
 }
 
+function initAboutDepth() {
+  const section = document.querySelector(".about-section");
+  if (!section) return;
+  const targets = section.querySelectorAll(".about__title-line, .about__manifesto p, .about__lead");
+  gsap.set(targets, { opacity: 0, y: 80, filter: "blur(12px)" });
+  ScrollTrigger.create({
+    trigger: section, start: "top 80%", once: true,
+    onEnter: () => {
+      gsap.to(targets, {
+        opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
+      });
+    }
+  });
+}
+
+function initAboutMagneticDots() {
+  // Удалён пустой тикер
+}
+
 /* ========================================
    JOURNAL
 ======================================== */
@@ -398,10 +419,18 @@ function initServicesBlob() {
 }
 
 /* ========================================
-   SERVICES 2.0
+   SERVICES 2.0 (исправленная версия)
 ======================================== */
 
+let servicesContext = null;
+
 function initServicesV2() {
+  // Уничтожаем предыдущий контекст, если есть
+  if (servicesContext) {
+    servicesContext.revert();
+    servicesContext = null;
+  }
+
   const grid = document.querySelector('[data-services-grid]');
   if (!grid) return;
 
@@ -447,116 +476,91 @@ function initServicesV2() {
 
   grid.innerHTML = html;
 
-  const cards = grid.querySelectorAll('.service-card');
-  cards.forEach((card) => {
-    const trigger = card.querySelector('[data-service-trigger]');
-    const body = card.querySelector('[data-service-body]');
-    const indicator = card.querySelector('.service-card__indicator');
+  // Создаём контекст для управления анимациями и событиями
+  servicesContext = gsap.context(() => {
+    const cards = grid.querySelectorAll('.service-card');
+    cards.forEach((card) => {
+      const trigger = card.querySelector('[data-service-trigger]');
+      const body = card.querySelector('[data-service-body]');
+      const indicator = card.querySelector('.service-card__indicator');
 
-    if (!trigger || !body) return;
+      if (!trigger || !body) return;
 
-    trigger.addEventListener('click', () => {
-      const isOpen = body.classList.contains('service-card__body--open');
+      trigger.addEventListener('click', () => {
+        const isOpen = body.classList.contains('service-card__body--open');
 
-      cards.forEach((c) => {
-        const b = c.querySelector('[data-service-body]');
-        const ind = c.querySelector('.service-card__indicator');
-        if (b && b !== body) {
-          b.classList.remove('service-card__body--open');
-          if (ind) ind.classList.remove('service-card__indicator--open');
-        }
-      });
-
-      if (isOpen) {
-        body.classList.remove('service-card__body--open');
-        if (indicator) indicator.classList.remove('service-card__indicator--open');
-      } else {
-        body.classList.add('service-card__body--open');
-        if (indicator) indicator.classList.add('service-card__indicator--open');
-      }
-    });
-
-    trigger.setAttribute('role', 'button');
-    trigger.setAttribute('tabindex', '0');
-    trigger.setAttribute('aria-expanded', 'false');
-    trigger.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        trigger.click();
-      }
-    });
-
-    const observer = new MutationObserver(() => {
-      const isOpen = body.classList.contains('service-card__body--open');
-      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
-
-    const cta = card.querySelector('.service-card__cta');
-    if (cta) {
-      cta.addEventListener('click', (e) => {
-        e.preventDefault();
-        const contactSection = document.querySelector('#contact');
-        if (contactSection) {
-          if (window.__codeSoulLenis) {
-            window.__codeSoulLenis.scrollTo(contactSection.offsetTop, { duration: 1.2 });
-          } else {
-            contactSection.scrollIntoView({ behavior: 'smooth' });
+        cards.forEach((c) => {
+          const b = c.querySelector('[data-service-body]');
+          const ind = c.querySelector('.service-card__indicator');
+          if (b && b !== body) {
+            b.classList.remove('service-card__body--open');
+            if (ind) ind.classList.remove('service-card__indicator--open');
           }
+        });
+
+        if (isOpen) {
+          body.classList.remove('service-card__body--open');
+          if (indicator) indicator.classList.remove('service-card__indicator--open');
+        } else {
+          body.classList.add('service-card__body--open');
+          if (indicator) indicator.classList.add('service-card__indicator--open');
         }
       });
-    }
-  });
 
-  const items = grid.querySelectorAll('.service-card');
-  gsap.set(items, { opacity: 0, y: 60 });
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('tabindex', '0');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          trigger.click();
+        }
+      });
 
-  items.forEach((item) => {
-    gsap.to(item, {
-      opacity: 1, y: 0, duration: 1.15, ease: 'power4.out',
-      scrollTrigger: { trigger: item, start: 'top 88%', once: true }
+      const observer = new MutationObserver(() => {
+        const isOpen = body.classList.contains('service-card__body--open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+      observer.observe(body, { attributes: true, attributeFilter: ['class'] });
+
+      const cta = card.querySelector('.service-card__cta');
+      if (cta) {
+        cta.addEventListener('click', (e) => {
+          e.preventDefault();
+          const contactSection = document.querySelector('#contact');
+          if (contactSection) {
+            if (window.__codeSoulLenis) {
+              window.__codeSoulLenis.scrollTo(contactSection.offsetTop, { duration: 1.2 });
+            } else {
+              contactSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      }
     });
-  });
 
-  window.addEventListener('code-soul:language', (event) => {
+    // Анимация появления карточек
+    const items = grid.querySelectorAll('.service-card');
+    gsap.set(items, { opacity: 0, y: 60 });
+
+    items.forEach((item) => {
+      gsap.to(item, {
+        opacity: 1, y: 0, duration: 1.15, ease: 'power4.out',
+        scrollTrigger: { trigger: item, start: 'top 88%', once: true }
+      });
+    });
+  }, grid); // контекст привязан к grid
+
+  // Обработчик смены языка
+  const onLanguageChange = (event) => {
     const newLang = event.detail.language;
     const newData = translations[newLang]?.services;
     if (newData) initServicesV2();
-  });
+  };
+  window.addEventListener('code-soul:language', onLanguageChange);
+  // Сохраняем ссылку для возможной очистки
+  window.__servicesLanguageHandler = onLanguageChange;
 }
-
-/* ========================================
-   ABOUT DEPTH & MAGNETIC
-======================================== */
-
-function initAboutDepth() {
-  const section = document.querySelector(".about-section");
-  if (!section) return;
-  const targets = section.querySelectorAll(".about__title-line, .about__manifesto p, .about__lead");
-  gsap.set(targets, { opacity: 0, y: 80, filter: "blur(12px)" });
-  ScrollTrigger.create({
-    trigger: section, start: "top 80%", once: true,
-    onEnter: () => {
-      gsap.to(targets, {
-        opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
-      });
-    }
-  });
-}
-
-if (!window.__magneticDotsActive) {
-  window.__magneticDotsActive = true;
-  gsap.ticker.add(() => {
-    const container = document.querySelector(".about__philosophy");
-    if (!container) return;
-    const dot1 = container.querySelector(".about__dot:first-child");
-    const dot2 = container.querySelector(".about__dot:last-child");
-    const amp = container.querySelector(".about__ampersand");
-    if (!dot1 || !dot2) return;
-  });
-}
-
-function initAboutMagneticDots() {}
 
 /* ========================================
    CONTACT ANIMATION
@@ -591,12 +595,8 @@ function initContactAnimation() {
   const success = section.querySelector('#contactSuccess');
   if (!form || !success) return;
 
-  const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-  const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
-
-  if (!BOT_TOKEN || !CHAT_ID) {
-    console.warn('[Code & Soul] Telegram bot token or chat ID not set. Form will not send.');
-  }
+  // ПРОКСИ-URL для отправки (Cloudflare Worker)
+  const TELEGRAM_PROXY_URL = 'https://code-soul-telegram.workers.dev'; // замените на ваш реальный URL
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -622,49 +622,22 @@ function initContactAnimation() {
     const projects = Array.from(projectCheckboxes).map(cb => cb.value).join(', ') || 'Не выбрано';
     const budget = budgetRadio?.value || 'Не указан';
 
-    const telegramMessage = `
-<b>📩 Новая заявка с Code & Soul</b>
-
-<b>👤 Имя:</b> ${name}
-<b>📧 Email:</b> ${email}
-<b>📱 Telegram:</b> ${telegram}
-<b>📌 Проект:</b> ${projects}
-<b>💰 Бюджет:</b> ${budget}
-<b>💬 Сообщение:</b>
-${message}
-    `.trim();
+    const payload = { name, email, telegram, projects, budget, message };
 
     const originalText = button.innerHTML;
     button.innerHTML = '<span style="opacity:0.6;">Отправка...</span><span class="contact__button-arrow" aria-hidden="true">↗</span>';
     button.style.pointerEvents = 'none';
 
-    if (!BOT_TOKEN || !CHAT_ID) {
-      console.warn('[Code & Soul] Telegram env vars missing – simulating success.');
-      setTimeout(() => {
-        gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
-          opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
-          onComplete: () => {
-            form.querySelectorAll('.contact__step, .contact__submit').forEach(el => el.style.display = 'none');
-            success.classList.add('is-visible');
-            success.setAttribute('aria-hidden', 'false');
-            gsap.to(success, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
-          }
-        });
-        button.innerHTML = originalText;
-        button.style.pointerEvents = 'auto';
-      }, 800);
-      return;
-    }
-
     try {
-      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      const response = await fetch(TELEGRAM_PROXY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMessage, parse_mode: 'HTML' })
+        body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error(`Telegram API error: ${response.status}`);
+      if (!response.ok) throw new Error(`Proxy error: ${response.status}`);
 
+      // Успешная отправка
       gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
         opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
         onComplete: () => {
@@ -782,4 +755,70 @@ function initContactMagic() {
   });
 }
 
-export { initServicesV2 };
+/* ========================================
+   MOBILE MENU (NEW)
+======================================== */
+
+function initMobileMenu() {
+  const menuButton = document.querySelector('.mobile-menu-button');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const overlay = document.querySelector('.mobile-menu-overlay');
+  const navLinks = mobileMenu?.querySelectorAll('a');
+
+  if (!menuButton || !mobileMenu) return;
+
+  let isOpen = false;
+  let menuContext = null;
+
+  const openMenu = () => {
+    if (isOpen) return;
+    isOpen = true;
+    menuButton.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+
+    if (menuContext) menuContext.revert();
+    menuContext = gsap.context(() => {
+      gsap.set(mobileMenu, { x: '100%' });
+      gsap.set(overlay, { opacity: 0, pointerEvents: 'none' });
+      gsap.to(overlay, { opacity: 1, pointerEvents: 'auto', duration: 0.3, ease: 'power2.out' });
+      gsap.to(mobileMenu, { x: '0%', duration: 0.5, ease: 'power4.out' });
+    });
+  };
+
+  const closeMenu = () => {
+    if (!isOpen) return;
+    isOpen = false;
+    menuButton.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+
+    if (menuContext) {
+      menuContext.revert();
+      menuContext = null;
+    }
+    // Сброс стилей
+    gsap.set(mobileMenu, { x: '100%' });
+    gsap.set(overlay, { opacity: 0, pointerEvents: 'none' });
+  };
+
+  menuButton.addEventListener('click', () => {
+    if (isOpen) closeMenu();
+    else openMenu();
+  });
+
+  // Клик по оверлею или пунктам меню
+  overlay?.addEventListener('click', closeMenu);
+
+  navLinks?.forEach(link => {
+    link.addEventListener('click', (e) => {
+      // Если ссылка ведёт на якорь внутри той же страницы (не маршрут), не закрываем меню?
+      // По умолчанию закрываем после любого клика.
+      closeMenu();
+      // Переход обрабатывается роутером
+    });
+  });
+
+  // Закрытие по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) closeMenu();
+  });
+}

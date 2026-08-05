@@ -21,15 +21,20 @@
     <meta name="twitter:image" content="https://acab310501-cmd.github.io/Code-Soul/images/logo/logo.png" />
 
     <!-- Favicon (Десктоп и браузеры) -->
-    <link rel="icon" type="image/x-icon" href="/images/logo/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/logo/favicon-16x16.png" />
+    <link rel="icon" type="image/x-icon" href="images/logo/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/logo/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/logo/favicon-16x16.png" />
 
     <!-- Apple Touch Icon (iPhone / iPad) -->
-    <link rel="apple-touch-icon" href="/images/logo/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="images/logo/apple-touch-icon.png" />
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href="site.webmanifest" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <title>Code & Soul — Мы создаём цифровые миры</title>
   </head>
@@ -63,7 +68,7 @@
       <header class="site-header" data-header>
         <a class="logo" href="#/" aria-label="Code & Soul">
           <img 
-            src="/images/logo/logo.png" 
+            src="images/logo/logo.png" 
             alt="Code & Soul" 
             class="logo__image" 
           />
@@ -89,8 +94,22 @@
             <span class="theme-switcher__dot"></span>
             <span class="theme-switcher__text">VOID</span>
           </button>
+          <!-- Мобильная кнопка меню -->
+          <button class="mobile-menu-button" aria-label="Открыть меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </header>
+
+      <!-- Мобильное меню -->
+      <div class="mobile-menu-overlay"></div>
+      <nav class="mobile-menu" aria-label="Мобильная навигация">
+        <a href="#/work" data-i18n="nav.work">Проекты</a>
+        <a href="#/services" data-i18n="nav.services">Услуги</a>
+        <a href="#/about" data-i18n="nav.about">О нас</a>
+        <a href="#/journal" data-i18n="nav.journal">Журнал</a>
+        <a href="#/contact" data-i18n="nav.start">Начать проект</a>
+      </nav>
 
       <!-- MAIN -->
       <main id="top">
@@ -109,6 +128,7 @@
           <div class="hero__title-wrap">
             <div class="hero__pretitle">CODE × SOUL</div>
             <div class="particle-title" aria-label="Мы создаём цифровые миры">
+              <h1 class="visually-hidden">Мы создаём цифровые миры</h1>
               <canvas class="particle-title__canvas" data-particle-text="МЫ СОЗДАЁМ"></canvas>
               <canvas class="particle-title__canvas" data-particle-text="ЦИФРОВЫЕ"></canvas>
               <canvas class="particle-title__canvas particle-title__canvas--accent" data-particle-text="МИРЫ"></canvas>
@@ -538,7 +558,7 @@
 
       <!-- FOOTER -->
       <footer class="site-footer">
-        <img src="/images/logo/logo.png" alt="Code & Soul" class="footer__logo" />
+        <img src="images/logo/logo.png" alt="Code & Soul" class="footer__logo" />
         <span>MADE WITH CODE. BUILT WITH SOUL.</span>
         <span class="site-footer__telegram">
           <a href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">@codeandsoul</a>
