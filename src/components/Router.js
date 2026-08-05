@@ -37,7 +37,20 @@ export function initRouter() {
       link.classList.toggle("is-current", linkPage === page);
     });
 
-    document.body.dataset.page = page;
+    /*
+      КРИТИЧНЫЙ БАГ (найден и исправлен): здесь стояло
+      `document.body.dataset.page = page`, что добавляло body
+      атрибут data-page="...". Но CSS-правило, которое скрывает
+      неактивные страницы — `[data-page]:not(.is-active-page)` —
+      матчит ЛЮБОЙ элемент с атрибутом data-page, включая сам
+      body! А класс "is-active-page" на body никогда не
+      добавлялся. В итоге body получал `display:none !important`
+      на КАЖДОЙ загрузке страницы — весь сайт становился пустым.
+      Это и есть причина "сайт не запускается / всё пропало".
+      Используем отдельный атрибут, который не пересекается с
+      селектором страниц.
+    */
+    document.body.dataset.currentPage = page;
 
     if (!isFirstLoad) {
       // Сброс скролла на новую "страницу" — и обычного, и
