@@ -6,17 +6,21 @@ html {
 body {
   background: var(--color-void);
   color: var(--color-paper);
-
   font-family: var(--font-body);
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   overflow-x: hidden;
-
   transition:
     background-color 0.7s var(--ease-out),
     color 0.7s var(--ease-out);
+
+  /* Применяем текстуру только в светлой теме */
+  background-image: var(--bg-texture, none);
+  background-size: 200px 200px;
+}
+
+[data-theme="dark"] body {
+  background-image: none;
 }
 
 ::selection {
@@ -30,179 +34,93 @@ body {
   overflow: hidden;
 }
 
-
-/* ROUTER — многостраничный режим: показываем только секции
-   активной "страницы" (см. src/components/Router.js) */
-
-/*
-  Важно: не задаём здесь display для активной страницы — у
-  .hero, .work-section и т.д. уже есть собственный display
-  (flex/grid/block) в своих файлах. Мы только прячем то, что
-  НЕ активно, а не переопределяем то, что активно.
-*/
+/* ROUTER */
 [data-page]:not(.is-active-page) {
   display: none !important;
 }
-
 .navigation a.is-current {
   color: var(--color-acid);
 }
 
-
-/* GRAIN */
-
+/* GRAIN — оставляем, но для светлой темы уменьшаем прозрачность */
 .grain {
   position: fixed;
   inset: -50%;
-
   width: 200%;
   height: 200%;
-
   z-index: var(--z-grain);
-
   pointer-events: none;
-
   opacity: 0.045;
-
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
-
-  /*
-    На Retina/HiDPI-экранах комбинация дробных transform-
-    сдвигов и перерисовки фона на каждом шаге steps()
-    иногда даёт заметное мерцание (браузер округляет
-    субпиксельные позиции по-разному между кадрами).
-    Явно переносим слой на GPU и фиксируем 3D-контекст —
-    это устраняет дрожание без изменения самого эффекта.
-  */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
   will-change: transform;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
+  animation: grainShift 0.25s steps(2) infinite;
+}
 
-  animation:
-    grainShift 0.25s steps(2) infinite;
+[data-theme="light"] .grain {
+  opacity: 0.025; /* меньше шума для чистоты светлой темы */
 }
 
 @keyframes grainShift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  25% {
-    transform: translate3d(-2%, 1%, 0);
-  }
-
-  50% {
-    transform: translate3d(1%, -2%, 0);
-  }
-
-  75% {
-    transform: translate3d(2%, 2%, 0);
-  }
-
-  100% {
-    transform: translate3d(-1%, -1%, 0);
-  }
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-2%, 1%, 0); }
+  50% { transform: translate3d(1%, -2%, 0); }
+  75% { transform: translate3d(2%, 2%, 0); }
+  100% { transform: translate3d(-1%, -1%, 0); }
 }
 
-
-/* CURSOR */
-
+/* CURSOR — оставляем без изменений */
 .cursor {
   position: fixed;
-
   top: 0;
   left: 0;
-
   width: 40px;
   height: 40px;
-
   z-index: var(--z-cursor);
-
   pointer-events: none;
-
-  transform:
-    translate3d(-50%, -50%, 0);
-
+  transform: translate3d(-50%, -50%, 0);
   mix-blend-mode: difference;
 }
-
 .cursor__dot {
   position: absolute;
-
   top: 50%;
   left: 50%;
-
   width: 6px;
   height: 6px;
-
   border-radius: 50%;
-
   background: #fff;
-
-  transform:
-    translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
-
 .cursor__ring {
   position: absolute;
-
   inset: 0;
-
   border: 1px solid rgba(255, 255, 255, 0.7);
-
   border-radius: 50%;
-
   transform: scale(0.6);
-
-  transition:
-    transform 0.5s var(--ease-out);
+  transition: transform 0.5s var(--ease-out);
 }
-
 .cursor__label {
   position: absolute;
-
   top: 50%;
   left: 50%;
-
   font-family: var(--font-mono);
   font-size: 8px;
-
   white-space: nowrap;
-
   opacity: 0;
-
-  transform:
-    translate(-50%, -50%)
-    scale(0.7);
+  transform: translate(-50%, -50%) scale(0.7);
 }
 
-
-/*
-  ИСПРАВЛЕНО: раньше нативный курсор никогда не скрывался, поэтому
-  поверх системной стрелки всегда рисовался ещё и кастомный
-  courser-ring — тот самый "двойной" курсор. Прячем нативный курсор
-  только на устройствах с точным указателем (мышь/трекпад); на
-  тач-устройствах (pointer: coarse) он остаётся нужен, и там же
-  сам .cursor и не рендерится (см. ниже).
-*/
 @media (pointer: fine) {
-  html,
-  body,
-  a,
-  button,
-  [data-cursor] {
+  html, body, a, button, [data-cursor] {
     cursor: none;
   }
 }
-
 @media (pointer: coarse) {
-  .cursor {
-    display: none;
-  }
+  .cursor { display: none; }
 }
 
-
+/* REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -211,16 +129,14 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-
-  .grain {
-    animation: none;
-  }
+  .grain { animation: none; }
 }
 
-/* Accessibility */
+/* ACCESSIBILITY */
 :focus-visible {
   outline: 2px solid var(--color-acid);
   outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .visually-hidden {

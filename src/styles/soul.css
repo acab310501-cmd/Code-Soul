@@ -1,350 +1,191 @@
-/* ========================================
-   SOUL
-======================================== */
-
 .soul-section {
   position: relative;
-
   min-height: 100svh;
-
-  padding:
-    clamp(110px, 14vw, 190px)
-    var(--page-padding)
-    60px;
-
+  padding: clamp(110px, 14vw, 190px) var(--page-padding) 60px;
   background: #080808;
   color: #f5f5f0;
-
   overflow: hidden;
 }
 
-
-/* ========================================
-   NOISE
-======================================== */
-
+/* NOISE */
 .soul-section__noise {
   position: absolute;
-
   inset: 0;
-
   pointer-events: none;
-
   opacity: .045;
-
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
 }
 
-
-/* ========================================
-   HEADER
-======================================== */
-
+/* HEADER */
 .soul-section__header {
   position: relative;
-
   max-width: var(--container-width);
-
   margin: 0 auto;
 }
-
-
 .soul-section__eyebrow {
   display: flex;
-
   align-items: center;
-
   gap: 16px;
-
   font-family: var(--font-mono);
-
   font-size: 8px;
-
   letter-spacing: .1em;
-
   color: #888;
 }
-
-
 .soul-section__line {
   width: 70px;
-
   height: 1px;
-
   background: rgba(255,255,255,.2);
 }
 
-
-/* ========================================
-   MAIN
-======================================== */
-
+/* MAIN */
 .soul-section__main {
-
   position: relative;
-
   max-width: var(--container-width);
-
   margin: 90px auto 0;
-
   display: grid;
-
-  grid-template-columns:
-    minmax(280px, .75fr)
-    minmax(400px, 1.25fr);
-
+  grid-template-columns: minmax(280px, .75fr) minmax(400px, 1.25fr);
   gap: clamp(50px, 8vw, 150px);
-
   align-items: center;
 }
 
-
-/* ========================================
-   COPY
-======================================== */
-
+/* COPY */
 .soul-section__small {
-
   margin: 0 0 30px;
-
   font-family: var(--font-mono);
-
   font-size: 8px;
-
   letter-spacing: .12em;
-
   color: #777;
 }
-
-
 .soul-section__title {
-
   display: flex;
-
   flex-direction: column;
-
   margin: 0;
-
   font-family: var(--font-display);
-
-  font-size:
-    clamp(55px, 7vw, 120px);
-
+  font-size: clamp(55px, 7vw, 120px);
   font-weight: 500;
-
   line-height: .82;
-
   letter-spacing: -.07em;
-
   text-transform: uppercase;
 }
-
-
 .soul-section__title span:nth-child(2) {
-
   margin-left: 18%;
-
   color: var(--color-acid);
-
 }
-
-
 .soul-section__title span:nth-child(3) {
-
   margin-left: 7%;
 }
-
-
 .soul-section__description {
-
   max-width: 310px;
-
   margin: 50px 0 0;
-
   font-family: var(--font-mono);
-
   font-size: 9px;
-
   line-height: 1.8;
-
   text-transform: uppercase;
-
   color: #777;
 }
 
-
-/* ========================================
-   PARTICLE VISUAL
-======================================== */
-
+/* PARTICLE VISUAL */
 .soul-section__visual {
-
   position: relative;
-
   min-height: 580px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 }
-
-
 .soul-particles {
-
   display: block;
-
   width: 100%;
-
   height: 580px;
-
   cursor: crosshair;
 }
 
-
-/* ========================================
-   LABEL
-======================================== */
-
+/* LABEL */
 .soul-section__visual-label {
-
   position: absolute;
-
   right: 20px;
-
   bottom: 25px;
-
   display: flex;
-
   flex-direction: column;
-
   align-items: flex-end;
-
   gap: 5px;
-
   font-family: var(--font-mono);
-
   font-size: 7px;
-
   letter-spacing: .08em;
-
   color: #555;
-
   pointer-events: none;
 }
 
-
-/* ========================================
-   MANIFESTO
-======================================== */
-
+/* MANIFESTO */
 .soul-section__manifesto {
-
   position: relative;
-
   max-width: var(--container-width);
-
   margin: 100px auto 0;
-
   display: flex;
-
   align-items: center;
-
   gap: 18px;
-
   font-family: var(--font-mono);
-
   font-size: 8px;
-
   letter-spacing: .15em;
-
   color: #555;
 }
-
-
 .soul-section__manifesto div {
-
   flex: 1;
-
   height: 1px;
-
   background: rgba(255,255,255,.12);
 }
-
-
 .soul-section__manifesto span:nth-child(3) {
-
   color: var(--color-acid);
-
   font-size: 15px;
 }
 
-
-/* ========================================
-   MOBILE
-======================================== */
-
+/* MOBILE */
 @media (max-width: 900px) {
-
   .soul-section__main {
-
     grid-template-columns: 1fr;
-
     gap: 50px;
   }
-
-
   .soul-section__visual {
-
     min-height: 430px;
   }
-
-
   .soul-particles {
-
     height: 430px;
   }
-
 }
-
-
 @media (max-width: 600px) {
-
   .soul-section {
-
     padding-top: 100px;
   }
-
-
   .soul-section__title {
-
     font-size: 17vw;
   }
-
-
   .soul-section__title span:nth-child(2) {
-
     margin-left: 12%;
   }
-
-
   .soul-section__visual {
-
     min-height: 360px;
   }
-
-
   .soul-particles {
-
     height: 360px;
   }
-
-
   .soul-section__manifesto {
-
     gap: 10px;
   }
+}
 
+/* LIGHT THEME adjustments */
+[data-theme="light"] .soul-section {
+  background: var(--color-void);
+  color: var(--color-paper);
+}
+[data-theme="light"] .soul-section__noise {
+  opacity: .025;
+}
+[data-theme="light"] .soul-section__eyebrow,
+[data-theme="light"] .soul-section__small,
+[data-theme="light"] .soul-section__description,
+[data-theme="light"] .soul-section__manifesto {
+  color: var(--color-muted);
+}
+[data-theme="light"] .soul-section__line {
+  background: var(--border-subtle);
 }

@@ -1,106 +1,50 @@
 :root {
-  /* COLORS */
-
+  /* COLORS (Dark Theme) */
   --color-void: #050505;
   --color-ink: #0d0d0d;
-
   --color-paper: #f1f0eb;
   --color-white: #ffffff;
-
   --color-muted: #858585;
   --color-muted-dark: #505050;
-
   --color-acid: #d7ff3f;
 
-
   /* TYPOGRAPHY */
-
-  --font-display:
-    "Space Grotesk",
-    Arial,
-    sans-serif;
-
-  --font-body:
-    Inter,
-    Arial,
-    sans-serif;
-
-  --font-mono:
-    "IBM Plex Mono",
-    monospace;
-
+  --font-display: "Space Grotesk", Arial, sans-serif;
+  --font-body: Inter, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 
   /* LAYOUT */
-
   --page-padding: clamp(20px, 3.2vw, 56px);
-
   --container-width: 1440px;
 
-
   /* MOTION */
-
-  --ease-out:
-    cubic-bezier(0.16, 1, 0.3, 1);
-
-  --ease-in-out:
-    cubic-bezier(0.65, 0, 0.35, 1);
-
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* UI */
-
-  --border-subtle:
-    rgba(255, 255, 255, 0.12);
-
-  --border-medium:
-    rgba(255, 255, 255, 0.2);
-
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-medium: rgba(255, 255, 255, 0.2);
 
   /* Z INDEX */
-
   --z-content: 10;
   --z-header: 100;
   --z-cursor: 1000;
   --z-grain: 1100;
 }
 
-
-/* LIGHT THEME */
+/* LIGHT THEME (PAPER) */
 [data-theme="paper"],
 [data-theme="light"] {
-  /*
-    ИСПРАВЛЕНО: этот блок объявлял --bg-primary/--text-primary и
-    т.д., но ни один файл в src/styles/ эти переменные не читает —
-    везде используется --color-void/--color-paper/--color-ink/
-    --color-muted/--border-subtle/--border-medium. Из-за этого
-    переключатель темы менял data-theme и текст кнопки (VOID →
-    PAPER), но ни один реальный цвет на странице не менялся.
-    Теперь переопределяем именно те переменные, которые реально
-    используются во всех .css файлах.
-  */
   --color-void: #F5F3EE;
   --color-ink: #EBE8E0;
-
   --color-paper: #121316;
   --color-white: #121316;
-
   --color-muted: #6C727E;
   --color-muted-dark: #93989F;
 
   --border-subtle: rgba(18, 19, 22, 0.08);
   --border-medium: rgba(18, 19, 22, 0.18);
 
-  /* Тёплый премиальный цвет слоновой кости вместо белого #FFFFFF */
-  --bg-primary: #F5F3EE;
-  --bg-secondary: #EBE8E0;
-  --bg-glass: rgba(245, 243, 238, 0.85);
-
-  /* Глубокий читаемый цвет текста */
-  --text-primary: #121316;
-  --text-secondary: #4A4E58;
-  --text-muted: #6C727E;
-
-  /* Границы элементов */
-  --border-strong: rgba(18, 19, 22, 0.18);
-
-  --accent-glow: rgba(18, 19, 22, 0.05);
+  /* Текстура бумаги (опционально, используется в base.css) */
+  --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
 }
