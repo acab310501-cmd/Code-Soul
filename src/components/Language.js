@@ -562,3 +562,5 @@ export function initLanguage() {
 
   applyLanguage(currentLanguage);
 }
+
+export { translations };
