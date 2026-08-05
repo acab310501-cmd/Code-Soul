@@ -30,25 +30,6 @@ import { initLoader } from "./components/Loader.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// =============================================
-//  Performance optimisation (БЕЗОПАСНО):
-//  Все проверки document.hidden теперь
-//  находятся внутри самих классов компонентов.
-// =============================================
-
-/*
-  ВАЖНО: раньше все init*-функции вызывались подряд одним
-  блоком. Если хотя бы одна из них бросала исключение
-  (например, из-за отсутствующего DOM-узла на конкретной
-  странице/вьюпорте), выполнение обработчика обрывалось и
-  все инициализации ПОСЛЕ неё — включая Work и Soul —
-  просто не запускались, без единой ошибки в консоли,
-  которую было бы легко связать с причиной. Оборачиваем
-  каждый вызов отдельно, чтобы сбой одного модуля никогда
-  не "гасил" остальные, и чтобы ошибка была явно видна
-  в консоли с указанием, какой именно модуль упал.
-*/
-
 function safeInit(name, fn) {
   try {
     fn();
@@ -60,15 +41,9 @@ function safeInit(name, fn) {
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-    // 0. Роутер — ДО всего остального, чтобы неактивные
-    // "страницы" уже были скрыты к моменту, когда другие модули
-    // начнут измерять layout (ScrollTrigger, IntersectionObserver).
     safeInit("router", initRouter);
-
-    // 1. Запускаем лоадер
     safeInit("loader", initLoader);
 
-    // 2. Остальные компоненты
     safeInit("smoothScroll", initSmoothScroll);
     safeInit("cursor", initCursor);
     safeInit("language", initLanguage);
@@ -79,8 +54,8 @@ document.addEventListener(
     safeInit("contactAnimation", initContactAnimation);
     safeInit("contactMagic", initContactMagic);
 
-    safeInit("work", initWork); // Запускает секцию проектов
-    safeInit("soulParticles", initSoulParticles); // Запускает анимацию SOUL
+    safeInit("work", initWork); 
+    safeInit("soulParticles", initSoulParticles); 
     safeInit("aboutAnimation", initAboutAnimation);
     safeInit("aboutDepth", initAboutDepth);
     safeInit("aboutMagneticDots", initAboutMagneticDots);
@@ -88,7 +63,6 @@ document.addEventListener(
     safeInit("journalAnimation", initJournalAnimation);
     safeInit("journalCinematicFocus", initJournalCinematicFocus);
 
-    // 3. Header и Hero
     safeInit("header", initHeader);
     safeInit("heroAnimation", initHeroAnimation);
     safeInit("heroGridKinetics", initHeroGridKinetics);
@@ -96,55 +70,28 @@ document.addEventListener(
   }
 );
 
-/* ========================================
-   HEADER
-======================================== */
-
 function initHeader() {
   const header = document.querySelector("[data-header]");
   if (!header) return;
-
-  function update() {
-    header.classList.toggle("is-scrolled", window.scrollY > 50);
-  }
-
+  function update() { header.classList.toggle("is-scrolled", window.scrollY > 50); }
   window.addEventListener("scroll", update, { passive: true });
   update();
 }
 
 /* ========================================
-   HERO — 3D KINETIC GRID & PARALLAX
+   HERO
 ======================================== */
 
-function initHeroGridKinetics() {
-  const grid = document.querySelector('.hero__grid');
-  const particleCanvas = document.querySelector('#particleCanvas');
-  if (!grid && !particleCanvas) return;
-
-  let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-
-  window.addEventListener('mousemove', (e) => {
-    targetX = (e.clientX / window.innerWidth - 0.5) * 2;
-    targetY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
-
+if (!window.__kineticsActive) {
+  window.__kineticsActive = true;
   gsap.ticker.add(() => {
-    mouseX += (targetX - mouseX) * 0.08;
-    mouseY += (targetY - mouseY) * 0.08;
-
-    if (grid) {
-      const rotateY = mouseX * 6;   
-      const rotateX = -mouseY * 6;  
-      grid.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    }
-
-    if (particleCanvas) {
-      const translateX = mouseX * -30;
-      const translateY = mouseY * -30;      
-      particleCanvas.style.transform = `translate(${translateX}px, ${translateY}px)`;
-    }
+    const grid = document.querySelector('.hero__grid');
+    const particleCanvas = document.querySelector('#particleCanvas');
+    if (!grid && !particleCanvas) return;
   });
 }
+
+function initHeroGridKinetics() {}
 
 function initHeroAnimation() {
   const pretitle = document.querySelector(".hero__pretitle");
@@ -154,18 +101,14 @@ function initHeroAnimation() {
   const sideWord = document.querySelector(".hero__side-word");
 
   gsap.set([ pretitle, meta, manifesto, scroll, sideWord ], { opacity: 0 });
-
   const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-
   tl.to(pretitle, { opacity: 1, duration: 0.8 })
     .to(meta, { opacity: 1, duration: 0.8 }, "-=0.3")
     .to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5")
     .to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5")
     .to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
 
-  gsap.to(".hero__glow", {
-    scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut"
-  });
+  gsap.to(".hero__glow", { scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut" });
 }
 
 console.log("%cCODE & SOUL", "font-size: 24px; font-weight: 700;");
@@ -178,28 +121,16 @@ console.log("%cTechnology with a soul.", "font-size: 12px;");
 function initParticleText() {
   const canvases = document.querySelectorAll("[data-particle-text]");
   const systems = [];
-
   const lightTextColor = "#121316";
   const darkTextColor = "#f1f0eb";
-  const isLightTheme = () =>
-    document.documentElement.dataset.theme === "light" ||
-    document.documentElement.dataset.theme === "paper";
+  const isLightTheme = () => document.documentElement.dataset.theme === "light" || document.documentElement.dataset.theme === "paper";
 
   canvases.forEach((canvas) => {
     const text = canvas.dataset.particleText;
     const system = new ParticleText({
       canvas, text,
-      // ИСПРАВЛЕНО: на мобильных строка заголовка теперь выше
-      // (19vw вместо 15vw, см. hero.css), поэтому базовый
-      // fontSize можно вернуть к более крупному — итоговый
-      // размер всё равно safety-капается высотой канваса внутри
-      // ParticleText, так что переполнения не будет.
       fontSize: window.innerWidth < 700 ? 92 : 150,
-      color: canvas.classList.contains("particle-title__canvas--accent")
-        ? "#d7ff3f"
-        : (isLightTheme() ? lightTextColor : darkTextColor),
-      // Кислотный градиент + свечение снизу — только для
-      // заголовка Hero, не для лоадера (у него свой инстанс).
+      color: canvas.classList.contains("particle-title__canvas--accent") ? "#d7ff3f" : (isLightTheme() ? lightTextColor : darkTextColor),
       acidGradient: true,
     });
     systems.push(system);
@@ -207,8 +138,6 @@ function initParticleText() {
 
   window.__codeSoulParticles = systems;
 
-  // Перекрашиваем частицы заголовка при переключении VOID/PAPER —
-  // иначе текст остаётся светлым и становится невидимым на светлом фоне.
   window.addEventListener("code-soul:theme", (event) => {
     const nextColor = event.detail.theme === "light" ? lightTextColor : darkTextColor;
     systems.forEach((system) => {
@@ -218,31 +147,15 @@ function initParticleText() {
   });
 }
 
-/* ========================================
-   HERO — "ДЫХАНИЕ ВСЕЛЕННОЙ" (МЕДЛЕННЫЙ ПУЛЬС)
-   Едва заметный scale-пульс всего блока с заголовком:
-   1.0 → 1.01 → 1.0 каждые ~7с. Настолько тонкий, что
-   не читается как "анимация", но добавляет ощущение
-   живого, дышащего объекта, а не статичной картинки.
-======================================== */
-
 function initHeroTitlePulse() {
   const title = document.querySelector(".particle-title");
   if (!title) return;
-
   gsap.set(title, { transformOrigin: "center center" });
-
-  gsap.to(title, {
-    scale: 1.01,
-    duration: 3.5,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
+  gsap.to(title, { scale: 1.01, duration: 3.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
 }
 
 /* ========================================
-   SOUL PARTICLE ENGINE (TRANSITION SYSTEM)
+   SOUL PARTICLE ENGINE
 ======================================== */
 
 function initSoulParticles() {
@@ -263,6 +176,9 @@ function initSoulParticles() {
     getAsset('images/halftone/05-digital-world.webp')
   ];
 
+  let currentSystem = null;
+  let currentSection = null;
+
   canvases.forEach((canvas) => {
     const system = new SoulParticles({
       canvas, images: images,
@@ -270,43 +186,20 @@ function initSoulParticles() {
       maxParticles: window.innerWidth < 700 ? 7000 : 16000,
       mouseRadius: window.innerWidth < 700 ? 100 : 150,
       mouseForce: window.innerWidth < 700 ? 4 : 7,
-      // Было 0.035. Увеличено по вашему запросу — частицы
-      // догоняют новую цель заметно быстрее при скролле.
-      // Технический нюанс: чем БОЛЬШЕ это число, тем БЫСТРЕЕ
-      // (не медленнее) частицы долетают до цели, т.к. это
-      // коэффициент lerp-сближения за кадр. Если на практике
-      // 0.05 покажется резче, а не "тягучей" — попробуйте
-      // 0.02–0.025, это даст более вязкое, медленное перетекание.
       transitionSpeed: 0.05
     });
 
     canvas.__soulParticles = system;
+    currentSystem = system;
 
-    // Частицы halftone тоже не читают CSS-переменные темы —
-    // перекрашиваем их явно при переключении VOID/PAPER.
-    system.setTheme(
-      document.documentElement.dataset.theme === "light" ||
-      document.documentElement.dataset.theme === "paper"
-        ? "paper" : "dark"
-    );
-    window.addEventListener("code-soul:theme", (event) => {
-      system.setTheme(event.detail.theme);
-    });
+    system.setTheme(document.documentElement.dataset.theme === "light" || document.documentElement.dataset.theme === "paper" ? "paper" : "dark");
+    window.addEventListener("code-soul:theme", (event) => { system.setTheme(event.detail.theme); });
 
     const section = canvas.closest('.soul-section');
     if (!section) return;
+    currentSection = section;
 
-    /*
-      ИСПРАВЛЕНО: раньше картинка была жёстко привязана к позиции
-      скролла (progress → targetIndex) — если пользователь
-      останавливался, форма замирала и не превращалась дальше.
-      По ТЗ это должен быть бесконечный автоцикл HAND → CODE →
-      EYE → HEART → DIGITAL WORLD → HAND → ..., который идёт сам
-      по себе, пока секция видна. Скролл больше не обязателен —
-      он не мешает (частицы всё ещё мягко реагируют на курсор),
-      но и не требуется, чтобы увидеть весь цикл.
-    */
-    const stageDuration = 4200; // ms на каждую "устоявшуюся" форму
+    const stageDuration = 4200;
     let cycleTimer = null;
 
     const startCycle = () => {
@@ -324,8 +217,6 @@ function initSoulParticles() {
       }
     };
 
-    // Цикл идёт только пока секция реально на экране — экономия
-    // производительности, когда SOUL далеко за пределами вьюпорта.
     const visibilityObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -339,48 +230,52 @@ function initSoulParticles() {
       { threshold: 0.2 }
     );
     visibilityObserver.observe(section);
+
+    window.addEventListener("code-soul:page", (event) => {
+      if (event.detail.page !== 'home') {
+        stopCycle();
+      } else {
+        if (section && section.getBoundingClientRect().top < window.innerHeight) {
+          startCycle();
+        }
+      }
+    });
   });
 }
 
 /* ========================================
-   ABOUT ANIMATION
+   ABOUT
 ======================================== */
 
 function initAboutAnimation() {
   const section = document.querySelector(".about-section");
   if (!section) return;
-
   const lines = section.querySelectorAll("[data-about-reveal]");
   gsap.set(lines, { opacity: 0, yPercent: 100 });
-
   const values = section.querySelectorAll(".about-value");
   gsap.set(values, { opacity: 0, y: 40 });
-
   const statement = section.querySelector(".about__statement");
   gsap.set(statement, { opacity: 0, y: 50 });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        gsap.to(lines, { opacity: 1, yPercent: 0, duration: 1.15, stagger: .12, delay: .1, ease: "power4.out" });
-        gsap.to(values, { opacity: 1, y: 0, duration: .9, stagger: .1, delay: .45, ease: "power3.out" });
-        gsap.to(statement, { opacity: 1, y: 0, duration: 1, delay: .75, ease: "power3.out" });
-        observer.unobserve(section);
-      });
-    }, { threshold: .15 }
-  );
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      gsap.to(lines, { opacity: 1, yPercent: 0, duration: 1.15, stagger: .12, delay: .1, ease: "power4.out" });
+      gsap.to(values, { opacity: 1, y: 0, duration: .9, stagger: .1, delay: .45, ease: "power3.out" });
+      gsap.to(statement, { opacity: 1, y: 0, duration: 1, delay: .75, ease: "power3.out" });
+      observer.unobserve(section);
+    });
+  }, { threshold: .15 });
   observer.observe(section);
 }
 
 /* ========================================
-   JOURNAL — CINEMATIC READING ROOM (FOCUS EFFECT)
+   JOURNAL
 ======================================== */
 
 function initJournalCinematicFocus() {
   const articles = document.querySelectorAll("[data-journal-card]");
   if (!articles.length) return;
-
   articles.forEach((card) => {
     const content = card.querySelector(".journal-card__content h3");
     const visual = card.querySelector(".journal-card__visual");
@@ -389,7 +284,6 @@ function initJournalCinematicFocus() {
       gsap.to(card, { scale: 1.02, y: -12, zIndex: 10, duration: 0.5, ease: "power3.out" });
       if (content) gsap.to(content, { x: 6, color: "#d7ff3f", duration: 0.4, ease: "power2.out" });
       if (visual) gsap.to(visual, { scale: 1.05, boxShadow: "0 20px 60px rgba(215, 255, 63, 0.15)", duration: 0.6, ease: "power3.out" });
-
       articles.forEach((other) => {
         if (other !== card) {
           gsap.to(other, { filter: "brightness(0.45) grayscale(0.6)", scale: 0.97, opacity: 0.6, duration: 0.5, ease: "power2.out" });
@@ -401,7 +295,6 @@ function initJournalCinematicFocus() {
       gsap.to(card, { scale: 1, y: 0, zIndex: 1, duration: 0.5, ease: "power3.out" });
       if (content) gsap.to(content, { x: 0, color: "", duration: 0.4, ease: "power2.out" });
       if (visual) gsap.to(visual, { scale: 1, boxShadow: "none", duration: 0.6, ease: "power3.out" });
-
       articles.forEach((other) => {
         if (other !== card) {
           gsap.to(other, { filter: "brightness(1) grayscale(0)", scale: 1, opacity: 1, duration: 0.6, ease: "power3.out", delay: 0.1 });
@@ -411,90 +304,9 @@ function initJournalCinematicFocus() {
   });
 }
 
-/* ========================================
-   SERVICES MAGNETIC BLOB
-======================================== */
-
-function initServicesBlob() {
-  const cards = document.querySelectorAll('.service-card');
-  if (!cards.length) return;
-
-  cards.forEach((card) => {
-    card.addEventListener("mouseleave", () => {
-      card.style.setProperty('--blob-x', '50%');
-      card.style.setProperty('--blob-y', '50%');
-    });
-
-    card.addEventListener("mousemove", (event) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * 100;
-      const y = ((event.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--blob-x', `${x}%`);
-      card.style.setProperty('--blob-y', `${y}%`);
-    });
-  });
-}
-
-/* ========================================
-   ABOUT — MANIFESTO DEPTH & MAGNETIC DOTS
-======================================== */
-
-function initAboutDepth() {
-  const section = document.querySelector(".about-section");
-  if (!section) return;
-
-  const targets = section.querySelectorAll(".about__title-line, .about__manifesto p, .about__lead");
-  gsap.set(targets, { opacity: 0, y: 80, filter: "blur(12px)" });
-
-  ScrollTrigger.create({
-    trigger: section, start: "top 80%", once: true,
-    onEnter: () => {
-      gsap.to(targets, {
-        opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
-      });
-    }
-  });
-}
-
-function initAboutMagneticDots() {
-  const container = document.querySelector(".about__philosophy");
-  if (!container) return;
-
-  const dot1 = container.querySelector(".about__dot:first-child");
-  const dot2 = container.querySelector(".about__dot:last-child");
-  const amp = container.querySelector(".about__ampersand");
-  if (!dot1 || !dot2) return;
-
-  let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-
-  container.addEventListener("mousemove", (e) => {
-    const rect = container.getBoundingClientRect();
-    targetX = (e.clientX - rect.left) / rect.width - 0.5;
-    targetY = (e.clientY - rect.top) / rect.height - 0.5;
-  });
-
-  gsap.ticker.add(() => {
-    mouseX += (targetX - mouseX) * 0.12;
-    mouseY += (targetY - mouseY) * 0.12;
-    const dist = Math.min(1, Math.abs(mouseX) + Math.abs(mouseY));
-    const force = dist * 30; 
-
-    gsap.set(dot1, { x: mouseX * -force, y: mouseY * -force });
-    gsap.set(dot2, { x: mouseX * -force, y: mouseY * -force });
-    if (amp) {
-       gsap.set(amp, { x: mouseX * 10, y: mouseY * 5, rotate: mouseX * 5 });
-    }
-  });
-}
-
-/* ========================================
-   JOURNAL ANIMATION
-======================================== */
-
 function initJournalAnimation() {
   const section = document.querySelector(".journal-section");
   if (!section) return;
-
   const revealElements = section.querySelectorAll("[data-journal-reveal]");
   const cards = section.querySelectorAll("[data-journal-card]");
   const footer = section.querySelector(".journal__footer");
@@ -513,7 +325,6 @@ function initJournalAnimation() {
       observer.unobserve(section);
     });
   }, { threshold: .12 });
-
   observer.observe(section);
 
   cards.forEach((card) => {
@@ -539,6 +350,208 @@ function initJournalAnimation() {
 }
 
 /* ========================================
+   SERVICES — Magnetic Blob (оптимизированный)
+======================================== */
+
+// Оптимизация: используем gsap.ticker для группировки обновлений CSS-переменных
+const blobStates = new Map();
+
+function initServicesBlob() {
+  const cards = document.querySelectorAll('.service-card');
+  if (!cards.length) return;
+
+  cards.forEach((card) => {
+    // Инициализируем состояние для каждой карточки
+    const state = { x: 50, y: 50, targetX: 50, targetY: 50 };
+    blobStates.set(card, state);
+
+    card.addEventListener("mouseleave", () => {
+      state.targetX = 50;
+      state.targetY = 50;
+    });
+
+    // Throttled mousemove: сохраняем только координаты, применяем через rAF
+    let rafId = null;
+    card.addEventListener("mousemove", (event) => {
+      const rect = card.getBoundingClientRect();
+      state.targetX = ((event.clientX - rect.left) / rect.width) * 100;
+      state.targetY = ((event.clientY - rect.top) / rect.height) * 100;
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          // Применяем интерполяцию для плавности (lerp)
+          state.x += (state.targetX - state.x) * 0.1;
+          state.y += (state.targetY - state.y) * 0.1;
+          card.style.setProperty('--blob-x', `${state.x}%`);
+          card.style.setProperty('--blob-y', `${state.y}%`);
+          rafId = null;
+        });
+      }
+    });
+  });
+}
+
+/* ========================================
+   SERVICES 2.0
+======================================== */
+
+function initServicesV2() {
+  const grid = document.querySelector('[data-services-grid]');
+  if (!grid) return;
+
+  const language = localStorage.getItem('code-soul-language') || 'ru';
+  const data = translations[language]?.services;
+  if (!data) return;
+
+  const cardKeys = ['card1', 'card2', 'card3', 'card4'];
+  let html = '';
+
+  cardKeys.forEach((key) => {
+    const card = data[key];
+    if (!card) return;
+    const itemsHtml = card.items.map(item => `<span>${item}</span>`).join('');
+
+    html += `
+      <article class="service-card" data-service-id="${key}">
+        <div class="service-card__top" data-service-trigger>
+          <span class="service-card__number">${card.number}</span>
+          <h3 class="service-card__title">${card.title}</h3>
+          <span class="service-card__label">${card.price}</span>
+          <div class="service-card__indicator" aria-hidden="true">↘</div>
+        </div>
+        <div class="service-card__body" data-service-body>
+          <div class="service-card__desc">${card.desc}</div>
+          <div class="service-card__details">
+            <span class="service-card__details-label" data-i18n="services.included">ЧТО ВХОДИТ</span>
+            <div class="service-card__details-list">
+              ${itemsHtml}
+            </div>
+          </div>
+          <div class="service-card__meta">
+            <span class="service-card__price">${card.price}</span>
+            <span class="service-card__timeline">${card.timeline}</span>
+            <a href="#contact" class="service-card__cta" data-cursor="OPEN">
+              ${card.cta} <span style="font-size:1.2em;">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+  });
+
+  grid.innerHTML = html;
+
+  const cards = grid.querySelectorAll('.service-card');
+  cards.forEach((card) => {
+    const trigger = card.querySelector('[data-service-trigger]');
+    const body = card.querySelector('[data-service-body]');
+    const indicator = card.querySelector('.service-card__indicator');
+
+    if (!trigger || !body) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = body.classList.contains('service-card__body--open');
+      cards.forEach((c) => {
+        const b = c.querySelector('[data-service-body]');
+        const ind = c.querySelector('.service-card__indicator');
+        if (b && b !== body) {
+          b.classList.remove('service-card__body--open');
+          if (ind) ind.classList.remove('service-card__indicator--open');
+        }
+      });
+
+      if (isOpen) {
+        body.classList.remove('service-card__body--open');
+        if (indicator) indicator.classList.remove('service-card__indicator--open');
+      } else {
+        body.classList.add('service-card__body--open');
+        if (indicator) indicator.classList.add('service-card__indicator--open');
+      }
+    });
+
+    trigger.setAttribute('role', 'button');
+    trigger.setAttribute('tabindex', '0');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        trigger.click();
+      }
+    });
+
+    const observer = new MutationObserver(() => {
+      const isOpen = body.classList.contains('service-card__body--open');
+      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
+
+    const cta = card.querySelector('.service-card__cta');
+    if (cta) {
+      cta.addEventListener('click', (e) => {
+        e.preventDefault();
+        const contactSection = document.querySelector('#contact');
+        if (contactSection) {
+          if (window.__codeSoulLenis) {
+            window.__codeSoulLenis.scrollTo(contactSection.offsetTop, { duration: 1.2 });
+          } else {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      });
+    }
+  });
+
+  const items = grid.querySelectorAll('.service-card');
+  gsap.set(items, { opacity: 0, y: 60 });
+
+  items.forEach((item) => {
+    gsap.to(item, {
+      opacity: 1, y: 0, duration: 1.15, ease: 'power4.out',
+      scrollTrigger: { trigger: item, start: 'top 88%', once: true }
+    });
+  });
+
+  window.addEventListener('code-soul:language', (event) => {
+    const newLang = event.detail.language;
+    const newData = translations[newLang]?.services;
+    if (newData) initServicesV2();
+  });
+}
+
+/* ========================================
+   ABOUT DEPTH & MAGNETIC
+======================================== */
+
+function initAboutDepth() {
+  const section = document.querySelector(".about-section");
+  if (!section) return;
+  const targets = section.querySelectorAll(".about__title-line, .about__manifesto p, .about__lead");
+  gsap.set(targets, { opacity: 0, y: 80, filter: "blur(12px)" });
+  ScrollTrigger.create({
+    trigger: section, start: "top 80%", once: true,
+    onEnter: () => {
+      gsap.to(targets, {
+        opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
+      });
+    }
+  });
+}
+
+if (!window.__magneticDotsActive) {
+  window.__magneticDotsActive = true;
+  gsap.ticker.add(() => {
+    const container = document.querySelector(".about__philosophy");
+    if (!container) return;
+    const dot1 = container.querySelector(".about__dot:first-child");
+    const dot2 = container.querySelector(".about__dot:last-child");
+    const amp = container.querySelector(".about__ampersand");
+    if (!dot1 || !dot2) return;
+  });
+}
+
+function initAboutMagneticDots() {}
+
+/* ========================================
    CONTACT ANIMATION
 ======================================== */
 
@@ -558,7 +571,6 @@ function initContactAnimation() {
 
   const orbOne = section.querySelector('.contact__orb--one');
   const orbTwo = section.querySelector('.contact__orb--two');
-
   if (orbOne) gsap.to(orbOne, { y: -80, x: -30, duration: 6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
   if (orbTwo) gsap.to(orbTwo, { y: 70, x: 35, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
@@ -572,21 +584,113 @@ function initContactAnimation() {
   const success = section.querySelector('#contactSuccess');
   if (!form || !success) return;
 
-  form.addEventListener('submit', (event) => {
+  const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+  if (!BOT_TOKEN || !CHAT_ID) {
+    console.warn('[Code & Soul] Telegram bot token or chat ID not set. Form will not send.');
+  }
+
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (window.__clearTypewriter) {
+      window.__clearTypewriter();
+    }
+
     const button = form.querySelector('.contact__button');
     if (!button) return;
 
-    gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
-      opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
-      onComplete: () => {
-        form.querySelectorAll('.contact__step, .contact__submit').forEach(el => el.style.display = 'none');
-        success.classList.add('is-visible');
-        success.setAttribute('aria-hidden', 'false');
-        gsap.to(success, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
-      }
-    });
+    const nameInput = document.getElementById('contactName');
+    const emailInput = document.getElementById('contactEmail');
+    const telegramInput = document.getElementById('contactTelegram');
+    const messageInput = document.getElementById('contactMessage');
+    const projectCheckboxes = form.querySelectorAll('input[name="project"]:checked');
+    const budgetRadio = form.querySelector('input[name="budget"]:checked');
+
+    const name = nameInput?.value?.trim() || 'Не указано';
+    const email = emailInput?.value?.trim() || 'Не указано';
+    const telegram = telegramInput?.value?.trim() || 'Не указано';
+    const message = messageInput?.value?.trim() || 'Не указано';
+    const projects = Array.from(projectCheckboxes).map(cb => cb.value).join(', ') || 'Не выбрано';
+    const budget = budgetRadio?.value || 'Не указан';
+
+    const telegramMessage = `
+<b>📩 Новая заявка с Code & Soul</b>
+
+<b>👤 Имя:</b> ${name}
+<b>📧 Email:</b> ${email}
+<b>📱 Telegram:</b> ${telegram}
+<b>📌 Проект:</b> ${projects}
+<b>💰 Бюджет:</b> ${budget}
+<b>💬 Сообщение:</b>
+${message}
+    `.trim();
+
+    const originalText = button.innerHTML;
+    button.innerHTML = '<span style="opacity:0.6;">Отправка...</span><span class="contact__button-arrow" aria-hidden="true">↗</span>';
+    button.style.pointerEvents = 'none';
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+      console.warn('[Code & Soul] Telegram env vars missing – simulating success.');
+      setTimeout(() => {
+        gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
+          opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
+          onComplete: () => {
+            form.querySelectorAll('.contact__step, .contact__submit').forEach(el => el.style.display = 'none');
+            success.classList.add('is-visible');
+            success.setAttribute('aria-hidden', 'false');
+            gsap.to(success, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+          }
+        });
+        button.innerHTML = originalText;
+        button.style.pointerEvents = 'auto';
+      }, 800);
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMessage, parse_mode: 'HTML' })
+      });
+
+      if (!response.ok) throw new Error(`Telegram API error: ${response.status}`);
+
+      gsap.to(form.querySelectorAll('.contact__step, .contact__submit'), {
+        opacity: 0, y: -20, duration: 0.45, stagger: 0.05, ease: 'power2.in',
+        onComplete: () => {
+          form.querySelectorAll('.contact__step, .contact__submit').forEach(el => el.style.display = 'none');
+          success.classList.add('is-visible');
+          success.setAttribute('aria-hidden', 'false');
+          gsap.to(success, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+        }
+      });
+
+    } catch (error) {
+      console.error('[Code & Soul] Failed to send message:', error);
+      const errorMsg = document.createElement('div');
+      errorMsg.style.cssText = `
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #ff4444; color: white; padding: 16px 24px; border-radius: 12px;
+        font-family: var(--font-mono); font-size: 14px; z-index: 9999;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; max-width: 90%;
+      `;
+      errorMsg.textContent = '❌ Ошибка отправки. Попробуйте позже или напишите нам в Telegram @codeandsoul.';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => {
+        errorMsg.style.opacity = '0';
+        errorMsg.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => errorMsg.remove(), 500);
+      }, 5000);
+
+      button.innerHTML = originalText;
+      button.style.pointerEvents = 'auto';
+    }
   });
+
+  window.__contactTypewriterTimer = null;
 }
 
 /* ========================================
@@ -646,6 +750,13 @@ function initContactMagic() {
         textarea.setAttribute("placeholder", placeholderText);
       }
     });
+
+    window.__clearTypewriter = () => {
+      if (typewriterInterval) {
+        clearInterval(typewriterInterval);
+        typewriterInterval = null;
+      }
+    };
   }
 
   const allInputs = form.querySelectorAll("input, textarea");
@@ -663,3 +774,5 @@ function initContactMagic() {
     });
   });
 }
+
+export { initServicesV2 };

@@ -2,955 +2,227 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Code & Soul — независимая creative technology студия. Мы создаём цифровые миры." />
+    <meta name="theme-color" content="#050505" />
+    
+    <!-- SEO / Open Graph -->
+    <link rel="canonical" href="https://acab310501-cmd.github.io/Code-Soul/" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://acab310501-cmd.github.io/Code-Soul/" />
+    <meta property="og:title" content="Code & Soul — Мы создаём цифровые миры" />
+    <meta property="og:description" content="Code & Soul — независимая creative technology студия. Создаём digital-продукты, которые хочется запомнить." />
+    <meta property="og:image" content="https://acab310501-cmd.github.io/Code-Soul/images/logo/logo.jpg" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Code & Soul — Мы создаём цифровые миры" />
+    <meta name="twitter:description" content="Code & Soul — независимая creative technology студия. Создаём digital-продукты, которые хочется запомнить." />
+    <meta name="twitter:image" content="https://acab310501-cmd.github.io/Code-Soul/images/logo/logo.jpg" />
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <!-- Favicon (Десктоп и браузеры) -->
+    <link rel="icon" type="image/x-icon" href="/Code-Soul/images/logo/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/Code-Soul/images/logo/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/Code-Soul/images/logo/favicon-16x16.png" />
 
-    <meta
-      name="description"
-      content="Code & Soul — независимая creative technology студия. Мы создаём цифровые миры."
-    />
+    <!-- Apple Touch Icon (iPhone / iPad) -->
+    <link rel="apple-touch-icon" href="/Code-Soul/images/logo/apple-touch-icon.png" />
 
-    <meta
-      name="theme-color"
-      content="#050505"
-    />
+    <!-- PWA Manifest (если favicon.io создал его в корне public) -->
+    <link rel="manifest" href="/Code-Soul/site.webmanifest" />
 
-    <title>
-      Code & Soul — Мы создаём цифровые миры
-    </title>
+    <title>Code & Soul — Мы создаём цифровые миры</title>
   </head>
-
-
   <body>
-
     <div id="app">
-
       <!-- LOADER -->
-
-<div class="loader" data-loader>
-
-  <div class="loader__boot">
-
-    <div class="loader__logo">
-      CODE &amp; SOUL
-    </div>
-
-    <div class="loader__status">
-      <div class="loader__line">
-        Initializing creative engine...
+      <div class="loader" data-loader>
+        <div class="loader__boot">
+          <div class="loader__logo">CODE &amp; SOUL</div>
+          <div class="loader__status">
+            <div class="loader__line">Initializing creative engine...</div>
+            <div class="loader__line">Loading digital worlds...</div>
+            <div class="loader__line">Connecting soul...</div>
+            <div class="loader__line loader__line--accent">System ready.</div>
+          </div>
+        </div>
+        <canvas id="loaderCanvas" class="loader__canvas"></canvas>
       </div>
 
-      <div class="loader__line">
-        Loading digital worlds...
-      </div>
-
-      <div class="loader__line">
-        Connecting soul...
-      </div>
-
-      <div class="loader__line loader__line--accent">
-        System ready.
-      </div>
-    </div>
-
-  </div>
-
-  <canvas
-    id="loaderCanvas"
-    class="loader__canvas"
-  ></canvas>
-
-</div>
-      <!-- ========================================
-           CURSOR
-      ======================================== -->
-
-      <div
-        class="cursor"
-        aria-hidden="true"
-      >
+      <!-- CURSOR -->
+      <div class="cursor" aria-hidden="true">
         <div class="cursor__dot"></div>
         <div class="cursor__ring"></div>
         <div class="cursor__label"></div>
       </div>
 
+      <!-- GRAIN -->
+      <div class="grain" aria-hidden="true"></div>
 
-      <!-- ========================================
-           GRAIN
-      ======================================== -->
-
-      <div
-        class="grain"
-        aria-hidden="true"
-      ></div>
-
-
-      <!-- ========================================
-           HEADER
-      ======================================== -->
-
-      <header
-        class="site-header"
-        data-header
-      >
-
-        <a
-          class="logo"
-          href="#/"
-          aria-label="Code & Soul"
-        >
-          <span class="logo__name">
-            CODE &amp; SOUL
-          </span>
-
+      <!-- HEADER -->
+      <header class="site-header" data-header>
+        <a class="logo" href="#/" aria-label="Code & Soul">
+          <img 
+            src="/Code-Soul/images/logo/logo.jpg" 
+            alt="Code & Soul" 
+            class="logo__image" 
+          />
           <span class="logo__signal"></span>
         </a>
-
-
-        <nav
-          class="navigation"
-          aria-label="Основная навигация"
-        >
-
-          <a
-            href="#/work"
-            data-i18n="nav.work"
-          >
-            Проекты
-          </a>
-
-          <a
-            href="#/services"
-            data-i18n="nav.services"
-          >
-            Услуги
-          </a>
-
-          <a
-            href="#/about"
-            data-i18n="nav.about"
-          >
-            О нас
-          </a>
-
-          <a
-            href="#/journal"
-            data-i18n="nav.journal"
-          >
-            Журнал
-          </a>
-
+        <nav class="navigation" aria-label="Основная навигация">
+          <a href="#/work" data-i18n="nav.work">Проекты</a>
+          <a href="#/services" data-i18n="nav.services">Услуги</a>
+          <a href="#/about" data-i18n="nav.about">О нас</a>
+          <a href="#/journal" data-i18n="nav.journal">Журнал</a>
         </nav>
-
-
         <div class="header__actions">
-
-          <a
-            href="#/contact"
-            class="header-project-link"
-            data-cursor="START"
-          >
-
-            <span data-i18n="nav.start">
-              Начать проект
-            </span>
-
-            <span>↗</span>
-
+          <a href="#/contact" class="header-project-link" data-cursor="START">
+            <span data-i18n="nav.start">Начать проект</span><span>↗</span>
           </a>
-
-
-          <button
-            class="language-switcher"
-            type="button"
-            data-language-switcher
-            aria-label="Переключить язык"
-          >
-
-            <span
-              data-language="ru"
-              class="language-switcher__active"
-            >
-              RU
-            </span>
-
-            <span class="language-switcher__divider">
-              /
-            </span>
-
-            <span data-language="en">
-              EN
-            </span>
-
+          <button class="language-switcher" type="button" data-language-switcher aria-label="Переключить язык">
+            <span data-language="ru" class="language-switcher__active">RU</span>
+            <span class="language-switcher__divider">/</span>
+            <span data-language="en">EN</span>
           </button>
-
-
-          <button
-            class="theme-switcher"
-            type="button"
-            data-theme-switcher
-            aria-label="Переключить тему"
-          >
-
+          <button class="theme-switcher" type="button" data-theme-switcher aria-label="Переключить тему">
             <span class="theme-switcher__dot"></span>
-
-            <span class="theme-switcher__text">
-              VOID
-            </span>
-
+            <span class="theme-switcher__text">VOID</span>
           </button>
-
         </div>
-
       </header>
 
-
-      <!-- ========================================
-           MAIN
-      ======================================== -->
-
+      <!-- MAIN -->
       <main id="top">
-
-
-        <!-- ========================================
-             01 / HERO
-        ======================================== -->
-
-        <section
-          class="hero"
-          id="hero"
-          data-page="home"
-        >
-
-          <div
-            class="hero__grid"
-            aria-hidden="true"
-          ></div>
-
-
-          <div
-            class="hero__glow"
-            aria-hidden="true"
-          ></div>
-
-
+        <!-- HERO -->
+        <section class="hero" id="hero" data-page="home">
+          <div class="hero__grid" aria-hidden="true"></div>
+          <div class="hero__glow" aria-hidden="true"></div>
           <div class="hero__meta hero__meta--left">
-
-            <span
-              class="eyebrow"
-              data-i18n="hero.eyebrow"
-            >
-              Независимая<br />
-              digital-студия
-            </span>
-
-            <span class="hero__year">
-              2026 — NOW
-            </span>
-
+            <span class="eyebrow" data-i18n="hero.eyebrow">Независимая<br />digital-студия</span>
+            <span class="hero__year">2026 — NOW</span>
           </div>
-
-
           <div class="hero__status">
-
             <span class="status-dot"></span>
-
-            <span data-i18n="hero.status">
-              Система онлайн
-            </span>
-
+            <span data-i18n="hero.status">Система онлайн</span>
           </div>
-
-
           <div class="hero__title-wrap">
-
-            <div class="hero__pretitle">
-              CODE × SOUL
+            <div class="hero__pretitle">CODE × SOUL</div>
+            <div class="particle-title" aria-label="Мы создаём цифровые миры">
+              <canvas class="particle-title__canvas" data-particle-text="МЫ СОЗДАЁМ"></canvas>
+              <canvas class="particle-title__canvas" data-particle-text="ЦИФРОВЫЕ"></canvas>
+              <canvas class="particle-title__canvas particle-title__canvas--accent" data-particle-text="МИРЫ"></canvas>
             </div>
-
-
-            <div
-              class="particle-title"
-              aria-label="Мы создаём цифровые миры"
-            >
-
-              <canvas
-                class="particle-title__canvas"
-                data-particle-text="МЫ СОЗДАЁМ"
-              ></canvas>
-
-
-              <canvas
-                class="particle-title__canvas"
-                data-particle-text="ЦИФРОВЫЕ"
-              ></canvas>
-
-
-              <canvas
-                class="particle-title__canvas particle-title__canvas--accent"
-                data-particle-text="МИРЫ"
-              ></canvas>
-
-            </div>
-
           </div>
-
-
           <div class="hero__manifesto">
-
-            <span class="hero__manifesto-index">
-              01 / 01
-            </span>
-
-
-            <p data-i18n="hero.manifesto">
-              Технологии — это код.<br />
-              Но идея становится<br />
-              живой благодаря человеку.
-            </p>
-
+            <span class="hero__manifesto-index">01 / 01</span>
+            <p data-i18n="hero.manifesto">Технологии — это код.<br />Но идея становится<br />живой благодаря человеку.</p>
           </div>
-
-
           <div class="hero__coordinates">
-
-            <span>
-              52° / 05°
-            </span>
-
-            <span>
-              CS—001
-            </span>
-
+            <span>52° / 05°</span>
+            <span>CS—001</span>
           </div>
-
-
-          <a
-            href="#soul"
-            class="hero__scroll"
-            data-cursor="EXPLORE"
-          >
-
-            <span class="hero__scroll-icon">
-              ↓
-            </span>
-
-            <span data-i18n="hero.scroll">
-              Листайте вниз
-            </span>
-
+          <a href="#soul" class="hero__scroll" data-cursor="EXPLORE">
+            <span class="hero__scroll-icon">↓</span>
+            <span data-i18n="hero.scroll">Листайте вниз</span>
           </a>
-
-
-          <canvas
-            id="particleCanvas"
-            class="particle-canvas"
-            aria-hidden="true"
-          ></canvas>
-
-
-          <div
-            class="hero__side-word"
-            aria-hidden="true"
-          >
-            DIGITAL
-          </div>
-
+          <canvas id="particleCanvas" class="particle-canvas" aria-hidden="true"></canvas>
+          <div class="hero__side-word" aria-hidden="true">DIGITAL</div>
         </section>
 
-
-
-        <!-- ========================================
-             02 / WORK
-        ======================================== -->
-
-        <section
-          class="work-section"
-          id="work"
-          data-page="work"
-        >
-
+        <!-- WORK -->
+        <section class="work-section" id="work" data-page="work">
           <div class="work__header">
-
             <div class="work__eyebrow">
-
-              <span>
-                02 / WORK
-              </span>
-
+              <span>02 / WORK</span>
               <span class="work__line"></span>
-
-              <span data-i18n="work.selected">
-                SELECTED WORK
-              </span>
-
+              <span data-i18n="work.selected">SELECTED WORK</span>
             </div>
-
-
             <div class="work__intro">
-
               <h2 class="work__title">
-
-                <span data-i18n="work.title1">
-                  НЕ ПРОСТО
-                </span>
-
-                <span data-i18n="work.title2">
-                  САЙТЫ.
-                </span>
-
-                <span
-                  class="work__title-accent"
-                  data-i18n="work.title3"
-                >
-                  ЦИФРОВЫЕ МИРЫ.
-                </span>
-
+                <span data-i18n="work.title1">НЕ ПРОСТО</span>
+                <span data-i18n="work.title2">САЙТЫ.</span>
+                <span class="work__title-accent" data-i18n="work.title3">ЦИФРОВЫЕ МИРЫ.</span>
               </h2>
-
-
-              <p
-                class="work__description"
-                data-i18n="work.description"
-              >
-                Мы создаём цифровые продукты,
-                которые имеют характер.
-                Каждый проект — отдельная история.
-              </p>
-
+              <p class="work__description" data-i18n="work.description">Мы создаём цифровые продукты, которые имеют характер. Каждый проект — отдельная история.</p>
             </div>
-
           </div>
-
-
-          <div
-            class="work__projects"
-            data-projects
-          ></div>
-
-
+          <div class="work__projects" data-projects></div>
           <div class="work__footer">
-
-            <span data-i18n="work.count">
-              08 PROJECTS / 2026
-            </span>
-
-            <span data-i18n="work.footer">
-              MORE WORLDS ARE COMING
-            </span>
-
+            <span data-i18n="work.count">08 PROJECTS / 2026</span>
+            <span data-i18n="work.footer">MORE WORLDS ARE COMING</span>
           </div>
-
         </section>
 
-
-
-        <!-- ========================================
-             03 / SERVICES
-        ======================================== -->
-
-        <section
-          class="services-section"
-          id="services"
-          data-page="services"
-        >
-
+        <!-- SERVICES 2.0 -->
+        <section class="services-section" id="services" data-page="services">
           <div class="services__header">
-
             <div class="services__eyebrow">
-
-              <span>
-                03 / SERVICES
-              </span>
-
+              <span>03 / SERVICES</span>
               <span class="services__line"></span>
-
-              <span data-i18n="services.label">
-                WHAT WE CREATE
-              </span>
-
+              <span data-i18n="services.label">WHAT WE CREATE</span>
             </div>
-
-
             <div class="services__intro">
-
               <h2 class="services__title">
-
-                <span data-i18n="services.title1">
-                  МЫ СОЗДАЁМ
-                </span>
-
-                <span data-i18n="services.title2">
-                  БОЛЬШЕ, ЧЕМ
-                </span>
-
-                <span
-                  class="services__accent"
-                  data-i18n="services.title3"
-                >
-                  САЙТЫ.
-                </span>
-
+                <span data-i18n="services.title">ЧТО<br>МЫ<br>СТРОИМ</span>
               </h2>
-
-
-              <p
-                class="services__description"
-                data-i18n="services.description"
-              >
-                От идеи до цифрового продукта.
-                Технологии, дизайн и человеческий подход
-                объединяются в одном пространстве.
-              </p>
-
+              <p class="services__subtitle" data-i18n="services.subtitle">Мы превращаем идеи в digital experiences, которые хочется запомнить.</p>
             </div>
-
           </div>
-
-
-          <div class="services__grid">
-
-
-            <!-- 01 / DIGITAL -->
-
-            <article
-              class="service-card is-active"
-              data-service="0"
-            >
-
-              <div class="service-card__top">
-
-                <span class="service-card__number">
-                  01
-                </span>
-
-                <span class="service-card__type">
-                  DIGITAL
-                </span>
-
-              </div>
-
-
-              <div class="service-card__visual">
-
-                <div class="service-orbit">
-
-                  <span></span>
-                  <span></span>
-                  <span></span>
-
-                </div>
-
-
-                <div class="service-code">
-                  &lt;/&gt;
-                </div>
-
-              </div>
-
-
-              <div class="service-card__content">
-
-                <h3 data-i18n="services.webTitle">
-                  DIGITAL EXPERIENCES
-                </h3>
-
-                <p data-i18n="services.webText">
-                  Сайты, платформы и digital-продукты,
-                  которые хочется исследовать.
-                </p>
-
-              </div>
-
-
-              <div class="service-card__footer">
-
-                <span data-i18n="services.webMeta">
-                  WEBSITES / PLATFORMS / E-COMMERCE
-                </span>
-
-                <span class="service-card__arrow">
-                  ↗
-                </span>
-
-              </div>
-
-            </article>
-
-
-
-            <!-- 02 / SOFTWARE -->
-
-            <article
-              class="service-card"
-              data-service="1"
-            >
-
-              <div class="service-card__top">
-
-                <span class="service-card__number">
-                  02
-                </span>
-
-                <span class="service-card__type">
-                  SOFTWARE
-                </span>
-
-              </div>
-
-
-              <div class="service-card__visual">
-
-                <div class="service-phone">
-
-                  <div class="service-phone__screen">
-
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <i></i>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <div class="service-card__content">
-
-                <h3 data-i18n="services.appsTitle">
-                  APPS
-                </h3>
-
-                <p data-i18n="services.appsText">
-                  Мобильные и desktop-приложения,
-                  созданные вокруг реальных задач.
-                </p>
-
-              </div>
-
-
-              <div class="service-card__footer">
-
-                <span data-i18n="services.appsMeta">
-                  MOBILE / DESKTOP / PRODUCTS
-                </span>
-
-                <span class="service-card__arrow">
-                  ↗
-                </span>
-
-              </div>
-
-            </article>
-
-
-
-            <!-- 03 / AI -->
-
-            <article
-              class="service-card"
-              data-service="2"
-            >
-
-              <div class="service-card__top">
-
-                <span class="service-card__number">
-                  03
-                </span>
-
-                <span class="service-card__type">
-                  INTELLIGENCE
-                </span>
-
-              </div>
-
-
-              <div class="service-card__visual">
-
-                <div class="service-network">
-
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-
-                </div>
-
-              </div>
-
-
-              <div class="service-card__content">
-
-                <h3 data-i18n="services.aiTitle">
-                  AI & AUTOMATION
-                </h3>
-
-                <p data-i18n="services.aiText">
-                  AI-инструменты, боты и автоматизация
-                  процессов, которые экономят время.
-                </p>
-
-              </div>
-
-
-              <div class="service-card__footer">
-
-                <span data-i18n="services.aiMeta">
-                  AI / BOTS / AUTOMATION
-                </span>
-
-                <span class="service-card__arrow">
-                  ↗
-                </span>
-
-              </div>
-
-            </article>
-
-
-
-            <!-- 04 / BRAND -->
-
-            <article
-              class="service-card"
-              data-service="3"
-            >
-
-              <div class="service-card__top">
-
-                <span class="service-card__number">
-                  04
-                </span>
-
-                <span class="service-card__type">
-                  IDENTITY
-                </span>
-
-              </div>
-
-
-              <div class="service-card__visual">
-
-                <div class="service-hand">
-
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-
-                </div>
-
-              </div>
-
-
-              <div class="service-card__content">
-
-                <h3 data-i18n="services.brandTitle">
-                  BRANDS & WORLDS
-                </h3>
-
-                <p data-i18n="services.brandText">
-                  Брендинг, визуальные системы и digital identity,
-                  которые создают характер.
-                </p>
-
-              </div>
-
-
-              <div class="service-card__footer">
-
-                <span data-i18n="services.brandMeta">
-                  BRANDING / IDENTITY / CULTURE
-                </span>
-
-                <span class="service-card__arrow">
-                  ↗
-                </span>
-
-              </div>
-
-            </article>
-
-          </div>
-
-
+          <div class="services__grid" data-services-grid></div>
           <div class="services__bottom">
-
-            <span>
-              CODE
-            </span>
-
+            <span>CODE</span>
             <div class="services__bottom-line"></div>
-
-            <span>
-              SOUL
-            </span>
-
+            <span>SOUL</span>
           </div>
-
         </section>
 
-
-
-        <!-- ========================================
-             04 / SOUL
-        ======================================== -->
-
-        <section
-          class="soul-section"
-          id="soul"
-          data-page="home"
-        >
-
-          <div
-            class="soul-section__noise"
-          ></div>
-
-
+        <!-- SOUL -->
+        <section class="soul-section" id="soul" data-page="home">
+          <div class="soul-section__noise"></div>
           <div class="soul-section__header">
-
             <div class="soul-section__eyebrow">
-
-              <span>
-                04 / SOUL
-              </span>
-
+              <span>04 / SOUL</span>
               <span class="soul-section__line"></span>
-
-              <span data-i18n="soul.label">
-                THE HUMAN PART
-              </span>
-
+              <span data-i18n="soul.label">THE HUMAN PART</span>
             </div>
-
           </div>
-
-
           <div class="soul-section__main">
-
-
             <div class="soul-section__copy">
-
-              <p
-                class="soul-section__small"
-                data-i18n="soul.small"
-              >
-                CODE IS THE TOOL.
-              </p>
-
-
+              <p class="soul-section__small" data-i18n="soul.small">CODE IS THE TOOL.</p>
               <h2 class="soul-section__title">
-
-                <span data-i18n="soul.title1">
-                  BUT THE
-                </span>
-
-                <span data-i18n="soul.title2">
-                  SOUL
-                </span>
-
-                <span data-i18n="soul.title3">
-                  IS HUMAN.
-                </span>
-
+                <span data-i18n="soul.title1">BUT THE</span>
+                <span data-i18n="soul.title2">SOUL</span>
+                <span data-i18n="soul.title3">IS HUMAN.</span>
               </h2>
-
-
-              <p
-                class="soul-section__description"
-                data-i18n="soul.description"
-              >
-                Мы верим, что цифровой продукт должен
-                не только работать. Он должен что-то чувствовать.
-              </p>
-
+              <p class="soul-section__description" data-i18n="soul.description">Мы верим, что цифровой продукт должен не только работать. Он должен что-то чувствовать.</p>
             </div>
-
-
             <div class="soul-section__visual">
-
-  <canvas
-  class="soul-particles"
-  data-soul-particles
-  data-soul-image="images/halftone/01-hand.webp"
-  ></canvas>
-
+              <canvas class="soul-particles" data-soul-particles data-soul-image="images/halftone/01-hand.webp"></canvas>
               <div class="soul-section__visual-label">
-
-                <span>
-                  MOVE YOUR CURSOR
-                </span>
-
-                <span>
-                  FEEL THE SYSTEM
-                </span>
-
+                <span>MOVE YOUR CURSOR</span>
+                <span>FEEL THE SYSTEM</span>
               </div>
-
             </div>
-
           </div>
-
-
           <div class="soul-section__manifesto">
-
-            <span>
-              CODE
-            </span>
-
-            <div></div>
-
-            <span>
-              &
-            </span>
-
-            <div></div>
-
-            <span>
-              SOUL
-            </span>
-
+            <span>CODE</span><div></div><span>&</span><div></div><span>SOUL</span>
           </div>
-
         </section>
 
-
-        <!-- ========================================
-             HOME — О НАС / ТЕХНОЛОГИИ (первая страница)
-        ======================================== -->
-
+        <!-- HOME TEASER -->
         <section class="home-teaser" data-page="home">
-
           <div class="home-teaser__intro">
             <span class="home-teaser__eyebrow" data-i18n="home.eyebrow">02 / О НАС</span>
-
             <h2 class="home-teaser__title">
               <span data-i18n="home.title1">ЛЮДИ,</span>
               <span data-i18n="home.title2">КОТОРЫМ</span>
               <span class="home-teaser__accent" data-i18n="home.title3">НЕ ВСЁ РАВНО.</span>
             </h2>
-
-            <p class="home-teaser__text" data-i18n="home.text">
-              Мы небольшая команда, которая берёт на себя весь путь цифрового продукта — от идеи и интерфейса до анимации и запуска. Никаких конвейеров и шаблонов: каждый проект собирается вручную, под конкретную задачу.
-            </p>
-
-            <a href="#/work" class="home-teaser__cta" data-cursor="OPEN">
-              <span data-i18n="home.cta">Смотреть проекты</span>
-              <span>↗</span>
-            </a>
+            <p class="home-teaser__text" data-i18n="home.text">Мы небольшая команда, которая берёт на себя весь путь цифрового продукта — от идеи и интерфейса до анимации и запуска. Никаких конвейеров и шаблонов: каждый проект собирается вручную, под конкретную задачу.</p>
+            <a href="#/work" class="home-teaser__cta" data-cursor="OPEN"><span data-i18n="home.cta">Смотреть проекты</span><span>↗</span></a>
           </div>
-
           <div class="home-teaser__stack">
             <span class="home-teaser__stack-label" data-i18n="home.stackLabel">НА ЧЁМ МЫ РАБОТАЕМ</span>
-
             <ul class="home-teaser__stack-list">
               <li data-i18n="home.stackItem1">JavaScript, Python</li>
               <li data-i18n="home.stackItem2">Дизайн и Figma / Photoshop</li>
@@ -958,224 +230,60 @@
               <li data-i18n="home.stackItem4">Приложения под iOS, Android, Windows</li>
             </ul>
           </div>
-
         </section>
 
-
-        <!-- ========================================
-             05 / ABOUT
-        ======================================== -->
-
-        <section
-          class="about-section"
-          id="about"
-          data-page="about"
-        >
-
-
+        <!-- ABOUT -->
+        <section class="about-section" id="about" data-page="about">
           <div class="about__header">
-
             <div class="about__eyebrow">
-
-              <span>
-                05 / ABOUT
-              </span>
-
+              <span>05 / ABOUT</span>
               <span class="about__line"></span>
-
-              <span data-i18n="about.label">
-                КТО МЫ
-              </span>
-
+              <span data-i18n="about.label">КТО МЫ</span>
             </div>
-
           </div>
-
-
           <div class="about__hero">
-
             <h2 class="about__title">
-
-              <span
-                class="about__title-line"
-                data-about-reveal
-                data-i18n="about.title1"
-              >
-                МЫ НЕ ПРОСТО
-              </span>
-
-
-              <span
-                class="about__title-line about__title-line--indent"
-                data-about-reveal
-                data-i18n="about.title2"
-              >
-                СОЗДАЁМ
-              </span>
-
-
-              <span
-                class="about__title-line about__title-line--accent"
-                data-about-reveal
-                data-i18n="about.title3"
-              >
-                ЦИФРОВЫЕ ПРОДУКТЫ.
-              </span>
-
+              <span class="about__title-line" data-about-reveal data-i18n="about.title1">МЫ НЕ ПРОСТО</span>
+              <span class="about__title-line about__title-line--indent" data-about-reveal data-i18n="about.title2">СОЗДАЁМ</span>
+              <span class="about__title-line about__title-line--accent" data-about-reveal data-i18n="about.title3">ЦИФРОВЫЕ ПРОДУКТЫ.</span>
             </h2>
-
-
             <div class="about__manifesto">
-
-              <span class="about__manifesto-number">
-                01
-              </span>
-
-
-              <p data-i18n="about.manifesto">
-                Мы соединяем технологии, дизайн,
-                идеи и эмоции, чтобы создавать
-                цифровые продукты с характером.
-              </p>
-
+              <span class="about__manifesto-number">01</span>
+              <p data-i18n="about.manifesto">Мы соединяем технологии, дизайн, идеи и эмоции, чтобы создавать цифровые продукты с характером.</p>
             </div>
-
           </div>
-
-
-
-          <!-- CODE & SOUL -->
-
           <div class="about__philosophy">
-
-            <div class="about__philosophy-word">
-
-              <span>
-                CODE
-              </span>
-
-            </div>
-
-
+            <div class="about__philosophy-word"><span>CODE</span></div>
             <div class="about__philosophy-center">
-
-              <div
-                class="about__dot"
-                data-about-dot
-              ></div>
-
-
-              <span class="about__ampersand">
-                &
-              </span>
-
-
-              <div
-                class="about__dot"
-                data-about-dot
-              ></div>
-
+              <div class="about__dot" data-about-dot></div>
+              <span class="about__ampersand">&</span>
+              <div class="about__dot" data-about-dot></div>
             </div>
-
-
-            <div
-              class="about__philosophy-word about__philosophy-word--right"
-            >
-
-              <span>
-                SOUL
-              </span>
-
-            </div>
-
+            <div class="about__philosophy-word about__philosophy-word--right"><span>SOUL</span></div>
           </div>
-
-
-
-          <!-- PHILOSOPHY -->
-
           <div class="about__body">
-
             <div class="about__body-label">
-
-              <span>
-                05.01
-              </span>
-
-              <span data-i18n="about.bodyLabel">
-                НАША ФИЛОСОФИЯ
-              </span>
-
+              <span>05.01</span>
+              <span data-i18n="about.bodyLabel">НАША ФИЛОСОФИЯ</span>
             </div>
-
-
             <div class="about__body-content">
-
-              <p
-                class="about__lead"
-                data-i18n="about.lead"
-              >
-                Технологии с душой.
-              </p>
-
-
-              <p
-                class="about__text"
-                data-i18n="about.text"
-              >
-                Большинство сайтов начинаются с технического
-                задания. Наши — с идеи. Мы верим, что хороший
-                цифровой продукт — это не только код. Это
-                сочетание логики, эстетики и внимания к
-                деталям. Каждый проект для нас — не просто
-                разработка, а создание цифрового пространства,
-                которое помогает бизнесу вызывать доверие,
-                выглядеть современно и приносить результат.
-              </p>
-
-
-              <p
-                class="about__text"
-                data-i18n="about.text2"
-              >
-                Мы не обещаем невозможного, не используем
-                громкие слова и не пытаемся впечатлить
-                сложными терминами. Вместо этого — проектируем
-                понятные интерфейсы, создаём современный
-                дизайн, пишем чистый и быстрый код и думаем
-                о будущем проекта.
-              </p>
-
+              <p class="about__lead" data-i18n="about.lead">Технологии с душой.</p>
+              <p class="about__text" data-i18n="about.text">Большинство сайтов начинаются с технического задания. Наши — с идеи. Мы верим, что хороший цифровой продукт — это не только код. Это сочетание логики, эстетики и внимания к деталям. Каждый проект для нас — не просто разработка, а создание цифрового пространства, которое помогает бизнесу вызывать доверие, выглядеть современно и приносить результат.</p>
+              <p class="about__text" data-i18n="about.text2">Мы не обещаем невозможного, не используем громкие слова и не пытаемся впечатлить сложными терминами. Вместо этого — проектируем понятные интерфейсы, создаём современный дизайн, пишем чистый и быстрый код и думаем о будущем проекта.</p>
             </div>
-
           </div>
-
-
-          <!-- WHY TRUST US / WHAT YOU GET -->
-
           <div class="about__extra">
-
             <div class="about__extra-block">
-
-              <h4 class="about__extra-heading" data-i18n="about.trustTitle">
-                ПОЧЕМУ НАМ ДОВЕРЯЮТ
-              </h4>
-
+              <h4 class="about__extra-heading" data-i18n="about.trustTitle">ПОЧЕМУ НАМ ДОВЕРЯЮТ</h4>
               <ul class="about__extra-list">
                 <li data-i18n="about.trust1">Заказать сайт — это не просто купить услугу. Это доверить кому-то часть своего бизнеса.</li>
                 <li data-i18n="about.trust2">Поэтому для нас важен не только результат, но и то, каким был путь к нему: без бесконечных созвонов, без сложных терминов, без неожиданностей.</li>
                 <li data-i18n="about.trust3">Вы всегда знаете, на каком этапе проект, что уже сделано и что будет дальше.</li>
                 <li data-i18n="about.trust4">Мы относимся к каждому проекту так, будто делаем его для себя.</li>
               </ul>
-
             </div>
-
             <div class="about__extra-block">
-
-              <h4 class="about__extra-heading" data-i18n="about.getTitle">
-                ЧТО ВЫ ПОЛУЧИТЕ
-              </h4>
-
+              <h4 class="about__extra-heading" data-i18n="about.getTitle">ЧТО ВЫ ПОЛУЧИТЕ</h4>
               <ul class="about__extra-list">
                 <li data-i18n="about.get1">Современный дизайн, который не выглядит шаблонно</li>
                 <li data-i18n="about.get2">Быстрый сайт с чистым кодом и адаптацией под все устройства</li>
@@ -1183,998 +291,262 @@
                 <li data-i18n="about.get4">Возможность развивать проект после запуска</li>
                 <li data-i18n="about.get5">Поддержку и обратную связь даже после сдачи работы</li>
               </ul>
-
             </div>
-
             <div class="about__extra-block about__extra-block--wide">
-
-              <h4 class="about__extra-heading" data-i18n="about.howWeWorkTitle">
-                КАК МЫ РАБОТАЕМ
-              </h4>
-
-              <p class="about__text about__extra-text" data-i18n="about.howWeWork">
-                Меньше слов — больше результата. Мы не берём
-                десятки проектов одновременно ради количества —
-                мы уделяем внимание каждому клиенту, потому что
-                именно детали делают хороший продукт отличным.
-              </p>
-
+              <h4 class="about__extra-heading" data-i18n="about.howWeWorkTitle">КАК МЫ РАБОТАЕМ</h4>
+              <p class="about__text about__extra-text" data-i18n="about.howWeWork">Меньше слов — больше результата. Мы не берём десятки проектов одновременно ради количества — мы уделяем внимание каждому клиенту, потому что именно детали делают хороший продукт отличным.</p>
             </div>
-
           </div>
-
-
-          <!-- VALUES -->
-
           <div class="about__values">
-
-
             <article class="about-value">
-
-              <span class="about-value__number">
-                01
-              </span>
-
-              <h3 data-i18n="about.value1Title">
-                CURIOSITY
-              </h3>
-
-              <p data-i18n="about.value1Text">
-                Нам интересно исследовать новое,
-                экспериментировать и постоянно
-                становиться лучше.
-              </p>
-
+              <span class="about-value__number">01</span>
+              <h3 data-i18n="about.value1Title">CURIOSITY</h3>
+              <p data-i18n="about.value1Text">Нам интересно исследовать новое, экспериментировать и постоянно становиться лучше.</p>
             </article>
-
-
             <article class="about-value">
-
-              <span class="about-value__number">
-                02
-              </span>
-
-              <h3 data-i18n="about.value2Title">
-                CRAFT
-              </h3>
-
-              <p data-i18n="about.value2Text">
-                Мы обращаем внимание на детали,
-                потому что именно они превращают
-                хорошее в особенное.
-              </p>
-
+              <span class="about-value__number">02</span>
+              <h3 data-i18n="about.value2Title">CRAFT</h3>
+              <p data-i18n="about.value2Text">Мы обращаем внимание на детали, потому что именно они превращают хорошее в особенное.</p>
             </article>
-
-
             <article class="about-value">
-
-              <span class="about-value__number">
-                03
-              </span>
-
-              <h3 data-i18n="about.value3Title">
-                HUMANITY
-              </h3>
-
-              <p data-i18n="about.value3Text">
-                За каждым экраном находится человек.
-                И мы создаём прежде всего для него.
-              </p>
-
+              <span class="about-value__number">03</span>
+              <h3 data-i18n="about.value3Title">HUMANITY</h3>
+              <p data-i18n="about.value3Text">За каждым экраном находится человек. И мы создаём прежде всего для него.</p>
             </article>
-
-
             <article class="about-value">
-
-              <span class="about-value__number">
-                04
-              </span>
-
-              <h3 data-i18n="about.value4Title">
-                SOUL
-              </h3>
-
-              <p data-i18n="about.value4Text">
-                Технологии дают возможности.
-                Душа даёт им смысл.
-              </p>
-
+              <span class="about-value__number">04</span>
+              <h3 data-i18n="about.value4Title">SOUL</h3>
+              <p data-i18n="about.value4Text">Технологии дают возможности. Душа даёт им смысл.</p>
             </article>
-
-
           </div>
-
-
-
-          <!-- FINAL STATEMENT -->
-
           <div class="about__statement">
-
-            <span
-              class="about__statement-small"
-              data-i18n="about.statementSmall"
-            >
-              ЭТО CODE &amp; SOUL.
-            </span>
-
-
-            <h3 data-i18n="about.statement">
-              ТЕХНОЛОГИЯ<br />
-              С ХАРАКТЕРОМ.
-            </h3>
-
+            <span class="about__statement-small" data-i18n="about.statementSmall">ЭТО CODE &amp; SOUL.</span>
+            <h3 data-i18n="about.statement">ТЕХНОЛОГИЯ<br />С ХАРАКТЕРОМ.</h3>
           </div>
-
-
         </section>
 
-
-
-        <!-- ========================================
-             06 / JOURNAL
-        ======================================== -->
-
-<!-- ========================================
-     JOURNAL
-======================================== -->
-
-<section class="journal-section" id="journal" data-page="journal">
-
-  <div class="journal__header">
-
-    <div class="journal__eyebrow">
-      <span>06 / JOURNAL</span>
-
-      <span class="journal__line"></span>
-
-      <span data-i18n="journal.label">
-        МЫСЛИ / ИДЕИ / ЭКСПЕРИМЕНТЫ
-      </span>
-    </div>
-
-
-    <div class="journal__intro">
-
-      <h2 class="journal__title">
-
-        <span
-          class="journal__title-line"
-          data-journal-reveal
-          data-i18n="journal.title1"
-        >
-          ИДЕИ.
-        </span>
-
-        <span
-          class="journal__title-line journal__title-line--indent"
-          data-journal-reveal
-          data-i18n="journal.title2"
-        >
-          ЭКСПЕРИМЕНТЫ.
-        </span>
-
-        <span
-          class="journal__title-line journal__title-line--accent"
-          data-journal-reveal
-          data-i18n="journal.title3"
-        >
-          МЫСЛИ.
-        </span>
-
-      </h2>
-
-
-      <p
-        class="journal__description"
-        data-journal-reveal
-        data-i18n="journal.description"
-      >
-        Пространство, где мы говорим о технологиях,
-        дизайне, AI, коде и всём, что происходит
-        между идеей и её воплощением.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <!-- ARTICLES -->
-
-  <div class="journal__articles">
-
-
-    <!-- ARTICLE 01 -->
-
-    <article
-      class="journal-card"
-      data-journal-card
-      data-journal-theme="acid"
-    >
-
-      <div class="journal-card__top">
-
-        <span class="journal-card__number">
-          01
-        </span>
-
-        <span
-          class="journal-card__category"
-          data-i18n="journal.article1Category"
-        >
-          VIBE CODING
-        </span>
-
-        <span class="journal-card__year">
-          2026
-        </span>
-
-      </div>
-
-
-      <div class="journal-card__body">
-
-        <div class="journal-card__visual">
-
-          <div class="journal-card__halftone">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+        <!-- JOURNAL -->
+        <section class="journal-section" id="journal" data-page="journal">
+          <div class="journal__header">
+            <div class="journal__eyebrow">
+              <span>06 / JOURNAL</span>
+              <span class="journal__line"></span>
+              <span data-i18n="journal.label">МЫСЛИ / ИДЕИ / ЭКСПЕРИМЕНТЫ</span>
+            </div>
+            <div class="journal__intro">
+              <h2 class="journal__title">
+                <span class="journal__title-line" data-journal-reveal data-i18n="journal.title1">ИДЕИ.</span>
+                <span class="journal__title-line journal__title-line--indent" data-journal-reveal data-i18n="journal.title2">ЭКСПЕРИМЕНТЫ.</span>
+                <span class="journal__title-line journal__title-line--accent" data-journal-reveal data-i18n="journal.title3">МЫСЛИ.</span>
+              </h2>
+              <p class="journal__description" data-journal-reveal data-i18n="journal.description">Пространство, где мы говорим о технологиях, дизайне, AI, коде и всём, что происходит между идеей и её воплощением.</p>
+            </div>
           </div>
-
-          <span class="journal-card__visual-code">
-            &lt;/&gt;
-          </span>
-
-        </div>
-
-
-        <div class="journal-card__content">
-
-          <h3
-            data-i18n="journal.article1Title"
-          >
-            THE ART OF VIBE CODING
-          </h3>
-
-          <p
-            data-i18n="journal.article1Text"
-          >
-            Как создавать цифровые продукты
-            вместе с AI и не превращать разработку
-            в бездушную генерацию. Промпт — это не
-            техническое задание, а разговор о вкусе.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="journal-card__bottom">
-
-        <span
-          data-i18n="journal.article1Meta"
-        >
-          AI / CODE / PROCESS
-        </span>
-
-        <span class="journal-card__arrow">
-          ↗
-        </span>
-
-      </div>
-
-    </article>
-
-
-    <!-- ARTICLE 02 -->
-
-    <article
-      class="journal-card"
-      data-journal-card
-      data-journal-theme="dark"
-    >
-
-      <div class="journal-card__top">
-
-        <span class="journal-card__number">
-          02
-        </span>
-
-        <span
-          class="journal-card__category"
-          data-i18n="journal.article2Category"
-        >
-          AI PHILOSOPHY
-        </span>
-
-        <span class="journal-card__year">
-          2026
-        </span>
-
-      </div>
-
-
-      <div class="journal-card__body">
-
-        <div class="journal-card__visual">
-
-          <div class="journal-card__orbit">
-
-            <span></span>
-            <span></span>
-            <span></span>
-
+          <div class="journal__articles">
+            <article class="journal-card" data-journal-card data-journal-theme="acid">
+              <div class="journal-card__top">
+                <span class="journal-card__number">01</span>
+                <span class="journal-card__category" data-i18n="journal.article1Category">VIBE CODING</span>
+                <span class="journal-card__year">2026</span>
+              </div>
+              <div class="journal-card__body">
+                <div class="journal-card__visual">
+                  <div class="journal-card__halftone"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                  <span class="journal-card__visual-code">&lt;/&gt;</span>
+                </div>
+                <div class="journal-card__content">
+                  <h3 data-i18n="journal.article1Title">THE ART OF VIBE CODING</h3>
+                  <p data-i18n="journal.article1Text">Как создавать цифровые продукты вместе с AI и не превращать разработку в бездушную генерацию. Промпт — это не техническое задание, а разговор о вкусе.</p>
+                </div>
+              </div>
+              <div class="journal-card__bottom">
+                <span data-i18n="journal.article1Meta">AI / CODE / PROCESS</span>
+                <span class="journal-card__arrow">↗</span>
+              </div>
+            </article>
+            <article class="journal-card" data-journal-card data-journal-theme="dark">
+              <div class="journal-card__top">
+                <span class="journal-card__number">02</span>
+                <span class="journal-card__category" data-i18n="journal.article2Category">AI PHILOSOPHY</span>
+                <span class="journal-card__year">2026</span>
+              </div>
+              <div class="journal-card__body">
+                <div class="journal-card__visual">
+                  <div class="journal-card__orbit"><span></span><span></span><span></span></div>
+                  <span class="journal-card__visual-symbol">&</span>
+                </div>
+                <div class="journal-card__content">
+                  <h3 data-i18n="journal.article2Title">AI HAS NO TASTE</h3>
+                  <p data-i18n="journal.article2Text">Нейросеть сгенерирует сто вариантов макета за секунды. Но решение, какой из них оставить, — то самое чувство меры, которое нельзя делегировать алгоритму. Мы используем AI как ускоритель черновика, а не как автора идеи.</p>
+                </div>
+              </div>
+              <div class="journal-card__bottom">
+                <span data-i18n="journal.article2Meta">AI / DESIGN / JUDGMENT</span>
+                <span class="journal-card__arrow">↗</span>
+              </div>
+            </article>
+            <article class="journal-card" data-journal-card data-journal-theme="acid">
+              <div class="journal-card__top">
+                <span class="journal-card__number">03</span>
+                <span class="journal-card__category" data-i18n="journal.article3Category">DESIGN TRENDS</span>
+                <span class="journal-card__year">2026</span>
+              </div>
+              <div class="journal-card__body">
+                <div class="journal-card__visual">
+                  <div class="journal-card__grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                  <span class="journal-card__visual-symbol">26</span>
+                </div>
+                <div class="journal-card__content">
+                  <h3 data-i18n="journal.article3Title">MAXIMUM MINIMALISM</h3>
+                  <p data-i18n="journal.article3Text">2026 год вернул моду на пустое пространство: крупную типографику, монохромные палитры и декор только там, где он несёт смысл. Разбираем, какие тренды действительно останутся, а какие уже устарели.</p>
+                </div>
+              </div>
+              <div class="journal-card__bottom">
+                <span data-i18n="journal.article3Meta">DESIGN / TYPE / 2026</span>
+                <span class="journal-card__arrow">↗</span>
+              </div>
+            </article>
+            <article class="journal-card" data-journal-card data-journal-theme="dark">
+              <div class="journal-card__top">
+                <span class="journal-card__number">04</span>
+                <span class="journal-card__category" data-i18n="journal.article4Category">MOTION UX</span>
+                <span class="journal-card__year">2026</span>
+              </div>
+              <div class="journal-card__body">
+                <div class="journal-card__visual">
+                  <div class="journal-card__dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <span class="journal-card__visual-symbol">01</span>
+                </div>
+                <div class="journal-card__content">
+                  <h3 data-i18n="journal.article4Title">WHEN DESIGN BECOMES ALIVE</h3>
+                  <p data-i18n="journal.article4Text">Почему анимация, звук, движение и взаимодействие способны превратить интерфейс в настоящий опыт — и где проходит грань между «живо» и «раздражает».</p>
+                </div>
+              </div>
+              <div class="journal-card__bottom">
+                <span data-i18n="journal.article4Meta">MOTION / UI / EXPERIENCE</span>
+                <span class="journal-card__arrow">↗</span>
+              </div>
+            </article>
           </div>
-
-          <span class="journal-card__visual-symbol">
-            &
-          </span>
-
-        </div>
-
-
-        <div class="journal-card__content">
-
-          <h3
-            data-i18n="journal.article2Title"
-          >
-            AI HAS NO TASTE
-          </h3>
-
-          <p
-            data-i18n="journal.article2Text"
-          >
-            Нейросеть сгенерирует сто вариантов
-            макета за секунды. Но решение, какой
-            из них оставить, — то самое чувство меры,
-            которое нельзя делегировать алгоритму.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="journal-card__bottom">
-
-        <span
-          data-i18n="journal.article2Meta"
-        >
-          AI / DESIGN / JUDGMENT
-        </span>
-
-        <span class="journal-card__arrow">
-          ↗
-        </span>
-
-      </div>
-
-    </article>
-
-
-    <!-- ARTICLE 03 -->
-
-    <article
-      class="journal-card"
-      data-journal-card
-      data-journal-theme="acid"
-    >
-
-      <div class="journal-card__top">
-
-        <span class="journal-card__number">
-          03
-        </span>
-
-        <span
-          class="journal-card__category"
-          data-i18n="journal.article3Category"
-        >
-          DESIGN TRENDS
-        </span>
-
-        <span class="journal-card__year">
-          2026
-        </span>
-
-      </div>
-
-
-      <div class="journal-card__body">
-
-        <div class="journal-card__visual">
-
-          <div class="journal-card__grid">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+          <div class="journal__footer">
+            <span data-i18n="journal.footerLeft">MORE THOUGHTS ARE COMING</span>
+            <span class="journal__footer-line"></span>
+            <span data-i18n="journal.footerRight">CODE × SOUL</span>
           </div>
+        </section>
 
-          <span class="journal-card__visual-symbol">
-            26
-          </span>
-
-        </div>
-
-
-        <div class="journal-card__content">
-
-          <h3
-            data-i18n="journal.article3Title"
-          >
-            MAXIMUM MINIMALISM
-          </h3>
-
-          <p
-            data-i18n="journal.article3Text"
-          >
-            2026 год вернул моду на пустое
-            пространство: крупную типографику,
-            монохромные палитры и декор только
-            там, где он несёт смысл.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="journal-card__bottom">
-
-        <span
-          data-i18n="journal.article3Meta"
-        >
-          DESIGN / TYPE / 2026
-        </span>
-
-        <span class="journal-card__arrow">
-          ↗
-        </span>
-
-      </div>
-
-    </article>
-
-
-    <!-- ARTICLE 04 -->
-
-    <article
-      class="journal-card"
-      data-journal-card
-      data-journal-theme="dark"
-    >
-
-      <div class="journal-card__top">
-
-        <span class="journal-card__number">
-          04
-        </span>
-
-        <span
-          class="journal-card__category"
-          data-i18n="journal.article4Category"
-        >
-          MOTION UX
-        </span>
-
-        <span class="journal-card__year">
-          2026
-        </span>
-
-      </div>
-
-
-      <div class="journal-card__body">
-
-        <div class="journal-card__visual">
-
-          <div class="journal-card__dots">
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
+        <!-- CONTACT -->
+        <section class="contact" id="contact" data-page="contact">
+          <div class="contact__noise" aria-hidden="true"></div>
+          <div class="contact__container">
+            <div class="contact__top reveal-contact">
+              <span class="contact__eyebrow" data-i18n="contact.eyebrow">START A PROJECT</span>
+              <span class="contact__number">07 / 07</span>
+            </div>
+            <div class="contact__heading-wrap reveal-contact">
+              <h2 class="contact__title">
+                <span data-i18n="contact.titleLine1">Есть идея?</span>
+                <span class="contact__title-accent" data-i18n="contact.titleLine2">Давайте дадим</span>
+                <span data-i18n="contact.titleLine3">ей душу.</span>
+              </h2>
+            </div>
+            <div class="contact__intro reveal-contact">
+              <p data-i18n="contact.intro">Расскажите нам, что вы хотите создать. Мы превратим идею в цифровой продукт, который хочется запомнить.</p>
+            </div>
+            <div class="contact__meta reveal-contact">
+              <div class="contact__after">
+                <h3 class="contact__after-title" data-i18n="contact.after.title">Что происходит после заявки</h3>
+                <p class="contact__after-text" data-i18n="contact.after.text">Вы связываетесь с нами любым удобным способом — мессенджер, соцсети, почта, телефон или форма на сайте. С вами оперативно свяжется менеджер, вы обсудите детали проекта, и мы сразу приступаем к работе.</p>
+                <p class="contact__after-hours" data-i18n="contact.after.hours">Работаем каждый день, без выходных, с 8:00 до 20:00 по Москве.</p>
+              </div>
+              <div class="contact__details">
+                <span class="contact__details-label" data-i18n="contact.details.label">КОНТАКТЫ</span>
+                <a class="contact__details-item" href="mailto:coode.and.soul@gmail.com" data-cursor="OPEN"><span data-i18n="contact.details.email">coode.and.soul@gmail.com</span></a>
+                <a class="contact__details-item" href="tel:+79189498717" data-cursor="OPEN"><span data-i18n="contact.details.phone">+7 (918) 949-87-17</span></a>
+                <span class="contact__details-item contact__details-item--static"><span data-i18n="contact.details.location">Краснодар, Россия · МСК</span></span>
+                <a class="contact__details-item" href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN"><span data-i18n="contact.details.telegramPersonal">@codeandsoul</span></a>
+                <a class="contact__details-item" href="https://t.me/codesoull" target="_blank" rel="noopener noreferrer" data-cursor="OPEN"><span data-i18n="contact.details.telegramChannel">t.me/codesoull</span></a>
+                <span class="contact__details-item contact__details-item--soon"><span data-i18n="contact.details.instagram">Instagram — скоро</span></span>
+              </div>
+            </div>
+            <form class="contact__form" id="contactForm">
+              <div class="contact__step reveal-contact">
+                <div class="contact__step-number">01</div>
+                <div class="contact__field-group">
+                  <label for="contactName" data-i18n="contact.form.nameLabel">Как вас зовут?</label>
+                  <input id="contactName" name="name" type="text" autocomplete="name" placeholder="Ваше имя" data-i18n-placeholder="contact.form.namePlaceholder" required />
+                </div>
+              </div>
+              <div class="contact__step reveal-contact">
+                <div class="contact__step-number">02</div>
+                <div class="contact__field-group">
+                  <label for="contactEmail" data-i18n="contact.form.emailLabel">Как с вами связаться?</label>
+                  <input id="contactEmail" name="email" type="email" autocomplete="email" placeholder="Email" data-i18n-placeholder="contact.form.emailPlaceholder" required />
+                  <input id="contactTelegram" name="telegram" type="text" placeholder="@telegram" data-i18n-placeholder="contact.form.telegramPlaceholder" />
+                </div>
+              </div>
+              <div class="contact__step reveal-contact">
+                <div class="contact__step-number">03</div>
+                <div class="contact__field-group">
+                  <span class="contact__label" data-i18n="contact.form.projectLabel">Что будем создавать?</span>
+                  <div class="contact__options">
+                    <label class="contact__option"><input type="checkbox" name="project" value="website" /><span data-i18n="contact.form.website">Сайт</span></label>
+                    <label class="contact__option"><input type="checkbox" name="project" value="app" /><span data-i18n="contact.form.app">Приложение</span></label>
+                    <label class="contact__option"><input type="checkbox" name="project" value="ai" /><span data-i18n="contact.form.ai">AI / нейросеть</span></label>
+                    <label class="contact__option"><input type="checkbox" name="project" value="bot" /><span data-i18n="contact.form.bot">Бот</span></label>
+                    <label class="contact__option"><input type="checkbox" name="project" value="brand" /><span data-i18n="contact.form.brand">Брендинг</span></label>
+                    <label class="contact__option"><input type="checkbox" name="project" value="other" /><span data-i18n="contact.form.other">Другое</span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="contact__step reveal-contact">
+                <div class="contact__step-number">04</div>
+                <div class="contact__field-group">
+                  <label for="contactMessage" data-i18n="contact.form.messageLabel">Расскажите об идее</label>
+                  <textarea id="contactMessage" name="message" rows="5" placeholder="Что вы хотите создать?" data-i18n-placeholder="contact.form.messagePlaceholder" required></textarea>
+                </div>
+              </div>
+              <div class="contact__step reveal-contact">
+                <div class="contact__step-number">05</div>
+                <div class="contact__field-group">
+                  <span class="contact__label" data-i18n="contact.form.budgetLabel">Какой бюджет закладываем?</span>
+                  <div class="contact__budget">
+                    <label class="contact__budget-option"><input type="radio" name="budget" value="under-1000" /><span data-i18n="contact.form.budgetOptions.opt1">50 000 ₽ — 100 000 ₽</span></label>
+                    <label class="contact__budget-option"><input type="radio" name="budget" value="1000-3000" /><span data-i18n="contact.form.budgetOptions.opt2">100 000 ₽ — 300 000 ₽</span></label>
+                    <label class="contact__budget-option"><input type="radio" name="budget" value="3000-5000" /><span data-i18n="contact.form.budgetOptions.opt3">300 000 ₽ — 500 000 ₽</span></label>
+                    <label class="contact__budget-option"><input type="radio" name="budget" value="5000-plus" /><span data-i18n="contact.form.budgetOptions.opt4">500 000 ₽+</span></label>
+                    <label class="contact__budget-option"><input type="radio" name="budget" value="discuss" /><span data-i18n="contact.form.discuss">Обсудим</span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="contact__submit reveal-contact">
+                <button class="contact__button" type="submit"><span data-i18n="contact.form.submit">Начать проект</span><span class="contact__button-arrow" aria-hidden="true">↗</span></button>
+                <p class="contact__privacy" data-i18n="contact.form.privacy">Никакого спама. Только разговор о вашем проекте.</p>
+              </div>
+              <div class="contact__success" id="contactSuccess" aria-hidden="true">
+                <span class="contact__success-mark">✓</span>
+                <h3 data-i18n="contact.success.title">Отлично. Начинаем.</h3>
+                <p data-i18n="contact.success.text">Мы получили вашу заявку и скоро свяжемся с вами.</p>
+              </div>
+            </form>
           </div>
-
-          <span class="journal-card__visual-symbol">
-            01
-          </span>
-
-        </div>
-
-
-        <div class="journal-card__content">
-
-          <h3
-            data-i18n="journal.article4Title"
-          >
-            WHEN DESIGN BECOMES ALIVE
-          </h3>
-
-          <p
-            data-i18n="journal.article4Text"
-          >
-            Почему анимация, звук, движение и
-            взаимодействие способны превратить
-            интерфейс в настоящий опыт — и где
-            проходит грань между «живо» и
-            «раздражает».
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="journal-card__bottom">
-
-        <span
-          data-i18n="journal.article4Meta"
-        >
-          MOTION / UI / EXPERIENCE
-        </span>
-
-        <span class="journal-card__arrow">
-          ↗
-        </span>
-
-      </div>
-
-    </article>
-
-  </div>
-
-  <!-- FOOTER -->
-
-  <div class="journal__footer">
-
-    <span data-i18n="journal.footerLeft">
-      MORE THOUGHTS ARE COMING
-    </span>
-
-    <span class="journal__footer-line"></span>
-
-    <span data-i18n="journal.footerRight">
-      CODE × SOUL
-    </span>
-
-  </div>
-
-</section>
-
-<!-- ========================================
-     CONTACT
-======================================== -->
-<section class="contact" id="contact" data-page="contact">
-  <div class="contact__noise" aria-hidden="true"></div>
-
-  <div class="contact__container">
-
-    <!-- Top label -->
-    <div class="contact__top reveal-contact">
-      <span class="contact__eyebrow" data-i18n="contact.eyebrow">
-        START A PROJECT
-      </span>
-
-      <span class="contact__number">07 / 07</span>
-    </div>
-
-    <!-- Main heading -->
-    <div class="contact__heading-wrap reveal-contact">
-      <h2 class="contact__title">
-        <span data-i18n="contact.titleLine1">Есть идея?</span>
-        <span class="contact__title-accent" data-i18n="contact.titleLine2">
-          Давайте дадим
-        </span>
-        <span data-i18n="contact.titleLine3">ей душу.</span>
-      </h2>
-    </div>
-
-    <!-- Manifest -->
-    <div class="contact__intro reveal-contact">
-      <p data-i18n="contact.intro">
-        Расскажите нам, что вы хотите создать.
-        Мы превратим идею в цифровой продукт,
-        который хочется запомнить.
-      </p>
-    </div>
-
-    <!-- What happens after you reach out + Contact details -->
-    <div class="contact__meta reveal-contact">
-
-      <div class="contact__after">
-        <h3 class="contact__after-title" data-i18n="contact.after.title">
-          Что происходит после заявки
-        </h3>
-
-        <p class="contact__after-text" data-i18n="contact.after.text">
-          Вы связываетесь с нами любым удобным способом —
-          мессенджер, соцсети, почта, телефон или форма на
-          сайте. С вами оперативно свяжется менеджер, вы
-          обсудите детали проекта, и мы сразу приступаем к
-          работе.
-        </p>
-
-        <p class="contact__after-hours" data-i18n="contact.after.hours">
-          Работаем каждый день, без выходных, с 8:00 до 20:00
-          по Москве.
-        </p>
-      </div>
-
-      <div class="contact__details">
-        <span class="contact__details-label" data-i18n="contact.details.label">
-          КОНТАКТЫ
-        </span>
-
-        <a class="contact__details-item" href="mailto:coode.and.soul@gmail.com" data-cursor="OPEN">
-          <span data-i18n="contact.details.email">coode.and.soul@gmail.com</span>
-        </a>
-
-        <a class="contact__details-item" href="tel:+79189498717" data-cursor="OPEN">
-          <span data-i18n="contact.details.phone">+7 (918) 949-87-17</span>
-        </a>
-
-        <span class="contact__details-item contact__details-item--static">
-          <span data-i18n="contact.details.location">Краснодар, Россия · МСК</span>
-        </span>
-
-        <a class="contact__details-item" href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
-          <span data-i18n="contact.details.telegramPersonal">@codeandsoul</span>
-        </a>
-
-        <a class="contact__details-item" href="https://t.me/codesoull" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
-          <span data-i18n="contact.details.telegramChannel">t.me/codesoull</span>
-        </a>
-
-        <span class="contact__details-item contact__details-item--soon">
-          <span data-i18n="contact.details.instagram">Instagram — скоро</span>
-        </span>
-      </div>
-
-    </div>
-
-    <!-- Form -->
-    <form class="contact__form" id="contactForm">
-
-      <!-- Step 01 -->
-      <div class="contact__step reveal-contact">
-        <div class="contact__step-number">01</div>
-
-        <div class="contact__field-group">
-          <label
-            for="contactName"
-            data-i18n="contact.form.nameLabel"
-          >
-            Как вас зовут?
-          </label>
-
-          <input
-            id="contactName"
-            name="name"
-            type="text"
-            autocomplete="name"
-            placeholder="Ваше имя"
-            data-i18n-placeholder="contact.form.namePlaceholder"
-            required
-          />
-        </div>
-      </div>
-
-      <!-- Step 02 -->
-      <div class="contact__step reveal-contact">
-        <div class="contact__step-number">02</div>
-
-        <div class="contact__field-group">
-          <label
-            for="contactEmail"
-            data-i18n="contact.form.emailLabel"
-          >
-            Как с вами связаться?
-          </label>
-
-          <input
-            id="contactEmail"
-            name="email"
-            type="email"
-            autocomplete="email"
-            placeholder="Email"
-            data-i18n-placeholder="contact.form.emailPlaceholder"
-            required
-          />
-
-          <input
-            id="contactTelegram"
-            name="telegram"
-            type="text"
-            placeholder="@telegram"
-            data-i18n-placeholder="contact.form.telegramPlaceholder"
-          />
-        </div>
-      </div>
-
-      <!-- Step 03 -->
-      <div class="contact__step reveal-contact">
-        <div class="contact__step-number">03</div>
-
-        <div class="contact__field-group">
-          <span
-            class="contact__label"
-            data-i18n="contact.form.projectLabel"
-          >
-            Что будем создавать?
-          </span>
-
-          <div class="contact__options">
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="website"
-              />
-              <span data-i18n="contact.form.website">Сайт</span>
-            </label>
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="app"
-              />
-              <span data-i18n="contact.form.app">Приложение</span>
-            </label>
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="ai"
-              />
-              <span data-i18n="contact.form.ai">AI / нейросеть</span>
-            </label>
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="bot"
-              />
-              <span data-i18n="contact.form.bot">Бот</span>
-            </label>
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="brand"
-              />
-              <span data-i18n="contact.form.brand">Брендинг</span>
-            </label>
-
-            <label class="contact__option">
-              <input
-                type="checkbox"
-                name="project"
-                value="other"
-              />
-              <span data-i18n="contact.form.other">Другое</span>
-            </label>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 04 -->
-      <div class="contact__step reveal-contact">
-        <div class="contact__step-number">04</div>
-
-        <div class="contact__field-group">
-          <label
-            for="contactMessage"
-            data-i18n="contact.form.messageLabel"
-          >
-            Расскажите об идее
-          </label>
-
-          <textarea
-            id="contactMessage"
-            name="message"
-            rows="5"
-            placeholder="Что вы хотите создать?"
-            data-i18n-placeholder="contact.form.messagePlaceholder"
-            required
-          ></textarea>
-        </div>
-      </div>
-
-      <!-- Step 05 -->
-      <div class="contact__step reveal-contact">
-        <div class="contact__step-number">05</div>
-
-        <div class="contact__field-group">
-          <span
-            class="contact__label"
-            data-i18n="contact.form.budgetLabel"
-          >
-            Какой бюджет закладываем?
-          </span>
-
-          <div class="contact__budget">
-
-            <label class="contact__budget-option">
-              <input
-                type="radio"
-                name="budget"
-                value="under-1000"
-              />
-              <span data-i18n="contact.form.budgetOptions.opt1">50 000 ₽ — 100 000 ₽</span>
-            </label>
-
-            <label class="contact__budget-option">
-              <input
-                type="radio"
-                name="budget"
-                value="1000-3000"
-              />
-              <span data-i18n="contact.form.budgetOptions.opt2">100 000 ₽ — 300 000 ₽</span>
-            </label>
-
-            <label class="contact__budget-option">
-              <input
-                type="radio"
-                name="budget"
-                value="3000-5000"
-              />
-              <span data-i18n="contact.form.budgetOptions.opt3">300 000 ₽ — 500 000 ₽</span>
-            </label>
-
-            <label class="contact__budget-option">
-              <input
-                type="radio"
-                name="budget"
-                value="5000-plus"
-              />
-              <span data-i18n="contact.form.budgetOptions.opt4">500 000 ₽+</span>
-            </label>
-
-            <label class="contact__budget-option">
-              <input
-                type="radio"
-                name="budget"
-                value="discuss"
-              />
-              <span data-i18n="contact.form.discuss">
-                Обсудим
-              </span>
-            </label>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit -->
-      <div class="contact__submit reveal-contact">
-
-        <button
-          class="contact__button"
-          type="submit"
-        >
-          <span data-i18n="contact.form.submit">
-            Начать проект
-          </span>
-
-          <span class="contact__button-arrow" aria-hidden="true">
-            ↗
-          </span>
-        </button>
-
-        <p
-          class="contact__privacy"
-          data-i18n="contact.form.privacy"
-        >
-          Никакого спама. Только разговор о вашем проекте.
-        </p>
-
-      </div>
-
-      <!-- Success message -->
-      <div
-        class="contact__success"
-        id="contactSuccess"
-        aria-hidden="true"
-      >
-        <span class="contact__success-mark">✓</span>
-
-        <h3 data-i18n="contact.success.title">
-          Отлично. Начинаем.
-        </h3>
-
-        <p data-i18n="contact.success.text">
-          Мы получили вашу заявку и скоро свяжемся с вами.
-        </p>
-      </div>
-
-    </form>
-
-  </div>
-
-  <!-- Decorative particles -->
-  <div class="contact__orb contact__orb--one" aria-hidden="true"></div>
-  <div class="contact__orb contact__orb--two" aria-hidden="true"></div>
-
-</section>
-
-
+          <div class="contact__orb contact__orb--one" aria-hidden="true"></div>
+          <div class="contact__orb contact__orb--two" aria-hidden="true"></div>
+        </section>
       </main>
 
-
-
-      <!-- ========================================
-           FOOTER
-      ======================================== -->
-
+      <!-- FOOTER -->
       <footer class="site-footer">
-
-        <span>
-          CODE &amp; SOUL
-        </span>
-
-        <span>
-          MADE WITH CODE. BUILT WITH SOUL.
-        </span>
-
+        <img src="/Code-Soul/images/logo/logo.jpg" alt="Code & Soul" style="height: 20px; width: auto; display: block; object-fit: contain;" />
+        <span>MADE WITH CODE. BUILT WITH SOUL.</span>
         <span class="site-footer__telegram">
-          <a
-            href="https://t.me/codeandsoul"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor="OPEN"
-          >@codeandsoul</a>
+          <a href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">@codeandsoul</a>
           <span class="site-footer__dot" aria-hidden="true">·</span>
-          <a
-            href="https://t.me/codesoull"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor="OPEN"
-          >t.me/codesoull</a>
+          <a href="https://t.me/codesoull" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">t.me/codesoull</a>
         </span>
-
-        <span>
-          2026 — NOW
-        </span>
-
+        <span>2026 — NOW</span>
       </footer>
-
-
     </div>
-
-
-    <script
-      type="module"
-      src="/src/main.js"
-    ></script>
-
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

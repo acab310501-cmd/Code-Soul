@@ -15,15 +15,29 @@ export class SoulParticles {
 
     this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
 
-    // Поддержка массива изображений
     this.imageSources = options.images || [];
 
-    // Параметры
-    this.maxParticles = options.maxParticles || 2800;
+    // Динамический лимит частиц на основе производительности устройства
+    let maxParticles = options.maxParticles || 2800;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = window.innerWidth;
+
+    // Адаптивное снижение:
+    if (dpr <= 1 || width < 480) {
+      maxParticles = 3000;
+    } else if (dpr <= 1.5 || width < 768) {
+      maxParticles = 5000;
+    } else if (width < 1024) {
+      maxParticles = 8000;
+    } else {
+      maxParticles = 12000; // было 16000
+    }
+
+    this.maxParticles = maxParticles;
     this.mouseRadius = options.mouseRadius || 100;
     this.mouseForce = options.mouseForce || 8;
     this.theme = options.theme || 'dark';
-    this.transitionSpeed = options.transitionSpeed || 0.035; // Скорость перетекания
+    this.transitionSpeed = options.transitionSpeed || 0.035;
 
     this.currentIndex = 0;
     this.cachedTargets = [];
@@ -41,10 +55,7 @@ export class SoulParticles {
     this.resize();
     this.bindEvents();
 
-    // Загружаем и сэмплируем ВСЕ изображения
     await this.preloadAndSampleAllImages();
-    
-    // Инициализируем пул частиц из первого изображения
     this.initParticlePool();
     
     this.isLoaded = true;
@@ -62,19 +73,21 @@ export class SoulParticles {
     this.canvas.height = this.height * this.dpr;
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
-    // Адаптивная плотность
+    // Пересчёт плотности с учётом адаптивного лимита
     if (this.width < 480) {
       this.sampleStep = 7;
-      this.maxParticles = 1200;
+      this.maxParticles = 3000;
+    } else if (this.width < 768) {
+      this.sampleStep = 6;
+      this.maxParticles = 5000;
     } else if (this.width < 1024) {
       this.sampleStep = 5;
-      this.maxParticles = 2000;
+      this.maxParticles = 8000;
     } else {
       this.sampleStep = 4;
-      this.maxParticles = 2800;
+      this.maxParticles = 12000;
     }
 
-    // Если уже загружено, пересэмплируем изображения
     if (this.isLoaded) {
       this.preloadAndSampleAllImages().then(() => {
         this.transitionTo(this.currentIndex, true);
@@ -94,7 +107,6 @@ export class SoulParticles {
         this.cachedTargets.push(targets);
       } catch (err) {
         console.warn(err);
-        // Фоллбэк: случайные точки
         const fallbackTargets = [];
         for (let y = 0; y < this.height; y += 15) {
           for (let x = 0; x < this.width; x += 15) {
@@ -116,25 +128,10 @@ export class SoulParticles {
     });
   }
 
-  /*
-    Source images (e.g. 01-hand.webp) often carry a lot of dead
-    black canvas around the actual subject — a tall portrait with
-    the hands sitting in a thin band in the middle, for instance.
-    Sampling the full frame at a uniform scale squeezes the real
-    subject into a small, sparse cluster that reads as noise, not
-    as a hand. So before sampling we find the subject's own
-    bounding box (anything meaningfully brighter than the black
-    background) and sample *that* crop, scaled to fill the target
-    area consistently for every image regardless of how much
-    padding the source file happens to have.
-  */
   findContentBounds(imgData, w, h) {
-    const threshold = 14; // luminance below this counts as "background"
+    const threshold = 14;
     let minX = w, minY = h, maxX = 0, maxY = 0;
     let found = false;
-
-    // Scan on a coarse grid for speed — this only runs once per
-    // image load, not per frame, so it doesn't need to be exact.
     const scanStep = Math.max(1, Math.floor(Math.min(w, h) / 200));
 
     for (let y = 0; y < h; y += scanStep) {
@@ -159,7 +156,6 @@ export class SoulParticles {
 
     if (!found) return { x: 0, y: 0, w, h };
 
-    // Small breathing-room padding around the detected subject.
     const padX = (maxX - minX) * 0.06;
     const padY = (maxY - minY) * 0.06;
     minX = Math.max(0, minX - padX);
@@ -171,8 +167,6 @@ export class SoulParticles {
   }
 
   extractTargetsFromImage(img, offCanvas, offCtx) {
-    // Step 1 — draw the full image once at native resolution so we
-    // can measure exactly where the real subject sits.
     offCanvas.width = img.naturalWidth;
     offCanvas.height = img.naturalHeight;
     offCtx.clearRect(0, 0, img.naturalWidth, img.naturalHeight);
@@ -182,10 +176,6 @@ export class SoulParticles {
     const bounds = this.findContentBounds(fullData, img.naturalWidth, img.naturalHeight);
     if (bounds.w <= 0 || bounds.h <= 0) return [];
 
-    // Step 2 — scale the CROPPED subject (not the padded original
-    // frame) to fill the same target area for every image, so a
-    // tall image with lots of margin and a square image both end
-    // up equally dense and equally recognisable.
     const scale = Math.min((this.width * 0.62) / bounds.w, (this.height * 0.62) / bounds.h);
     const w = Math.max(1, Math.floor(bounds.w * scale));
     const h = Math.max(1, Math.floor(bounds.h * scale));
@@ -195,8 +185,8 @@ export class SoulParticles {
     offCtx.clearRect(0, 0, w, h);
     offCtx.drawImage(
       img,
-      bounds.x, bounds.y, bounds.w, bounds.h, // source crop
-      0, 0, w, h                               // destination (cropped, scaled)
+      bounds.x, bounds.y, bounds.w, bounds.h,
+      0, 0, w, h
     );
 
     const imgData = offCtx.getImageData(0, 0, w, h).data;
@@ -214,7 +204,7 @@ export class SoulParticles {
 
         if (a < 40) continue;
         const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-        if (luminance < 0.05) continue; // skip near-black background pixels
+        if (luminance < 0.05) continue;
 
         targets.push({
           x: offsetX + x,
@@ -235,7 +225,6 @@ export class SoulParticles {
       const target = initialTargets[i % initialTargets.length] || { x: this.width/2, y: this.height/2, size: 2, alpha: 0.8 };
 
       this.particles.push({
-        // Начальная позиция с небольшим разбросом для красоты старта
         x: target.x + (Math.random() - 0.5) * 100,
         y: target.y + (Math.random() - 0.5) * 100,
         originX: target.x,
@@ -253,7 +242,6 @@ export class SoulParticles {
     }
   }
 
-  // ВЫЗЫВАЕТСЯ ДЛЯ ПЕРЕХОДА МЕЖДУ ИЗОБРАЖЕНИЯМИ
   transitionTo(index, immediate = false) {
     if (index < 0 || index >= this.cachedTargets.length) return;
     
@@ -266,7 +254,6 @@ export class SoulParticles {
       const p = this.particles[i];
       const target = nextTargets[i % nextTargets.length];
 
-      // Обновляем точки назначения
       p.targetX = target.x;
       p.targetY = target.y;
       p.targetSize = target.size;
@@ -313,22 +300,14 @@ export class SoulParticles {
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
 
-      // Плавное перетекание в новые координаты
       p.originX += (p.targetX - p.originX) * this.transitionSpeed;
       p.originY += (p.targetY - p.originY) * this.transitionSpeed;
       p.size += (p.targetSize - p.size) * this.transitionSpeed;
       p.alpha += (p.targetAlpha - p.alpha) * this.transitionSpeed;
 
-      // Микро-дрейф (живое дыхание). Амплитуда чуть увеличена
-      // по сравнению с прошлой версией — вместе с возросшим
-      // transitionSpeed (0.035 → 0.05, задаётся в main.js) это
-      // и даёт то самое ощущение "тягучей жидкости": частицы
-      // быстрее долетают до формы, но никогда не замирают
-      // абсолютно неподвижно внутри неё.
       const driftX = Math.sin(this.time * p.drift + p.phase) * 0.22;
       const driftY = Math.cos(this.time * p.drift * 0.8 + p.phase) * 0.22;
 
-      // Отталкивание от курсора
       if (this.mouse.active) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
@@ -358,7 +337,6 @@ export class SoulParticles {
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
       
-      // Оптимизация: не рисуем полностью прозрачные частицы
       if (p.alpha < 0.01) continue;
 
       this.ctx.beginPath();
@@ -375,6 +353,7 @@ export class SoulParticles {
     }
     this.animationFrame = requestAnimationFrame(() => this.animate());
   }
+
   destroy() {
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
     this.canvas.removeEventListener("mousemove", this.onMouseMove);
