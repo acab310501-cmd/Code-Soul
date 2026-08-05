@@ -10,12 +10,16 @@ const translations = {
 
     home: {
       eyebrow: "02 / О НАС",
-      title1: "ЛЮДИ,",
-      title2: "КОТОРЫМ",
-      title3: "НЕ ВСЁ РАВНО.",
+      title1: "НЕЗАВИСИМАЯ",
+      title2: "СТУДИЯ.",
+      title3: "ДВА РАЗРАБОТЧИКА.",
       text:
-        "Мы небольшая команда, которая берёт на себя весь путь цифрового продукта — от идеи и интерфейса до анимации и запуска. Никаких конвейеров и шаблонов: каждый проект собирается вручную, под конкретную задачу.",
+        "Мы — независимая студия разработки. За плечами — пять лет на фрилансе, сейчас мы решили пойти дальше и делать это по-своему: без конвейера, без шаблонов, с вниманием к каждой детали. Разрабатываем сайты, приложения для смартфонов и ПК, ботов в Telegram — и не останавливаемся в развитии.",
       stackLabel: "НА ЧЁМ МЫ РАБОТАЕМ",
+      stackItem1: "JavaScript, Python",
+      stackItem2: "Дизайн и Figma / Photoshop",
+      stackItem3: "Telegram-боты",
+      stackItem4: "Приложения под iOS, Android, Windows",
       cta: "Смотреть проекты",
     },
 
@@ -106,13 +110,52 @@ about: {
     "НАША ФИЛОСОФИЯ",
 
   lead:
-    "Мы верим, что технологии сами по себе ничего не значат.",
+    "Технологии с душой.",
 
   text:
-    "Важна идея, человек за ней и эмоция, которую получает тот, кто взаимодействует с результатом.",
+    "Большинство сайтов начинаются с технического задания. Наши — с идеи. Мы верим, что хороший цифровой продукт — это не только код. Это сочетание логики, эстетики и внимания к деталям. Каждый проект для нас — не просто разработка, а создание цифрового пространства, которое помогает бизнесу вызывать доверие, выглядеть современно и приносить результат.",
 
   text2:
-    "Поэтому мы любим код, но никогда не забываем зачем его пишем.",
+    "Мы не обещаем невозможного, не используем громкие слова и не пытаемся впечатлить сложными терминами. Вместо этого — проектируем понятные интерфейсы, создаём современный дизайн, пишем чистый и быстрый код и думаем о будущем проекта.",
+
+  trustTitle:
+    "ПОЧЕМУ НАМ ДОВЕРЯЮТ",
+
+  trust1:
+    "Заказать сайт — это не просто купить услугу. Это доверить кому-то часть своего бизнеса.",
+
+  trust2:
+    "Поэтому для нас важен не только результат, но и то, каким был путь к нему: без бесконечных созвонов, без сложных терминов, без неожиданностей.",
+
+  trust3:
+    "Вы всегда знаете, на каком этапе проект, что уже сделано и что будет дальше.",
+
+  trust4:
+    "Мы относимся к каждому проекту так, будто делаем его для себя.",
+
+  getTitle:
+    "ЧТО ВЫ ПОЛУЧИТЕ",
+
+  get1:
+    "Современный дизайн, который не выглядит шаблонно",
+
+  get2:
+    "Быстрый сайт с чистым кодом и адаптацией под все устройства",
+
+  get3:
+    "Понятный процесс без лишней бюрократии",
+
+  get4:
+    "Возможность развивать проект после запуска",
+
+  get5:
+    "Поддержку и обратную связь даже после сдачи работы",
+
+  howWeWorkTitle:
+    "КАК МЫ РАБОТАЕМ",
+
+  howWeWork:
+    "Меньше слов — больше результата. Мы не берём десятки проектов одновременно ради количества — мы уделяем внимание каждому клиенту, потому что именно детали делают хороший продукт отличным.",
 
   value1Title:
     "CURIOSITY",
@@ -238,6 +281,22 @@ journal: {
   titleLine3: "ей душу.",
   intro: "Расскажите нам, что вы хотите создать. Мы превратим идею в цифровой продукт, который хочется запомнить.",
 
+  after: {
+    title: "Что происходит после заявки",
+    text: "Вы связываетесь с нами любым удобным способом — мессенджер, соцсети, почта, телефон или форма на сайте. С вами оперативно свяжется менеджер, вы обсудите детали проекта, и мы сразу приступаем к работе.",
+    hours: "Работаем каждый день, без выходных, с 8:00 до 20:00 по Москве.",
+  },
+
+  details: {
+    label: "КОНТАКТЫ",
+    email: "coode.and.soul@gmail.com",
+    phone: "+7 (918) 949-87-17",
+    location: "Краснодар, Россия · МСК",
+    telegramPersonal: "@codeandsoul",
+    telegramChannel: "t.me/codesoull",
+    instagram: "Instagram — скоро",
+  },
+
   form: {
     nameLabel: "Как вас зовут?",
     namePlaceholder: "Ваше имя",
@@ -293,12 +352,16 @@ journal: {
 
     home: {
       eyebrow: "02 / ABOUT US",
-      title1: "PEOPLE WHO",
-      title2: "ACTUALLY",
-      title3: "CARE.",
+      title1: "INDEPENDENT",
+      title2: "STUDIO.",
+      title3: "TWO DEVELOPERS.",
       text:
-        "We're a small studio that owns the whole path of a digital product — from idea and interface to motion and launch. No pipelines, no templates: every project is built by hand, for the task it actually has.",
+        "We're an independent development studio. Five years of freelance work behind us — now we've decided to go further and do it our way: no pipelines, no templates, real attention to every detail. We build websites, mobile and desktop apps, Telegram bots — and we keep learning.",
       stackLabel: "WHAT WE BUILD WITH",
+      stackItem1: "JavaScript, Python",
+      stackItem2: "Design in Figma / Photoshop",
+      stackItem3: "Telegram bots",
+      stackItem4: "iOS, Android, Windows apps",
       cta: "See the work",
     },
 
@@ -389,13 +452,52 @@ about: {
     "OUR PHILOSOPHY",
 
   lead:
-    "We believe technology means nothing on its own.",
+    "Technology with a soul.",
 
   text:
-    "What matters is the idea, the person behind it, and the emotion felt by the person experiencing the result.",
+    "Most websites start with a brief. Ours start with an idea. We believe a good digital product isn't just code — it's logic, aesthetics and attention to detail working together. Every project for us isn't just development; it's building a digital space that helps a business earn trust, look current, and deliver results.",
 
   text2:
-    "That's why we love code — but never forget why we write it.",
+    "We don't promise the impossible, we don't reach for buzzwords, and we don't try to impress you with jargon. Instead — we design interfaces that make sense, build modern visuals, write clean and fast code, and think about where the project is headed.",
+
+  trustTitle:
+    "WHY PEOPLE TRUST US",
+
+  trust1:
+    "Hiring someone to build your site isn't just buying a service. It's handing someone a part of your business.",
+
+  trust2:
+    "That's why the result matters to us as much as the process: no endless calls, no jargon, no surprises.",
+
+  trust3:
+    "You always know what stage the project is at, what's done, and what's next.",
+
+  trust4:
+    "We treat every project like it's our own.",
+
+  getTitle:
+    "WHAT YOU GET",
+
+  get1:
+    "Modern design that doesn't look templated",
+
+  get2:
+    "A fast site with clean code, adapted to every device",
+
+  get3:
+    "A clear process without unnecessary bureaucracy",
+
+  get4:
+    "The ability to grow the project after launch",
+
+  get5:
+    "Support and feedback even after the work is delivered",
+
+  howWeWorkTitle:
+    "HOW WE WORK",
+
+  howWeWork:
+    "Fewer words, more results. We don't take on dozens of projects just for the sake of volume — we give each client real attention, because details are what turn a good product into a great one.",
 
   value1Title:
     "CURIOSITY",
@@ -520,6 +622,22 @@ journal: {
   titleLine2: "Let's give it",
   titleLine3: "a soul.",
   intro: "Tell us what you want to create. We'll turn your idea into a digital product people remember.",
+
+  after: {
+    title: "What happens after you reach out",
+    text: "You reach us however's convenient — messenger, social media, email, phone, or the form on this site. Our manager gets back to you quickly, you talk through the details, and we get started right away.",
+    hours: "We work every day, no days off, 8:00–20:00 Moscow time.",
+  },
+
+  details: {
+    label: "CONTACT",
+    email: "coode.and.soul@gmail.com",
+    phone: "+7 (918) 949-87-17",
+    location: "Krasnodar, Russia · Moscow time",
+    telegramPersonal: "@codeandsoul",
+    telegramChannel: "t.me/codesoull",
+    instagram: "Instagram — coming soon",
+  },
 
   form: {
     nameLabel: "What's your name?",

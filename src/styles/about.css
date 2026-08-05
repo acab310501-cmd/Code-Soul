@@ -664,3 +664,119 @@
   }
 
 }
+
+
+/* ========================================
+   TRUST / WHAT YOU GET / HOW WE WORK
+======================================== */
+
+.about__extra {
+
+  max-width: var(--container-width);
+
+  margin:
+    clamp(120px, 15vw, 220px)
+    auto
+    0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap:
+    60px
+    100px;
+
+  border-top:
+    1px solid rgba(0,0,0,.18);
+
+  padding-top: 45px;
+}
+
+
+.about__extra-block--wide {
+
+  grid-column: 1 / -1;
+
+  padding-top: 15px;
+
+  border-top:
+    1px solid rgba(0,0,0,.1);
+}
+
+
+.about__extra-heading {
+
+  margin: 0 0 24px;
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+
+  letter-spacing: .1em;
+
+  color: #777;
+}
+
+
+.about__extra-list {
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+.about__extra-list li {
+
+  position: relative;
+
+  padding-left: 20px;
+
+  font-family: var(--font-mono);
+
+  font-size: 10px;
+  line-height: 1.8;
+
+  text-transform: uppercase;
+
+  color: #666;
+}
+
+
+.about__extra-list li::before {
+
+  content: "—";
+
+  position: absolute;
+  left: 0;
+
+  color: var(--color-acid);
+}
+
+
+.about__extra-text {
+
+  max-width: 650px;
+
+  margin-top: 0;
+}
+
+
+@media (max-width: 700px) {
+
+  .about__extra {
+
+    grid-template-columns: 1fr;
+
+    gap: 45px;
+  }
+
+}
