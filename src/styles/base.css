@@ -42,7 +42,7 @@ body {
   color: var(--color-acid);
 }
 
-/* GRAIN — оставляем, но для светлой темы уменьшаем прозрачность */
+/* GRAIN */
 .grain {
   position: fixed;
   inset: -50%;
@@ -59,7 +59,7 @@ body {
 }
 
 [data-theme="light"] .grain {
-  opacity: 0.025; /* меньше шума для чистоты светлой темы */
+  opacity: 0.025; /* меньше шума для светлой темы */
 }
 
 @keyframes grainShift {
@@ -70,7 +70,7 @@ body {
   100% { transform: translate3d(-1%, -1%, 0); }
 }
 
-/* CURSOR — оставляем без изменений */
+/* CURSOR */
 .cursor {
   position: fixed;
   top: 0;
@@ -149,4 +149,12 @@ body {
   clip: rect(0,0,0,0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Тени для светлой темы (ощущение бумаги) */
+[data-theme="light"] .work-case,
+[data-theme="light"] .service-card,
+[data-theme="light"] .journal-card,
+[data-theme="light"] .contact__container {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
 }

@@ -47,6 +47,10 @@ export class SoulParticles {
     this.time = 0;
     this.isLoaded = false;
     this.animationFrame = null;
+    
+    // Переменная для отслеживания видимости
+    this.isVisible = true;
+    this.visibilityObserver = null;
 
     this.init();
   }
@@ -59,6 +63,15 @@ export class SoulParticles {
     this.initParticlePool();
     
     this.isLoaded = true;
+
+    // Добавляем IntersectionObserver для остановки анимации, если секция не видна
+    this.visibilityObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        this.isVisible = entry.isIntersecting;
+      });
+    }, { threshold: 0.1 });
+    this.visibilityObserver.observe(this.canvas);
+
     this.animate();
   }
 
@@ -396,7 +409,8 @@ export class SoulParticles {
   }
 
   animate() {
-    if (!document.hidden && this.isLoaded) {
+    // Анимируем только если видимы, вкладка активна и всё загружено
+    if (this.isVisible && !document.hidden && this.isLoaded) {
       this.update();
       this.draw();
     }
@@ -409,6 +423,11 @@ export class SoulParticles {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
+    }
+
+    if (this.visibilityObserver) {
+      this.visibilityObserver.disconnect();
+      this.visibilityObserver = null;
     }
 
     this.canvas.removeEventListener(
@@ -426,4 +445,4 @@ export class SoulParticles {
       this.onResize
     );
   }
-} 
+}

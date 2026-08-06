@@ -83,7 +83,7 @@ function initHeader() {
 }
 
 /* ========================================
-   HERO (ИСПРАВЛЕНА ОШИБКА NULL В GSAP)
+   HERO (Обновлённая анимация появления)
 ======================================== */
 
 function initHeroAnimation() {
@@ -92,17 +92,18 @@ function initHeroAnimation() {
   const manifesto = document.querySelector(".hero__manifesto");
   const scroll = document.querySelector(".hero__scroll");
   const sideWord = document.querySelector(".hero__side-word");
+  const title = document.querySelector(".particle-title");
 
-  // Фильтруем null элементы, чтобы GSAP не падал с ошибкой null.gsap
-  const elements = [pretitle, meta, manifesto, scroll, sideWord].filter(el => el !== null);
+  const elements = [pretitle, meta, manifesto, scroll, sideWord, title].filter(el => el !== null);
 
   if (elements.length > 0) {
-    gsap.set(elements, { opacity: 0 });
+    gsap.set(elements, { opacity: 0, y: 30 });
   }
 
   const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-  if (pretitle) tl.to(pretitle, { opacity: 1, duration: 0.8 });
+  if (pretitle) tl.to(pretitle, { opacity: 1, y: 0, duration: 0.8 });
+  if (title) tl.to(title, { opacity: 1, y: 0, duration: 1, delay: 0.2 });
   if (meta) tl.to(meta, { opacity: 1, duration: 0.8 }, "-=0.3");
   if (manifesto) tl.to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5");
   if (scroll) tl.to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5");

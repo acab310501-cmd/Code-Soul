@@ -339,7 +339,7 @@
 
   font-family: var(--font-mono);
 
-  font-size: 10px;
+  font-size: 11px; /* Увеличено для лучшей читаемости */
 
   line-height: 1.9;
 
