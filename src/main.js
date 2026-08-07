@@ -137,16 +137,21 @@ function initParticleText() {
   canvases.forEach((canvas) => {
     const text = canvas.dataset.particleText;
     const isAccent = canvas.classList.contains("particle-title__canvas--accent");
+    const light = isLightTheme();
     const system = new ParticleText({
       canvas, text,
       fontSize: window.innerWidth < 700 ? 92 : 150,
       color: isAccent
-        ? (isLightTheme() ? lightAccentColor : darkAccentColor)
-        : (isLightTheme() ? lightTextColor : darkTextColor),
+        ? (light ? lightAccentColor : darkAccentColor)
+        : (light ? lightTextColor : darkTextColor),
       acidGradient: true,
       acidColor: isAccent
-        ? (isLightTheme() ? lightAccentColor : darkAccentColor)
-        : THEME_COLORS.acid
+        ? (light ? lightAccentColor : darkAccentColor)
+        : THEME_COLORS.acid,
+      // Тёмные точки на светлом фоне читаются хуже, чем светлые
+      // на тёмном при той же альфе/размере — компенсируем.
+      alphaBoost: light ? 1.6 : 1,
+      sizeBoost: light ? 1.3 : 1
     });
     systems.push(system);
   });
@@ -157,8 +162,9 @@ function initParticleText() {
     const isLight = event.detail.theme === "light";
     const nextColor = isLight ? lightTextColor : darkTextColor;
     const nextAccentColor = isLight ? lightAccentColor : darkAccentColor;
-    
+
     systems.forEach((system) => {
+      system.setContrastBoost(isLight ? 1.6 : 1, isLight ? 1.3 : 1);
       if (system.canvas.classList.contains("particle-title__canvas--accent")) {
         system.setColor(nextAccentColor);
         system.acidColor = nextAccentColor;

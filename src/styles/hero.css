@@ -262,7 +262,6 @@
   }
   .hero__coordinates, .hero__side-word { display: none; }
   .hero__scroll { bottom: 30px; }
-  .site-footer { flex-direction: column; gap: 12px; }
 }
 
 /* PARTICLE TITLE */

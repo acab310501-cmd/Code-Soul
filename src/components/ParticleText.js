@@ -16,6 +16,13 @@ export class ParticleText {
     this.acidGradient = options.acidGradient || false;
     this.acidColor = options.acidColor || THEME_COLORS.acid;
 
+    // На светлом фоне тёмные точки той же прозрачности и размера,
+    // что и светлые точки на тёмном фоне, читаются заметно хуже —
+    // глаз не даёт того же эффекта "свечения из темноты". Поэтому
+    // на paper-теме частицы рисуются крупнее и плотнее по альфе.
+    this.alphaBoost = options.alphaBoost || 1;
+    this.sizeBoost = options.sizeBoost || 1;
+
     this.mouse = {
       x: -9999,
       y: -9999,
@@ -220,12 +227,18 @@ const step =
             vx: 0,
             vy: 0,
 
-            size:
+            // baseSize/baseAlpha — случайные значения "как есть",
+            // без поправки на тему. Финальные size/alpha в кадре
+            // считаются как baseSize * this.sizeBoost и
+            // baseAlpha * this.alphaBoost (см. drawParticle) —
+            // это позволяет усиливать контраст точек живьём при
+            // смене темы, не пересоздавая частицы заново.
+            baseSize:
               Math.random() *
               1.5 +
               0.45,
 
-            alpha:
+            baseAlpha:
               Math.random() *
               0.55 +
               0.35,
@@ -268,6 +281,14 @@ const step =
   setColor(hex) {
     this.color = hex;
     this._baseRgb = this.hexToRgb(hex);
+  }
+
+  // Живое усиление контраста точек при переключении темы (без
+  // пересоздания частиц). boost 1 = как было изначально в тёмной
+  // теме; >1 делает точки крупнее/непрозрачнее для paper-темы.
+  setContrastBoost(alphaBoost, sizeBoost) {
+    this.alphaBoost = alphaBoost;
+    this.sizeBoost = sizeBoost;
   }
 
   hexToRgb(hex) {
@@ -415,7 +436,7 @@ if (distanceSq < radiusSq) {
     this.ctx.arc(
       drawX,
       drawY,
-      particle.size,
+      particle.baseSize * this.sizeBoost,
       0,
       Math.PI * 2
     );
@@ -442,7 +463,7 @@ if (distanceSq < radiusSq) {
     }
 
     this.ctx.globalAlpha =
-      particle.alpha;
+      Math.min(1, particle.baseAlpha * this.alphaBoost);
 
     this.ctx.fill();
 
