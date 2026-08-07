@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { THEME_COLORS } from "../theme-colors.js";
 
 export class ParticleText {
   constructor(options = {}) {
@@ -6,14 +7,14 @@ export class ParticleText {
     this.text = options.text || "";
     this.fontSize = options.fontSize || 120;
 
-    this.color = options.color || "#f1f0eb";
+    this.color = options.color || THEME_COLORS.dark.text;
 
     // "Кислотный градиент": нижняя часть текста плавно
-    // переходит в акцентный #d7ff3f со свечением, верх
+    // переходит в акцентный цвет со свечением, верх
     // остаётся в базовом цвете. Управляется опцией, чтобы
     // лоадер (где эффект не нужен) оставался нейтральным.
     this.acidGradient = options.acidGradient || false;
-    this.acidColor = options.acidColor || "#d7ff3f";
+    this.acidColor = options.acidColor || THEME_COLORS.acid;
 
     this.mouse = {
       x: -9999,

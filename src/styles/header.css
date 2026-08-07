@@ -94,8 +94,9 @@
 
 /* Обновлённый стиль логотипа (убрано свечение, изменён размер) */
 .logo__image {
-  width: clamp(36px, 4vw, 48px);
+  width: clamp(30px, 3.4vw, 38px);
   height: auto;
+  border-radius: 6px;
   object-fit: contain;
   display: block;
   transition: transform 0.35s var(--ease-out);
@@ -105,10 +106,26 @@
   transform: scale(1.05) rotate(-2deg);
 }
 
+/* Переключение маски логотипа по теме: logo-icon.webp — тёмная тема,
+   logo-mono.webp — светлая тема (без JS, чтения --color-void не требуется) */
+.logo__image--light,
+.footer__logo--light {
+  display: none;
+}
+[data-theme="light"] .logo__image--dark,
+[data-theme="light"] .footer__logo--dark {
+  display: none;
+}
+[data-theme="light"] .logo__image--light,
+[data-theme="light"] .footer__logo--light {
+  display: block;
+}
+
 /* Стиль для логотипа в футере */
 .footer__logo {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   object-fit: contain;
 }
 

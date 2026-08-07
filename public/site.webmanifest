@@ -1,0 +1,22 @@
+{
+  "name": "Code & Soul",
+  "short_name": "Code & Soul",
+  "description": "Code & Soul — независимая creative technology студия. Мы создаём цифровые миры.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "images/logo/favicon.png",
+      "sizes": "110x103",
+      "type": "image/png"
+    },
+    {
+      "src": "images/logo/apple-touch-icon.png",
+      "sizes": "104x94",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

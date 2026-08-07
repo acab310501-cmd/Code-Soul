@@ -26,6 +26,7 @@ import { initRouter } from "./components/Router.js";
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
 import { initLoader } from "./components/Loader.js";
+import { THEME_COLORS } from "./theme-colors.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,8 +60,6 @@ document.addEventListener(
     safeInit("soulParticles", initSoulParticles);
     safeInit("aboutAnimation", initAboutAnimation);
     safeInit("aboutDepth", initAboutDepth);
-    safeInit("aboutMagneticDots", initAboutMagneticDots);
-    safeInit("servicesBlob", initServicesBlob);
     safeInit("journalAnimation", initJournalAnimation);
     safeInit("journalCinematicFocus", initJournalCinematicFocus);
 
@@ -126,10 +125,10 @@ function initParticleText() {
   const canvases = document.querySelectorAll("[data-particle-text]");
   const systems = [];
 
-  const lightTextColor = "#121316";
-  const darkTextColor = "#f1f0eb";
-  const lightAccentColor = "#3c3e40";
-  const darkAccentColor = "#d7ff3f";
+  const lightTextColor = THEME_COLORS.light.text;
+  const darkTextColor = THEME_COLORS.dark.text;
+  const lightAccentColor = THEME_COLORS.light.accent;
+  const darkAccentColor = THEME_COLORS.dark.accent;
 
   const isLightTheme = () =>
     document.documentElement.dataset.theme === "light" ||
@@ -147,7 +146,7 @@ function initParticleText() {
       acidGradient: true,
       acidColor: isAccent
         ? (isLightTheme() ? lightAccentColor : darkAccentColor)
-        : "#d7ff3f"
+        : THEME_COLORS.acid
     });
     systems.push(system);
   });
@@ -307,10 +306,6 @@ function initAboutDepth() {
   });
 }
 
-function initAboutMagneticDots() {
-  // Удалён пустой тикер
-}
-
 /* ========================================
    JOURNAL
 ======================================== */
@@ -324,7 +319,7 @@ function initJournalCinematicFocus() {
 
     card.addEventListener("mouseenter", () => {
       gsap.to(card, { scale: 1.02, y: -12, zIndex: 10, duration: 0.5, ease: "power3.out" });
-      if (content) gsap.to(content, { x: 6, color: "#d7ff3f", duration: 0.4, ease: "power2.out" });
+      if (content) gsap.to(content, { x: 6, color: THEME_COLORS.acid, duration: 0.4, ease: "power2.out" });
       if (visual) gsap.to(visual, { scale: 1.05, boxShadow: "0 20px 60px rgba(215, 255, 63, 0.15)", duration: 0.6, ease: "power3.out" });
       articles.forEach((other) => {
         if (other !== card) {
@@ -445,6 +440,15 @@ function initServicesV2() {
   const grid = document.querySelector('[data-services-grid]');
   if (!grid) return;
 
+  // Чистим состояние блоба и обработчик смены языка от предыдущего рендера,
+  // иначе при каждом переключении языка обработчики дублируются, а карточки
+  // из предыдущего рендера продолжают занимать память.
+  grid.querySelectorAll('.service-card').forEach((card) => blobStates.delete(card));
+  if (window.__servicesLanguageHandler) {
+    window.removeEventListener('code-soul:language', window.__servicesLanguageHandler);
+    window.__servicesLanguageHandler = null;
+  }
+
   const language = localStorage.getItem('code-soul-language') || 'ru';
   const data = translations[language]?.services;
   if (!data) return;
@@ -562,14 +566,17 @@ function initServicesV2() {
     });
   }, grid); // контекст привязан к grid
 
-  // Обработчик смены языка
+  // Карточки — новые DOM-элементы, поэтому magnetic-blob эффект нужно
+  // переинициализировать заново, иначе после смены языка hover перестаёт работать.
+  initServicesBlob();
+
+  // Обработчик смены языка (предыдущий уже снят выше)
   const onLanguageChange = (event) => {
     const newLang = event.detail.language;
     const newData = translations[newLang]?.services;
     if (newData) initServicesV2();
   };
   window.addEventListener('code-soul:language', onLanguageChange);
-  // Сохраняем ссылку для возможной очистки
   window.__servicesLanguageHandler = onLanguageChange;
 }
 
@@ -755,7 +762,7 @@ function initContactMagic() {
     gsap.set(input, { borderBottomColor: "rgba(255, 255, 255, 0.2)" });
     input.addEventListener("focus", () => {
       if (input.classList.contains("contact__option") || input.classList.contains("contact__budget-option")) return;
-      gsap.to(input, { borderBottomColor: "#d7ff3f", duration: 0.6, ease: "power3.out" });
+      gsap.to(input, { borderBottomColor: THEME_COLORS.acid, duration: 0.6, ease: "power3.out" });
       gsap.to(input, { boxShadow: "0 4px 20px rgba(215, 255, 63, 0.1)", duration: 0.4 });
     });
     input.addEventListener("blur", () => {

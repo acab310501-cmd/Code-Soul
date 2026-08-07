@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { THEME_COLORS } from "../theme-colors.js";
 
 export function initCursor() {
   if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -70,10 +71,10 @@ export function initCursor() {
 
     // Анимация кольца: масштабирование для разных типов кнопок
     if (text === "OPEN" || text === "EXPLORE") {
-      gsap.to(ring, { scale: 1.8, borderColor: "#d7ff3f", duration: 0.4, ease: "power3.out" });
+      gsap.to(ring, { scale: 1.8, borderColor: THEME_COLORS.acid, duration: 0.4, ease: "power3.out" });
       gsap.to(label, { opacity: 1, scale: 1, y: -25, duration: 0.4, ease: "power3.out" });
     } else if (text === "START") {
-      gsap.to(ring, { scale: 2.5, borderColor: "#d7ff3f", opacity: 0.3, duration: 0.6, ease: "power3.out", repeat: 1, yoyo: true });
+      gsap.to(ring, { scale: 2.5, borderColor: THEME_COLORS.acid, opacity: 0.3, duration: 0.6, ease: "power3.out", repeat: 1, yoyo: true });
     } else {
       gsap.to(ring, { scale: 1.5, duration: 0.4, ease: "power3.out" });
       gsap.to(label, { opacity: 1, scale: 1, duration: 0.3 });
