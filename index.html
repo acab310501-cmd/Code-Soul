@@ -93,9 +93,13 @@
             <span class="language-switcher__divider">/</span>
             <span data-language="en">EN</span>
           </button>
-          <button class="theme-switcher" type="button" data-theme-switcher aria-label="Переключить тему">
-            <span class="theme-switcher__dot"></span>
-            <span class="theme-switcher__text">VOID</span>
+          <button class="theme-switcher" type="button" data-theme-switcher aria-label="Переключить на SOUL">
+            <span class="theme-switcher__track">
+              <span class="theme-switcher__option theme-switcher__option--code">CODE</span>
+              <span class="theme-switcher__option theme-switcher__option--soul">SOUL</span>
+              <span class="theme-switcher__thumb"></span>
+            </span>
+            <span class="theme-switcher__text visually-hidden">CODE</span>
           </button>
           <!-- Мобильная кнопка меню -->
           <button class="mobile-menu-button" aria-label="Открыть меню" aria-expanded="false">
@@ -128,14 +132,14 @@
             <span class="status-dot"></span>
             <span data-i18n="hero.status">Система онлайн</span>
           </div>
-          <div class="hero__title-wrap">
-            <div class="hero__pretitle">CODE × SOUL</div>
-            <div class="particle-title" aria-label="Мы создаём цифровые миры">
-              <h1 class="visually-hidden">Мы создаём цифровые миры</h1>
-              <canvas class="particle-title__canvas" data-particle-text="МЫ СОЗДАЁМ"></canvas>
-              <canvas class="particle-title__canvas" data-particle-text="ЦИФРОВЫЕ"></canvas>
-              <canvas class="particle-title__canvas particle-title__canvas--accent" data-particle-text="МИРЫ"></canvas>
+          <div class="hero__organism-wrap">
+            <h1 class="visually-hidden">Code &amp; Soul — мы создаём цифровые миры</h1>
+            <span class="hero__word hero__word--code" aria-hidden="true">CODE</span>
+            <div class="hero__organism">
+              <canvas class="hero__organism-canvas" data-organism></canvas>
+              <span class="hero__organism-mark" aria-hidden="true">×</span>
             </div>
+            <span class="hero__word hero__word--soul" aria-hidden="true">SOUL</span>
           </div>
           <div class="hero__manifesto">
             <span class="hero__manifesto-index">01 / 01</span>

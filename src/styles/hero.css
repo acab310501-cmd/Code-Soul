@@ -104,39 +104,83 @@
 .hero__title-wrap {
   position: relative;
   z-index: 4;
-  width: min(1100px, 78vw);
-  margin: 70px auto 0;
+  width: 100%;
+  margin: 40px auto 0;
 }
-.hero__pretitle {
-  margin-bottom: 30px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-acid);
+
+/* CODE × SOUL — единственная типографика в центре Hero.
+   CODE остаётся структурным (белый/графитовый), SOUL — источник
+   энергии всего экрана: фирменный лайм со свечением, как в логотипе. */
+.hero__organism-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+  gap: clamp(12px, 3vw, 40px);
+  width: min(1240px, 92vw);
+  margin: 0 auto;
 }
-.hero__title {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
+
+.hero__word {
   font-family: var(--font-display);
-  font-size: clamp(48px, 7vw, 120px);
+  font-size: clamp(28px, 4.4vw, 68px);
   font-weight: 600;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
 }
-.hero__line {
-  width: fit-content;
+.hero__word--code {
+  justify-self: end;
   color: var(--color-paper);
-  will-change: transform, opacity, filter;
 }
-.hero__line:nth-child(2) {
-  margin-left: 5%;
-}
-.hero__line--accent {
-  margin-left: 15%;
+.hero__word--soul {
+  justify-self: start;
   color: var(--color-acid);
+  text-shadow:
+    0 0 18px color-mix(in srgb, var(--color-acid) 70%, transparent),
+    0 0 46px color-mix(in srgb, var(--color-acid) 40%, transparent);
+}
+
+.hero__organism {
+  position: relative;
+  width: clamp(220px, 30vw, 460px);
+  aspect-ratio: 1 / 1;
+}
+.hero__organism-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hero__organism-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-paper);
+  opacity: 0.55;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .hero__organism { width: clamp(180px, 42vw, 320px); }
+  .hero__word { font-size: clamp(24px, 7vw, 44px); }
+}
+@media (max-width: 600px) {
+  .hero__organism-wrap {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+  }
+  .hero__word--code, .hero__word--soul {
+    justify-self: center;
+  }
+  .hero__word--code { order: 1; }
+  .hero__organism { order: 2; width: 58vw; }
+  .hero__word--soul { order: 3; }
 }
 
 .hero__manifesto {
@@ -231,11 +275,9 @@
 /* TABLET & MOBILE */
 @media (max-width: 900px) {
   .hero { padding-top: 130px; }
-  .hero__title-wrap { width: 90vw; }
+  .hero__title-wrap { width: 96vw; }
   .hero__status { display: none; }
   .hero__manifesto { bottom: 15%; }
-  .hero__line:nth-child(2) { margin-left: 2%; }
-  .hero__line--accent { margin-left: 8%; }
 }
 @media (max-width: 600px) {
   .hero {
@@ -244,14 +286,8 @@
   }
   .hero__title-wrap {
     width: 100%;
-    margin-top: 30px;
+    margin-top: 20px;
   }
-  .hero__title {
-    font-size: clamp(40px, 12vw, 72px);
-    line-height: 0.9;
-  }
-  .hero__line:nth-child(2) { margin-left: 0; }
-  .hero__line--accent { margin-left: 5%; }
   .hero__meta--left { top: 100px; }
   .hero__meta--left .eyebrow { display: none; }
   .hero__manifesto {
@@ -264,46 +300,15 @@
   .hero__scroll { bottom: 30px; }
 }
 
-/* PARTICLE TITLE */
-.particle-title {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+/* Дыхание всей композиции CODE × SOUL — едва заметное, но живое. */
+@keyframes heroOrganismDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -4px, 0) scale(1.015); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
 }
-.particle-title__canvas {
-  display: block;
-  width: 100%;
-  height: clamp(70px, 9.5vw, 175px);
-  overflow: visible;
-}
-.particle-title__canvas:nth-child(2) {
-  margin-left: 5%;
-}
-.particle-title__canvas--accent {
-  margin-left: 15%;
-  animation: heroAccentDrift 9s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(215, 255, 63, 0.35))
-          drop-shadow(0 0 42px rgba(215, 255, 63, 0.18));
-}
-@keyframes heroAccentDrift {
-  0% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(2px, -3px, 0); }
-  50% { transform: translate3d(-1px, 2px, 0); }
-  75% { transform: translate3d(-2px, -1px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
+.hero__organism-wrap {
+  animation: heroOrganismDrift 8s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .particle-title__canvas--accent { animation: none; }
-}
-@media (max-width: 600px) {
-  .particle-title { gap: 4px; }
-  .particle-title__canvas { height: 19vw; }
-  .particle-title__canvas:nth-child(2) { margin-left: 0; }
-  .particle-title__canvas--accent { margin-left: 5%; }
-}
-[data-theme="light"] .particle-title__canvas {
-  filter: drop-shadow(0 0 2px rgba(0,0,0,0.15));
-}
-[data-theme="light"] .particle-title__canvas--accent {
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.25));
+  .hero__organism-wrap { animation: none; }
 }

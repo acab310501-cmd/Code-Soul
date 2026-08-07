@@ -298,33 +298,67 @@
 }
 
 
-/* THEME */
+/* THEME — фирменный переключатель CODE | SOUL, а не dark/light-тумблер */
 
 .theme-switcher {
   display: flex;
   align-items: center;
-
-  gap: 7px;
-
+  padding: 0;
+  background: none;
+  border: none;
   cursor: pointer;
+}
 
+.theme-switcher__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 84px;
+  height: 26px;
+  padding: 3px;
+  border: 1px solid var(--border-medium);
+  border-radius: 999px;
+  overflow: hidden;
+  transition: border-color 0.4s var(--ease-out);
+}
+
+.theme-switcher__option {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.06em;
   color: var(--color-muted);
+  transition: color 0.4s var(--ease-out);
 }
 
-.theme-switcher__dot {
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: var(--color-paper);
-
-  transition:
-    background-color 0.4s var(--ease-out);
+.theme-switcher__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 1;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  border-radius: 999px;
+  background: var(--color-acid);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--color-acid) 65%, transparent);
+  transition: transform 0.55s var(--ease-out);
 }
 
-.theme-switcher:hover {
-  color: var(--color-paper);
+[data-theme="light"] .theme-switcher__thumb {
+  transform: translateX(calc(100% + 3px));
+}
+
+[data-theme="dark"] .theme-switcher__option--code,
+[data-theme="light"] .theme-switcher__option--soul {
+  color: var(--color-void);
+  font-weight: 600;
+}
+
+.theme-switcher:hover .theme-switcher__track {
+  border-color: var(--color-acid);
 }
 
 

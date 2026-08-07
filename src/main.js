@@ -16,7 +16,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { SoulParticles } from "./components/SoulParticles.js";
-import { ParticleText } from "./components/ParticleText.js";
 import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
 import { initTheme } from "./components/Theme.js";
@@ -26,6 +25,7 @@ import { initRouter } from "./components/Router.js";
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
 import { initLoader } from "./components/Loader.js";
+import { initOrganism } from "./components/Organism.js";
 import { THEME_COLORS } from "./theme-colors.js";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -50,7 +50,7 @@ document.addEventListener(
     safeInit("theme", initTheme);
     safeInit("pixelText", initPixelText);
     safeInit("particleSystem", initParticleSystem);
-    safeInit("particleText", initParticleText);
+    safeInit("organism", initOrganism);
     safeInit("contactAnimation", initContactAnimation);
     safeInit("contactMagic", initContactMagic);
     safeInit("mobileMenu", initMobileMenu);
@@ -65,7 +65,6 @@ document.addEventListener(
 
     safeInit("header", initHeader);
     safeInit("heroAnimation", initHeroAnimation);
-    safeInit("heroTitlePulse", initHeroTitlePulse);
   }
 );
 
@@ -86,24 +85,25 @@ function initHeader() {
 ======================================== */
 
 function initHeroAnimation() {
-  const pretitle = document.querySelector(".hero__pretitle");
   const meta = document.querySelector(".hero__meta--left");
   const manifesto = document.querySelector(".hero__manifesto");
   const scroll = document.querySelector(".hero__scroll");
   const sideWord = document.querySelector(".hero__side-word");
-  const title = document.querySelector(".particle-title");
+  const organism = document.querySelector(".hero__organism-wrap");
 
-  const elements = [pretitle, meta, manifesto, scroll, sideWord, title].filter(el => el !== null);
+  const elements = [meta, manifesto, scroll, sideWord].filter(el => el !== null);
 
   if (elements.length > 0) {
     gsap.set(elements, { opacity: 0, y: 30 });
   }
+  // hero__organism-wrap уже "дышит" через CSS-анимацию transform (heroOrganismDrift),
+  // поэтому вход анимируем только по opacity — иначе GSAP и keyframes спорят за transform.
+  if (organism) gsap.set(organism, { opacity: 0 });
 
   const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-  if (pretitle) tl.to(pretitle, { opacity: 1, y: 0, duration: 0.8 });
-  if (title) tl.to(title, { opacity: 1, y: 0, duration: 1, delay: 0.2 });
-  if (meta) tl.to(meta, { opacity: 1, duration: 0.8 }, "-=0.3");
+  if (organism) tl.to(organism, { opacity: 1, duration: 1.1 });
+  if (meta) tl.to(meta, { opacity: 1, duration: 0.8 }, "-=0.5");
   if (manifesto) tl.to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5");
   if (scroll) tl.to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5");
   if (sideWord) tl.to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
@@ -116,71 +116,6 @@ function initHeroAnimation() {
 
 console.log("%cCODE & SOUL", "font-size: 24px; font-weight: 700;");
 console.log("%cTechnology with a soul.", "font-size: 12px;");
-
-/* ========================================
-   PARTICLE TEXT
-======================================== */
-
-function initParticleText() {
-  const canvases = document.querySelectorAll("[data-particle-text]");
-  const systems = [];
-
-  const lightTextColor = THEME_COLORS.light.text;
-  const darkTextColor = THEME_COLORS.dark.text;
-  const lightAccentColor = THEME_COLORS.light.accent;
-  const darkAccentColor = THEME_COLORS.dark.accent;
-
-  const isLightTheme = () =>
-    document.documentElement.dataset.theme === "light" ||
-    document.documentElement.dataset.theme === "paper";
-
-  canvases.forEach((canvas) => {
-    const text = canvas.dataset.particleText;
-    const isAccent = canvas.classList.contains("particle-title__canvas--accent");
-    const light = isLightTheme();
-    const system = new ParticleText({
-      canvas, text,
-      fontSize: window.innerWidth < 700 ? 92 : 150,
-      color: isAccent
-        ? (light ? lightAccentColor : darkAccentColor)
-        : (light ? lightTextColor : darkTextColor),
-      acidGradient: true,
-      acidColor: isAccent
-        ? (light ? lightAccentColor : darkAccentColor)
-        : THEME_COLORS.acid,
-      // Тёмные точки на светлом фоне читаются хуже, чем светлые
-      // на тёмном при той же альфе/размере — компенсируем.
-      alphaBoost: light ? 1.6 : 1,
-      sizeBoost: light ? 1.3 : 1
-    });
-    systems.push(system);
-  });
-
-  window.__codeSoulParticles = systems;
-
-  window.addEventListener("code-soul:theme", (event) => {
-    const isLight = event.detail.theme === "light";
-    const nextColor = isLight ? lightTextColor : darkTextColor;
-    const nextAccentColor = isLight ? lightAccentColor : darkAccentColor;
-
-    systems.forEach((system) => {
-      system.setContrastBoost(isLight ? 1.6 : 1, isLight ? 1.3 : 1);
-      if (system.canvas.classList.contains("particle-title__canvas--accent")) {
-        system.setColor(nextAccentColor);
-        system.acidColor = nextAccentColor;
-      } else {
-        system.setColor(nextColor);
-      }
-    });
-  });
-}
-
-function initHeroTitlePulse() {
-  const title = document.querySelector(".particle-title");
-  if (!title) return;
-  gsap.set(title, { transformOrigin: "center center" });
-  gsap.to(title, { scale: 1.01, duration: 3.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
-}
 
 /* ========================================
    SOUL PARTICLE ENGINE

@@ -32,18 +32,26 @@
   --z-grain: 1100;
 }
 
-/* LIGHT THEME (PAPER) - Премиальный стиль */
+/* SOUL PERSONALITY (свет / биолюминесценция) — не "белая тема",
+   а тёплое лаймово-кремовое свечение, будто страница подсвечена изнутри. */
 [data-theme="paper"],
 [data-theme="light"] {
-  --color-void: #F5F5F2;
-  --color-ink: #EBE8E0;
-  --color-paper: #121316;
-  --color-white: #121316;
-  --color-muted: #6C727E;
-  --color-muted-dark: #93989F;
+  --color-void: #f6f5e6;
+  --color-ink: #eeecd6;
+  --color-paper: #14150f;
+  --color-white: #14150f;
+  --color-muted: #6d7160;
+  --color-muted-dark: #9a9c86;
 
-  --border-subtle: rgba(18, 19, 22, 0.08);
-  --border-medium: rgba(18, 19, 22, 0.18);
+  --border-subtle: rgba(20, 21, 15, 0.08);
+  --border-medium: rgba(20, 21, 15, 0.16);
 
-  --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  --bg-glow: radial-gradient(
+    circle at 50% 18%,
+    color-mix(in srgb, var(--color-acid) 16%, transparent) 0%,
+    color-mix(in srgb, var(--color-acid) 5%, transparent) 32%,
+    transparent 62%
+  );
+
+  --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }

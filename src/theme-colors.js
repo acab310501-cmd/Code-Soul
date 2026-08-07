@@ -12,9 +12,11 @@ export const THEME_COLORS = {
   dark: {
     text: "#f1f0eb",
     accent: "#d7ff3f",
+    void: "#050505",
   },
   light: {
-    text: "#121316",
-    accent: "#3c3e40",
+    text: "#14150f",
+    accent: "#4a4d3c",
+    void: "#f6f5e6",
   },
 };

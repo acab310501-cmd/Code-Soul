@@ -4,6 +4,7 @@ html {
 }
 
 body {
+  position: relative;
   background: var(--color-void);
   color: var(--color-paper);
   font-family: var(--font-body);
@@ -21,6 +22,28 @@ body {
 
 [data-theme="dark"] body {
   background-image: none;
+}
+
+/* SOUL: страница будто подсвечена изнутри — мягкое лаймовое биолюминесцентное
+   свечение сверху экрана, не декоративный градиент, а атмосфера темы. */
+[data-theme="light"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg-glow, none);
+  pointer-events: none;
+}
+
+/* Радиальная "материя", которой одна тема перетекает в другую при
+   переключении CODE ⇄ SOUL. Управляется из Theme.js через clip-path. */
+.theme-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: circle(0px at 50% 50%);
 }
 
 ::selection {
