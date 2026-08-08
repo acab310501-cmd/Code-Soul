@@ -37,16 +37,35 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 45vw;
-  height: 45vw;
-  max-width: 700px;
-  max-height: 700px;
+  width: 62vw;
+  height: 62vw;
+  max-width: 980px;
+  max-height: 980px;
   z-index: -4;
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-acid) 12%, transparent) 0%, transparent 68%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-acid) 16%, transparent) 0%, color-mix(in srgb, var(--color-acid) 4%, transparent) 45%, transparent 70%);
   transform: translate(-50%, -50%);
-  filter: blur(20px);
+  filter: blur(30px);
   pointer-events: none;
+}
+
+/* SOUL — источник света всей страницы. Даже когда ambient-глоу под
+   организмом не в фокусе, лёгкое лаймовое дыхание сверху экрана
+   напоминает, откуда идёт энергия — на любой секции, не только в Hero. */
+.site-light {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(1400px, 140vw);
+  height: 60vh;
+  z-index: -10;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--color-acid) 7%, transparent) 0%, transparent 65%);
+  opacity: 0.7;
+}
+[data-theme="light"] .site-light {
+  opacity: 1;
 }
 
 .hero__meta {
@@ -108,44 +127,69 @@
   margin: 40px auto 0;
 }
 
-/* CODE × SOUL — единственная типографика в центре Hero.
-   CODE остаётся структурным (белый/графитовый), SOUL — источник
-   энергии всего экрана: фирменный лайм со свечением, как в логотипе. */
+/* CODE × SOUL — организм здесь не иллюстрация рядом с заголовком,
+   а главный герой композиции. Слова — не равноценная пара: CODE тише,
+   собраннее, почти техническая аннотация; SOUL крупнее, теплее и
+   является видимым источником энергии всего экрана. */
 .hero__organism-wrap {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   justify-items: center;
-  gap: clamp(12px, 3vw, 40px);
-  width: min(1240px, 92vw);
+  gap: clamp(4px, 1.4vw, 28px);
+  width: min(1320px, 94vw);
   margin: 0 auto;
 }
 
 .hero__word {
+  position: relative;
+  z-index: 3;
   font-family: var(--font-display);
-  font-size: clamp(28px, 4.4vw, 68px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
   line-height: 1;
   white-space: nowrap;
 }
 .hero__word--code {
   justify-self: end;
-  color: var(--color-paper);
+  font-size: clamp(20px, 2.6vw, 34px);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--color-muted);
+  transform: translateY(-2px);
 }
 .hero__word--soul {
   justify-self: start;
+  font-size: clamp(32px, 5.4vw, 84px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--color-acid);
   text-shadow:
-    0 0 18px color-mix(in srgb, var(--color-acid) 70%, transparent),
-    0 0 46px color-mix(in srgb, var(--color-acid) 40%, transparent);
+    0 0 20px color-mix(in srgb, var(--color-acid) 75%, transparent),
+    0 0 60px color-mix(in srgb, var(--color-acid) 45%, transparent);
+  animation: soulPulse 6.4s ease-in-out infinite;
+}
+@keyframes soulPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 20px color-mix(in srgb, var(--color-acid) 75%, transparent),
+      0 0 60px color-mix(in srgb, var(--color-acid) 45%, transparent);
+  }
+  50% {
+    text-shadow:
+      0 0 28px color-mix(in srgb, var(--color-acid) 90%, transparent),
+      0 0 84px color-mix(in srgb, var(--color-acid) 60%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__word--soul { animation: none; }
 }
 
 .hero__organism {
   position: relative;
-  width: clamp(220px, 30vw, 460px);
+  z-index: 2;
+  width: clamp(300px, 40vw, 660px);
   aspect-ratio: 1 / 1;
+  margin: 0 clamp(-30px, -3vw, -10px);
 }
 .hero__organism-canvas {
   display: block;
@@ -166,20 +210,21 @@
 }
 
 @media (max-width: 900px) {
-  .hero__organism { width: clamp(180px, 42vw, 320px); }
-  .hero__word { font-size: clamp(24px, 7vw, 44px); }
+  .hero__organism { width: clamp(240px, 50vw, 420px); margin: 0 -14px; }
+  .hero__word--code { font-size: clamp(16px, 2.4vw, 22px); }
+  .hero__word--soul { font-size: clamp(26px, 8vw, 48px); }
 }
 @media (max-width: 600px) {
   .hero__organism-wrap {
     grid-template-columns: 1fr;
     justify-items: center;
-    gap: 10px;
+    gap: 0;
   }
   .hero__word--code, .hero__word--soul {
     justify-self: center;
   }
-  .hero__word--code { order: 1; }
-  .hero__organism { order: 2; width: 58vw; }
+  .hero__word--code { order: 1; transform: none; }
+  .hero__organism { order: 2; width: 72vw; margin: -8px 0; }
   .hero__word--soul { order: 3; }
 }
 

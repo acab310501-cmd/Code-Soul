@@ -1,24 +1,57 @@
 /**
- * Organism — главный визуальный символ бренда Code & Soul.
+ * Organism — главный герой Hero и символ бренда Code & Soul.
  *
  * Не текст. Не сфера. Не частицы сами по себе.
  * Живая форма на стыке нейронной сети, магнитного поля и плазмы:
  * органическая мембрана SOUL (лаймовое свечение, дыхание, жидкая
- * пульсация) и внутри неё — угловатый каркас CODE (тонкие белые/
- * графитовые связи и узлы, инженерная точность).
+ * пульсация — источник энергии всей страницы) и внутри неё —
+ * угловатый каркас CODE (тонкие связи и узлы — структура, на
+ * которой держится форма).
+ *
+ * Генеративность: каждый визит — новая, но узнаваемая особь. Число
+ * узлов, асимметрия, ритм дыхания и рисунок связей пересчитываются
+ * заново при каждой загрузке (без seed/localStorage — сознательно,
+ * чтобы организм ощущался живым, а не кэшированным), но алгоритм и
+ * цветовой язык неизменны — поэтому это всегда узнаваемо Code & Soul.
+ *
+ * Рождение: первые ~2.4с после снятия лоадера организм не «появляется»,
+ * а рождается — из точки, которую сначала прорисовывает структура
+ * (code), а затем в неё вливается жизнь (soul-энергия), со вспышкой
+ * и лёгким перелётом (overshoot) — ощущение первого вдоха.
  *
  * Реагирует на курсор, никогда не останавливается, но сделана так,
  * чтобы не нагружать средние ноутбуки/мобильные: 2D canvas, без
  * тяжёлых фильтров per-frame, пауза вне вьюпорта и на скрытой вкладке.
  */
+
+const TAU = Math.PI * 2;
+
+function easeOutBack(x) {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+}
+
+function easeOutExpo(x) {
+  return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+}
+
 export class Organism {
-  constructor({ canvas, nodeCount = 11, meshDensity = 2 }) {
+  constructor({ canvas, minNodes = 9, maxNodes = 14 }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.wrap = canvas.parentElement;
 
-    this.nodeCount = window.innerWidth < 700 ? Math.max(7, nodeCount - 3) : nodeCount;
-    this.meshDensity = meshDensity;
+    const isSmall = window.innerWidth < 700;
+    const lo = isSmall ? Math.max(6, minNodes - 3) : minNodes;
+    const hi = isSmall ? Math.max(8, maxNodes - 4) : maxNodes;
+
+    // ГЕНЕРАТИВНОСТЬ — каждая загрузка выращивает свою особь.
+    this.nodeCount = Math.round(lo + Math.random() * (hi - lo));
+    this.meshStep = 2 + Math.floor(Math.random() * 2); // 2 или 3 — разный рисунок каркаса
+    this.squish = 0.76 + Math.random() * 0.22; // асимметрия формы (не идеальный круг)
+    this.rotation = Math.random() * TAU;
+    this.radiusJitter = 0.92 + Math.random() * 0.18;
 
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -31,6 +64,11 @@ export class Organism {
     this.visible = true;
     this.lastFrame = 0;
 
+    // Рождение
+    this.birth = this.reducedMotion ? 1 : 0;
+    this.birthStarted = this.reducedMotion;
+    this.birthDuration = 2.4;
+
     this.pointer = { x: 0, y: 0, active: false, tx: 0, ty: 0 };
 
     this.colors = {
@@ -39,11 +77,12 @@ export class Organism {
     };
 
     this.nodes = Array.from({ length: this.nodeCount }, (_, i) => ({
-      angle: (i / this.nodeCount) * Math.PI * 2,
-      seedA: Math.random() * Math.PI * 2,
-      seedB: Math.random() * Math.PI * 2,
-      seedC: Math.random() * Math.PI * 2,
-      pulse: Math.random() * Math.PI * 2,
+      angle: (i / this.nodeCount) * TAU + this.rotation,
+      seedA: Math.random() * TAU,
+      seedB: Math.random() * TAU,
+      seedC: Math.random() * TAU,
+      pulse: Math.random() * TAU,
+      radiusMix: 0.85 + Math.random() * 0.3, // у каждого узла свой "характер"
       x: 0,
       y: 0,
     }));
@@ -52,6 +91,7 @@ export class Organism {
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onPointerLeave = this.onPointerLeave.bind(this);
     this.tick = this.tick.bind(this);
+    this.startBirth = this.startBirth.bind(this);
 
     this.resize();
     window.addEventListener("resize", this.resize);
@@ -76,14 +116,25 @@ export class Organism {
     window.addEventListener("code-soul:theme", (event) => this.setTheme(event.detail.theme));
     this.setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
-    // Даже при reduced-motion форма остаётся — рисуем один тихо дышащий кадр
-    // редким интервалом вместо requestAnimationFrame.
+    // Организм рождается ровно в момент, когда лоадер открывает сцену —
+    // первый вдох синхронен с первым кадром, который видит пользователь.
+    window.addEventListener("code-soul:genesis", this.startBirth, { once: true });
+    // Страховка: если лоадера нет/событие не пришло — не оставляем организм мёртвым.
+    this.genesisFallback = setTimeout(this.startBirth, 4200);
+
     if (this.reducedMotion) {
       this.drawFrame();
       this.slowInterval = setInterval(() => this.drawFrame(), 2600);
     } else {
       this.start();
     }
+  }
+
+  startBirth() {
+    if (this.birthStarted) return;
+    this.birthStarted = true;
+    this.birthStartTime = null;
+    clearTimeout(this.genesisFallback);
   }
 
   setTheme(theme) {
@@ -98,7 +149,9 @@ export class Organism {
     this.canvas.width = this.width * this.dpr;
     this.canvas.height = this.height * this.dpr;
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    this.baseRadius = Math.min(this.width, this.height) * 0.34;
+    // Организм — главный герой композиции, а не декоративная деталь:
+    // занимает почти весь свой контейнер, глоу выходит за его пределы.
+    this.baseRadius = Math.min(this.width, this.height) * 0.42 * this.radiusJitter;
     this.cx = this.width / 2;
     this.cy = this.height / 2;
   }
@@ -141,6 +194,12 @@ export class Organism {
     this.lastFrame = now;
     this.time += dt;
 
+    if (this.birthStarted && this.birth < 1) {
+      if (this.birthStartTime === null) this.birthStartTime = now;
+      const elapsed = (now - this.birthStartTime) / 1000;
+      this.birth = Math.min(1, elapsed / this.birthDuration);
+    }
+
     // Плавный лерп указателя — инерция, а не мгновенный отклик.
     this.pointer.x += (this.pointer.tx - this.pointer.x) * 0.06;
     this.pointer.y += (this.pointer.ty - this.pointer.y) * 0.06;
@@ -156,16 +215,22 @@ export class Organism {
       0.16 * Math.sin(t * 0.55 + node.seedA) +
       0.08 * Math.sin(t * 1.35 + node.seedB) +
       0.05 * Math.sin(t * 2.4 + node.seedC);
-    return this.baseRadius * breathe;
+    return this.baseRadius * breathe * node.radiusMix;
   }
 
   computeNodes() {
     const { cx, cy } = this;
+    // Структура (каркас) раскрывается первой и чуть быстрее, чем
+    // разливается энергия мембраны — сперва скелет, потом жизнь в нём.
+    const lifeScale = this.reducedMotion
+      ? 1
+      : easeOutBack(Math.min(1, this.birth * 1.15));
+
     this.nodes.forEach((node) => {
-      let r = this.nodeRadius(node);
+      let r = this.nodeRadius(node) * lifeScale;
       let angle = node.angle + Math.sin(this.time * 0.12 + node.seedA) * 0.05;
       let x = cx + Math.cos(angle) * r;
-      let y = cy + Math.sin(angle) * r * 0.86;
+      let y = cy + Math.sin(angle) * r * this.squish;
 
       if (this.pointer.active) {
         const dx = x - this.pointer.x;
@@ -192,8 +257,15 @@ export class Organism {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    this.drawSoulMembrane(ctx);
-    this.drawCodeLattice(ctx);
+    const structureAlpha = this.reducedMotion ? 1 : Math.min(1, this.birth * 2.4);
+    const lifeAlpha = this.reducedMotion ? 1 : easeOutExpo(Math.max(0, (this.birth - 0.15) / 0.85));
+    // Вспышка первого вдоха — короткий всплеск яркости, когда энергия входит в форму.
+    const spark = this.reducedMotion
+      ? 0
+      : Math.max(0, 1 - Math.abs(this.birth - 0.42) * 5) * 0.6;
+
+    this.drawCodeLattice(ctx, structureAlpha);
+    this.drawSoulMembrane(ctx, lifeAlpha, spark);
   }
 
   smoothPath(ctx, points, close = true) {
@@ -212,13 +284,15 @@ export class Organism {
     if (close) ctx.closePath();
   }
 
-  drawSoulMembrane(ctx) {
+  drawSoulMembrane(ctx, lifeAlpha, spark) {
+    if (lifeAlpha <= 0) return;
     const { cx, cy, baseRadius } = this;
 
-    // Внешнее дыхание — мягкое лаймовое свечение (soul = энергия/свет).
-    const glowGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 2.1);
-    glowGrad.addColorStop(0, `rgba(${this.colors.soul}, 0.16)`);
-    glowGrad.addColorStop(0.5, `rgba(${this.colors.soul}, 0.05)`);
+    // SOUL — источник света всей страницы: широкий эмбиент-глоу, который
+    // выходит далеко за пределы формы и физически освещает сцену вокруг.
+    const glowGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 2.8);
+    glowGrad.addColorStop(0, `rgba(${this.colors.soul}, ${0.2 * lifeAlpha + spark * 0.35})`);
+    glowGrad.addColorStop(0.45, `rgba(${this.colors.soul}, ${0.07 * lifeAlpha})`);
     glowGrad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
     ctx.fillStyle = glowGrad;
     ctx.fillRect(0, 0, this.width, this.height);
@@ -226,36 +300,38 @@ export class Organism {
     // Мембрана — жидкая, живая, "дышащая" форма.
     this.smoothPath(ctx, this.nodes);
     const bodyGrad = ctx.createRadialGradient(cx, cy, baseRadius * 0.1, cx, cy, baseRadius * 1.4);
-    bodyGrad.addColorStop(0, `rgba(${this.colors.soul}, 0.22)`);
-    bodyGrad.addColorStop(0.7, `rgba(${this.colors.soul}, 0.06)`);
+    bodyGrad.addColorStop(0, `rgba(${this.colors.soul}, ${0.24 * lifeAlpha})`);
+    bodyGrad.addColorStop(0.7, `rgba(${this.colors.soul}, ${0.07 * lifeAlpha})`);
     bodyGrad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
     ctx.fillStyle = bodyGrad;
     ctx.fill();
 
     ctx.save();
-    ctx.shadowBlur = 26;
-    ctx.shadowColor = `rgba(${this.colors.soul}, 0.85)`;
-    ctx.strokeStyle = `rgba(${this.colors.soul}, 0.75)`;
+    ctx.shadowBlur = 26 + spark * 24;
+    ctx.shadowColor = `rgba(${this.colors.soul}, ${0.85 * lifeAlpha})`;
+    ctx.strokeStyle = `rgba(${this.colors.soul}, ${(0.75 + spark * 0.25) * lifeAlpha})`;
     ctx.lineWidth = 1.1;
     ctx.stroke();
     ctx.restore();
 
-    // Ядро — источник энергии.
-    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 0.32);
-    coreGrad.addColorStop(0, `rgba(${this.colors.soul}, 0.9)`);
+    // Ядро — источник энергии, вспыхивает ярче в момент рождения.
+    const coreR = baseRadius * (0.32 + spark * 0.1);
+    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR);
+    coreGrad.addColorStop(0, `rgba(${this.colors.soul}, ${(0.9 + spark * 0.1) * lifeAlpha})`);
     coreGrad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
     ctx.fillStyle = coreGrad;
     ctx.beginPath();
-    ctx.arc(cx, cy, baseRadius * 0.32, 0, Math.PI * 2);
+    ctx.arc(cx, cy, coreR, 0, TAU);
     ctx.fill();
   }
 
-  drawCodeLattice(ctx) {
+  drawCodeLattice(ctx, structureAlpha) {
+    if (structureAlpha <= 0) return;
     const nodes = this.nodes;
-    const step = this.meshDensity + 1;
+    const step = this.meshStep;
 
     ctx.save();
-    ctx.strokeStyle = `rgba(${this.colors.code}, 0.16)`;
+    ctx.strokeStyle = `rgba(${this.colors.code}, ${0.16 * structureAlpha})`;
     ctx.lineWidth = 0.6;
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i];
@@ -268,9 +344,9 @@ export class Organism {
 
     nodes.forEach((node, i) => {
       const pulse = 0.35 + 0.35 * Math.abs(Math.sin(this.time * 0.9 + node.pulse));
-      ctx.fillStyle = `rgba(${this.colors.code}, ${pulse * 0.65})`;
+      ctx.fillStyle = `rgba(${this.colors.code}, ${pulse * 0.65 * structureAlpha})`;
       ctx.beginPath();
-      ctx.arc(node.x, node.y, 1.6, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, 1.6, 0, TAU);
       ctx.fill();
     });
     ctx.restore();
@@ -279,9 +355,11 @@ export class Organism {
   destroy() {
     this.stop();
     if (this.slowInterval) clearInterval(this.slowInterval);
+    clearTimeout(this.genesisFallback);
     window.removeEventListener("resize", this.resize);
     window.removeEventListener("pointermove", this.onPointerMove);
     window.removeEventListener("pointerleave", this.onPointerLeave);
+    window.removeEventListener("code-soul:genesis", this.startBirth);
     if (this.observer) this.observer.disconnect();
   }
 }

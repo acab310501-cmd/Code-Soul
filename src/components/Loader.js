@@ -115,6 +115,12 @@ export function initLoader() {
 
   ease:"power3.inOut",
 
+  onStart(){
+    // Организм Hero рождается ровно в тот момент, когда лоадер
+    // открывает сцену — первый вдох синхронен с первым кадром.
+    window.dispatchEvent(new CustomEvent("code-soul:genesis"));
+  },
+
   onComplete(){
 
     loader.classList.add(

@@ -89,28 +89,55 @@ function initHeroAnimation() {
   const manifesto = document.querySelector(".hero__manifesto");
   const scroll = document.querySelector(".hero__scroll");
   const sideWord = document.querySelector(".hero__side-word");
+  const status = document.querySelector(".hero__status");
   const organism = document.querySelector(".hero__organism-wrap");
+  const coordinates = document.querySelector(".hero__coordinates");
 
-  const elements = [meta, manifesto, scroll, sideWord].filter(el => el !== null);
+  const peripheral = [meta, manifesto, scroll, status, coordinates].filter(el => el !== null);
 
-  if (elements.length > 0) {
-    gsap.set(elements, { opacity: 0, y: 30 });
+  if (peripheral.length > 0) {
+    gsap.set(peripheral, { opacity: 0, y: 24 });
   }
+  if (sideWord) gsap.set(sideWord, { opacity: 0, y: 24 });
   // hero__organism-wrap уже "дышит" через CSS-анимацию transform (heroOrganismDrift),
   // поэтому вход анимируем только по opacity — иначе GSAP и keyframes спорят за transform.
   if (organism) gsap.set(organism, { opacity: 0 });
 
-  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let played = false;
 
-  if (organism) tl.to(organism, { opacity: 1, duration: 1.1 });
-  if (meta) tl.to(meta, { opacity: 1, duration: 0.8 }, "-=0.5");
-  if (manifesto) tl.to(manifesto, { opacity: 1, duration: 0.8 }, "-=0.5");
-  if (scroll) tl.to(scroll, { opacity: 1, duration: 0.8 }, "-=0.5");
-  if (sideWord) tl.to(sideWord, { opacity: 0.5, duration: 0.8 }, "-=0.7");
+  function play() {
+    if (played) return;
+    played = true;
+
+    if (reducedMotion) {
+      if (organism) gsap.set(organism, { opacity: 1 });
+      if (peripheral.length) gsap.set(peripheral, { opacity: 1, y: 0 });
+      if (sideWord) gsap.set(sideWord, { opacity: 0.5, y: 0 });
+      return;
+    }
+
+    // Первые секунды принадлежат только организму — рождение читается
+    // без конкуренции с интерфейсным шумом. Остальной Hero проступает
+    // следом, как контекст вокруг уже ожившей формы.
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    if (organism) tl.to(organism, { opacity: 1, duration: 1.3, ease: "power3.out" });
+    if (peripheral.length) {
+      tl.to(peripheral, { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, 1.1);
+    }
+    if (sideWord) {
+      tl.to(sideWord, { opacity: 0.5, y: 0, duration: 0.9 }, 1.1);
+    }
+  }
+
+  // Синхронизируем появление Hero-контента с моментом, когда лоадер
+  // открывает сцену — так рождение организма видно с самого первого кадра.
+  window.addEventListener("code-soul:genesis", play, { once: true });
+  setTimeout(play, 4400);
 
   const glow = document.querySelector(".hero__glow");
-  if (glow) {
-    gsap.to(glow, { scale: 1.12, opacity: 0.7, duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  if (glow && !reducedMotion) {
+    gsap.to(glow, { scale: 1.16, opacity: 0.85, duration: 6, repeat: -1, yoyo: true, ease: "sine.inOut" });
   }
 }
 
