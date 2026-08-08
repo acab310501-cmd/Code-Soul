@@ -248,7 +248,7 @@ export class Organism {
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     // Держим форму заметно меньше самого canvas — так свечение и нити
     // естественно затухают, не упираясь в квадратные границы холста.
-    this.baseRadius = Math.min(this.width, this.height) * 0.33 * this.radiusJitter;
+    this.baseRadius = Math.min(this.width, this.height) * 0.4 * this.radiusJitter;
     this.cx = this.width / 2;
     this.cy = this.height / 2;
   }
