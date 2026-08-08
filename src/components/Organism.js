@@ -7,21 +7,30 @@
  * веером расходятся из ядра к невидимому каркасу опорных точек
  * (CODE — структура, которая держит форму, но сама не видна как линия).
  * Нити рисуются аддитивным блендингом — там, где они пересекаются,
- * свечение само нарастает, как в референсе.
+ * свечение само нарастает.
  *
- * Генеративность: число опорных точек, кривизна нитей, рисунок пыли
- * и ритм дыхания каждый раз новые (без seed), но алгоритм и цвет —
- * неизменны, поэтому это всегда узнаваемо Code & Soul.
+ * Метаморфоза: организм никогда не застывает в одной форме. У каждой
+ * опорной точки и нити есть собственный "внутренний таймер" — раз в
+ * 6–16 секунд (у каждой точки свой, вразнобой) она плавно "передумывает"
+ * свою амплитуду/кривизну и медленно, за несколько секунд, перетекает
+ * к новому значению. Это не рестарт и не дискретная смена кадра — форма
+ * непрерывно перетекает из одного состояния в другое, как будто
+ * постоянно пересобирается из той же материи в новую.
  *
- * Рождение: первые ~2.2с после снятия лоадера организм не "появляется",
- * а рождается — сначала едва заметный каркас, затем в него стремительно
- * вливается энергия, с короткой вспышкой ядра — первый вдох.
+ * Генеративность: стартовые параметры и последовательность метаморфоз
+ * каждый раз новые (без seed), но алгоритм и цвет неизменны — поэтому
+ * это всегда узнаваемо Code & Soul.
+ *
+ * Рождение: организм начинает расти немедленно при создании (никогда
+ * не остаётся невидимым в ожидании внешнего события/таймера — это
+ * критично для мобильных браузеров, которые придерживают JS-таймеры
+ * фоновых вкладок). Если рядом успевает сработать событие открытия
+ * лоадера, рождение аккуратно переигрывается синхронно с ним;
+ * если нет — организм всё равно уже на экране.
  *
  * Реагирует на курсор, никогда не останавливается, но экономна:
  * пауза вне вьюпорта/на скрытой вкладке, DPR ограничен, без тяжёлых
- * per-frame фильтров на весь canvas (главная причина прошлого бага —
- * заливка всего canvas full-rect градиентом, из-за которой был виден
- * квадрат — здесь такого нет: всё рисуется локально, вокруг ядра).
+ * per-frame фильтров на весь canvas.
  */
 
 const TAU = Math.PI * 2;
@@ -30,8 +39,42 @@ function easeOutExpo(x) {
   return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
 }
 
+function easeInOutSine(x) {
+  return -(Math.cos(Math.PI * x) - 1) / 2;
+}
+
 function rand(min, max) {
   return min + Math.random() * (max - min);
+}
+
+// Плавающее значение, которое раз в случайный интервал "передумывает"
+// свою цель и не спеша перетекает к ней — источник непрерывной
+// метаморфозы формы (не шум, а осознанный редкий дрейф).
+class DriftingValue {
+  constructor(min, max, { minInterval = 6, maxInterval = 16, morphTime = 3.5 } = {}) {
+    this.min = min;
+    this.max = max;
+    this.minInterval = minInterval;
+    this.maxInterval = maxInterval;
+    this.morphTime = morphTime;
+    this.value = rand(min, max);
+    this.from = this.value;
+    this.to = this.value;
+    this.t = 1;
+    this.nextAt = rand(0, maxInterval); // рассинхронизировано с самого начала
+  }
+  update(time, dt) {
+    if (time >= this.nextAt && this.t >= 1) {
+      this.from = this.value;
+      this.to = rand(this.min, this.max);
+      this.t = 0;
+      this.nextAt = time + rand(this.minInterval, this.maxInterval);
+    }
+    if (this.t < 1) {
+      this.t = Math.min(1, this.t + dt / this.morphTime);
+      this.value = this.from + (this.to - this.from) * easeInOutSine(this.t);
+    }
+  }
 }
 
 export class Organism {
@@ -48,9 +91,12 @@ export class Organism {
 
     // ГЕНЕРАТИВНОСТЬ — у каждой загрузки своя особь, но тот же вид.
     this.anchorCount = Math.round(rand(lo, hi));
-    this.squish = rand(0.82, 1.08);
     this.rotation = Math.random() * TAU;
     this.radiusJitter = rand(0.9, 1.08);
+
+    // Медленно "передумывающиеся" параметры общей формы — метаморфоза.
+    this.squishDrift = new DriftingValue(0.74, 1.15, { minInterval: 7, maxInterval: 15, morphTime: 5 });
+    this.rotationDriftSpeed = rand(0.01, 0.025) * (Math.random() < 0.5 ? -1 : 1);
 
     this.width = 0;
     this.height = 0;
@@ -61,8 +107,10 @@ export class Organism {
     this.visible = true;
     this.lastFrame = 0;
 
+    // Рождение начинается сразу — без ожидания внешних событий,
+    // это гарантирует видимость даже если вкладка была фоновой при
+    // загрузке (частый случай для встроенных браузеров вроде Telegram).
     this.birth = this.reducedMotion ? 1 : 0;
-    this.birthStarted = this.reducedMotion;
     this.birthStartTime = null;
     this.birthDuration = 2.2;
 
@@ -71,43 +119,54 @@ export class Organism {
     this.colors = { soul: "215, 255, 63", code: "241, 240, 235" };
 
     // Опорные точки каркаса (CODE) — не рисуются линиями, но управляют
-    // тем, куда "дует" энергия (SOUL).
+    // тем, куда "дует" энергия (SOUL). У каждой — своя дрейфующая
+    // амплитуда радиуса, поэтому со временем точки то тянутся дальше,
+    // то стягиваются ближе, будто форма пересобирается заново.
     this.anchors = Array.from({ length: this.anchorCount }, (_, i) => ({
       angle: (i / this.anchorCount) * TAU + this.rotation,
       seedA: Math.random() * TAU,
       seedB: Math.random() * TAU,
       seedC: Math.random() * TAU,
       pulse: Math.random() * TAU,
-      radiusMix: rand(0.82, 1.18),
+      radiusMix: new DriftingValue(0.7, 1.35, {
+        minInterval: rand(5, 9),
+        maxInterval: rand(11, 18),
+        morphTime: rand(3, 6),
+      }),
       x: 0,
       y: 0,
     }));
 
     // Нити — рисуются от точки у ядра к одному из якорей, с органичным
-    // изгибом. Количество и распределение случайны, но пропорциональны
-    // числу якорей — форма остаётся узнаваемой.
+    // изгибом. Количество пропорционально числу якорей — форма остаётся
+    // узнаваемой, но кривизна и охват каждой нити тоже медленно дрейфуют.
     const filamentCount = Math.round(this.anchorCount * rand(2.6, 3.4));
-    this.filaments = Array.from({ length: filamentCount }, () => {
-      const anchorIndex = Math.floor(Math.random() * this.anchorCount);
-      return {
-        anchorIndex,
-        startAngle: Math.random() * TAU,
-        startRadiusFrac: rand(0.02, 0.22),
-        endRadiusFrac: rand(0.85, 1.18),
-        endAngleJitter: rand(-0.22, 0.22),
-        curl: rand(-1, 1) * rand(0.15, 0.45),
-        curlFreq: rand(0.15, 0.4),
-        phase: Math.random() * TAU,
-        widthMix: rand(0.5, 1.4),
-        alphaMix: rand(0.5, 1.2),
-      };
-    });
+    this.filaments = Array.from({ length: filamentCount }, () => ({
+      anchorIndex: Math.floor(Math.random() * this.anchorCount),
+      startAngle: Math.random() * TAU,
+      startRadiusFrac: rand(0.02, 0.22),
+      endRadiusFrac: new DriftingValue(0.7, 1.3, {
+        minInterval: rand(6, 10),
+        maxInterval: rand(12, 20),
+        morphTime: rand(3, 6),
+      }),
+      endAngleJitter: rand(-0.22, 0.22),
+      curl: rand(-1, 1) * rand(0.15, 0.45),
+      curlFreq: rand(0.15, 0.4),
+      phase: Math.random() * TAU,
+      widthMix: rand(0.5, 1.4),
+      alphaMix: rand(0.5, 1.2),
+    }));
 
-    // Несколько нитей "вырываются" за пределы формы — как в референсе,
-    // тонкие усы, ускользающие за основной силуэт.
+    // Несколько нитей "вырываются" за пределы формы — тонкие усы,
+    // ускользающие за основной силуэт; их длина тоже дышит.
     this.tendrils = Array.from({ length: Math.round(this.anchorCount * 0.5) }, () => ({
       anchorIndex: Math.floor(Math.random() * this.anchorCount),
-      reach: rand(1.25, 1.7),
+      reach: new DriftingValue(1.15, 1.85, {
+        minInterval: rand(5, 9),
+        maxInterval: rand(10, 16),
+        morphTime: rand(2.5, 5),
+      }),
       angleJitter: rand(-0.3, 0.3),
       curl: rand(-1, 1) * rand(0.2, 0.5),
       phase: Math.random() * TAU,
@@ -128,7 +187,7 @@ export class Organism {
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onPointerLeave = this.onPointerLeave.bind(this);
     this.tick = this.tick.bind(this);
-    this.startBirth = this.startBirth.bind(this);
+    this.replayBirth = this.replayBirth.bind(this);
 
     this.resize();
     window.addEventListener("resize", this.resize);
@@ -153,8 +212,9 @@ export class Organism {
     window.addEventListener("code-soul:theme", (event) => this.setTheme(event.detail.theme));
     this.setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
-    window.addEventListener("code-soul:genesis", this.startBirth, { once: true });
-    this.genesisFallback = setTimeout(this.startBirth, 4200);
+    // Если лоадер успевает открыть сцену синхронно — красиво переигрываем
+    // рождение день в день с ним. Но это бонус, а не условие видимости.
+    window.addEventListener("code-soul:genesis", this.replayBirth, { once: true });
 
     if (this.reducedMotion) {
       this.computeAnchors();
@@ -165,15 +225,17 @@ export class Organism {
     }
   }
 
-  startBirth() {
-    if (this.birthStarted) return;
-    this.birthStarted = true;
-    this.birthStartTime = null;
-    clearTimeout(this.genesisFallback);
+  replayBirth() {
+    // Не запускаем рождение (оно уже идёт с t=0 конструктора), а лишь
+    // синхронизируем момент вспышки с открытием сцены, если успели вовремя.
+    if (this.birth < 0.9) {
+      this.birthStartTime = null;
+      this.birth = 0;
+    }
   }
 
   setTheme(theme) {
-    this.colors.code = theme === "light" ? "20, 21, 15" : "241, 240, 235";
+    this.colors.code = theme === "light" ? "225, 255, 205" : "241, 240, 235";
   }
 
   resize() {
@@ -229,7 +291,7 @@ export class Organism {
     this.lastFrame = now;
     this.time += dt;
 
-    if (this.birthStarted && this.birth < 1) {
+    if (this.birth < 1) {
       if (this.birthStartTime === null) this.birthStartTime = now;
       const elapsed = (now - this.birthStartTime) / 1000;
       this.birth = Math.min(1, elapsed / this.birthDuration);
@@ -238,9 +300,17 @@ export class Organism {
     this.pointer.x += (this.pointer.tx - this.pointer.x) * 0.06;
     this.pointer.y += (this.pointer.ty - this.pointer.y) * 0.06;
 
+    this.updateDrift(dt);
     this.computeAnchors();
     this.drawFrame();
     this.raf = requestAnimationFrame(this.tick);
+  }
+
+  updateDrift(dt) {
+    this.squishDrift.update(this.time, dt);
+    this.anchors.forEach((a) => a.radiusMix.update(this.time, dt));
+    this.filaments.forEach((f) => f.endRadiusFrac.update(this.time, dt));
+    this.tendrils.forEach((t) => t.reach.update(this.time, dt));
   }
 
   anchorRadius(anchor) {
@@ -250,18 +320,20 @@ export class Organism {
       0.14 * Math.sin(t * 0.5 + anchor.seedA) +
       0.07 * Math.sin(t * 1.2 + anchor.seedB) +
       0.04 * Math.sin(t * 2.1 + anchor.seedC);
-    return this.baseRadius * breathe * anchor.radiusMix;
+    return this.baseRadius * breathe * anchor.radiusMix.value;
   }
 
   computeAnchors() {
     const { cx, cy } = this;
     const lifeScale = this.reducedMotion ? 1 : easeOutExpo(Math.min(1, this.birth * 1.3));
+    const squish = this.reducedMotion ? 1 : this.squishDrift.value;
+    const slowSpin = this.reducedMotion ? 0 : this.time * this.rotationDriftSpeed;
 
     this.anchors.forEach((anchor) => {
       let r = this.anchorRadius(anchor) * lifeScale;
-      let angle = anchor.angle + Math.sin(this.time * 0.1 + anchor.seedA) * 0.05;
+      let angle = anchor.angle + slowSpin + Math.sin(this.time * 0.1 + anchor.seedA) * 0.06;
       let x = cx + Math.cos(angle) * r;
-      let y = cy + Math.sin(angle) * r * this.squish;
+      let y = cy + Math.sin(angle) * r * squish;
 
       if (this.pointer.active) {
         const dx = x - this.pointer.x;
@@ -314,6 +386,7 @@ export class Organism {
   drawFilaments(ctx, lifeAlpha, spark) {
     if (lifeAlpha <= 0) return;
     const { cx, cy, baseRadius } = this;
+    const squish = this.reducedMotion ? 1 : this.squishDrift.value;
 
     this.filaments.forEach((f) => {
       const anchor = this.anchors[f.anchorIndex];
@@ -321,12 +394,12 @@ export class Organism {
 
       const startR = baseRadius * f.startRadiusFrac;
       const sx = cx + Math.cos(f.startAngle) * startR;
-      const sy = cy + Math.sin(f.startAngle) * startR * this.squish;
+      const sy = cy + Math.sin(f.startAngle) * startR * squish;
 
       const anchorAngle = Math.atan2(anchor.y - cy, (anchor.x - cx) || 1);
       const anchorDist = Math.hypot(anchor.x - cx, anchor.y - cy);
       const endAngle = anchorAngle + f.endAngleJitter;
-      const endR = anchorDist * f.endRadiusFrac;
+      const endR = anchorDist * f.endRadiusFrac.value;
       const ex = cx + Math.cos(endAngle) * endR;
       const ey = cy + Math.sin(endAngle) * endR;
 
@@ -355,8 +428,8 @@ export class Organism {
       if (!anchor) return;
       const angle = Math.atan2(anchor.y - cy, (anchor.x - cx) || 1) + t.angleJitter;
       const dist = Math.hypot(anchor.x - cx, anchor.y - cy);
-      const ex = cx + Math.cos(angle) * dist * t.reach;
-      const ey = cy + Math.sin(angle) * dist * t.reach;
+      const ex = cx + Math.cos(angle) * dist * t.reach.value;
+      const ey = cy + Math.sin(angle) * dist * t.reach.value;
       const midX = (anchor.x + ex) / 2;
       const midY = (anchor.y + ey) / 2;
       const wobble = this.curlOffset(0.3, t.phase, 14 * t.curl);
@@ -376,12 +449,13 @@ export class Organism {
   drawDust(ctx, lifeAlpha) {
     if (lifeAlpha <= 0) return;
     const { cx, cy, baseRadius } = this;
+    const squish = this.reducedMotion ? 1 : this.squishDrift.value;
 
     this.dust.forEach((d) => {
       const angle = d.angle + this.time * d.driftSpeed;
       const r = baseRadius * d.radiusFrac;
       const x = cx + Math.cos(angle) * r;
-      const y = cy + Math.sin(angle) * r * this.squish;
+      const y = cy + Math.sin(angle) * r * squish;
       const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(this.time * d.twinkleSpeed + d.phase));
       const edgeFalloff = 1 - Math.min(1, d.radiusFrac / 1.3) * 0.6;
 
@@ -425,11 +499,10 @@ export class Organism {
   destroy() {
     this.stop();
     if (this.slowInterval) clearInterval(this.slowInterval);
-    clearTimeout(this.genesisFallback);
     window.removeEventListener("resize", this.resize);
     window.removeEventListener("pointermove", this.onPointerMove);
     window.removeEventListener("pointerleave", this.onPointerLeave);
-    window.removeEventListener("code-soul:genesis", this.startBirth);
+    window.removeEventListener("code-soul:genesis", this.replayBirth);
     if (this.observer) this.observer.disconnect();
   }
 }

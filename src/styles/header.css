@@ -64,6 +64,8 @@
   gap: 8px;
 
   width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   font-family: var(--font-body);
 
@@ -108,17 +110,11 @@
 
 /* Переключение маски логотипа по теме: logo-icon.webp — тёмная тема,
    logo-mono.webp — светлая тема (без JS, чтения --color-void не требуется) */
+/* Обе личности бренда теперь тёмные — логотип для светлого фона
+   (logo-mono) больше не нужен, используем icon-версию в обеих темах. */
 .logo__image--light,
 .footer__logo--light {
   display: none;
-}
-[data-theme="light"] .logo__image--dark,
-[data-theme="light"] .footer__logo--dark {
-  display: none;
-}
-[data-theme="light"] .logo__image--light,
-[data-theme="light"] .footer__logo--light {
-  display: block;
 }
 
 /* Стиль для логотипа в футере */
@@ -454,6 +450,14 @@
   .mobile-menu {
     display: flex;
   }
+  /* Без центрального nav колонки не должны драться за равную долю —
+     иначе логотип теряет место и переносится на несколько строк. */
+  .site-header {
+    grid-template-columns: auto 1fr auto;
+  }
+  .header__actions {
+    gap: clamp(10px, 2.4vw, 20px);
+  }
 }
 
 /* MOBILE */
@@ -471,4 +475,10 @@
   .theme-switcher__text {
     display: none;
   }
+}
+
+@media (max-width: 380px) {
+  .header__actions { gap: 8px; }
+  .theme-switcher__track { width: 60px; height: 22px; }
+  .theme-switcher__option { font-size: 7px; }
 }

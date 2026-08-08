@@ -385,7 +385,7 @@ export class SoulParticles {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     const isPaper = this.theme === 'paper' || this.theme === 'light';
-    const rgb = isPaper ? [20, 21, 15] : [240, 242, 255];
+    const rgb = isPaper ? [230, 250, 210] : [240, 242, 255];
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
