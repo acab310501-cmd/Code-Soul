@@ -78,14 +78,17 @@ class DriftingValue {
 }
 
 export class Organism {
-  constructor({ canvas, minAnchors = 8, maxAnchors = 12 }) {
+  constructor({ canvas, minAnchors = 9, maxAnchors = 14 }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.wrap = canvas.parentElement;
 
     const isSmall = window.innerWidth < 700;
-    const lo = isSmall ? Math.max(6, minAnchors - 2) : minAnchors;
-    const hi = isSmall ? Math.max(7, maxAnchors - 3) : maxAnchors;
+    // Организм на мобильных теперь такой же доминирующий герой сцены,
+    // как на десктопе (не уменьшенная копия) — плотность частиц и
+    // нитей почти не режем, только чуть экономим на самых узких экранах.
+    const lo = isSmall ? Math.max(7, minAnchors - 2) : minAnchors;
+    const hi = isSmall ? Math.max(9, maxAnchors - 3) : maxAnchors;
 
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -173,7 +176,7 @@ export class Organism {
     }));
 
     // Пыль — искры, разбросанные по объёму формы.
-    const dustCount = isSmall ? 40 : 70;
+    const dustCount = isSmall ? 55 : 85;
     this.dust = Array.from({ length: dustCount }, () => ({
       angle: Math.random() * TAU,
       radiusFrac: rand(0.05, 1.25),

@@ -1,5 +1,10 @@
 .hero {
   position: relative;
+  /* Фолбэк на 100vh для браузеров без поддержки svh (некоторые старые
+     мобильные WebView) — без него правило ниже просто игнорируется
+     целиком, и .hero может схлопнуться до min-height:auto, из-за чего
+     контент оказывается почти невидимым на экране. */
+  min-height: 100vh;
   min-height: 100svh;
   display: flex;
   align-items: center;
@@ -124,13 +129,12 @@
   margin: 40px auto 0;
 }
 
-/* Иерархия первого экрана: 1) единая строка CODE — организм — SOUL
-   (живое ядро физически между двумя половинами системы, как в
-   референсе бренда), 2) «МЫ СОЗДАЁМ ЦИФРОВЫЕ МИРЫ.», 3) короткий
-   supporting-текст. Все — крупные, читаемые, без микротипографики. */
+/* Иерархия первого экрана: 1) CODE слева / живая материя, заполняющая
+   середину / SOUL справа, 2) «МЫ СОЗДАЁМ ЦИФРОВЫЕ МИРЫ.», 3) короткий
+   supporting-текст. Всё — крупное, читаемое, без микротипографики. */
 .hero__organism-wrap {
   position: relative;
-  width: min(1320px, 96vw);
+  width: min(1680px, 96vw);
   margin: 0 auto;
   text-align: center;
 }
@@ -143,34 +147,32 @@
   font-weight: inherit;
 }
 
-/* CODE слева, SOUL справа, живое ядро — между ними, физически связывая
-   структуру и энергию в одну композицию. Обе половины крупные и
-   уверенно читаемые: CODE — не микро-аннотация, а полноценная половина
-   системы, просто спокойнее по цвету. SOUL — чуть ярче, источник
-   энергии, от него к организму тянется общее свечение. */
+/* CODE прижат к левому краю, SOUL — к правому: почти без "мёртвого"
+   воздуха снаружи. Всё пространство между ними — не пустота, а сама
+   живая материя: organism растягивается на всю центральную колонку. */
 .hero__code-soul {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-items: center;
-  gap: clamp(6px, 1.6vw, 24px);
+  gap: clamp(4px, 1.4vw, 20px);
+  width: 100%;
 }
 .hero__word {
   position: relative;
   z-index: 3;
   font-family: var(--font-display);
-  font-size: clamp(36px, 6.4vw, 96px);
+  font-size: clamp(38px, 7vw, 104px);
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1;
   white-space: nowrap;
 }
 .hero__word--code {
-  justify-self: end;
+  justify-self: start;
   color: var(--color-paper);
 }
 .hero__word--soul {
-  justify-self: start;
+  justify-self: end;
   color: var(--color-acid);
   text-shadow:
     0 0 24px color-mix(in srgb, var(--color-acid) 78%, transparent),
@@ -193,16 +195,18 @@
   .hero__word--soul { animation: none; }
 }
 
-/* Живое ядро — главный герой сцены, а не декоративная деталь между
-   словами: занимает почти весь свой столбец грида, слова CODE/SOUL
-   намеренно "наезжают" на его ambient-свечение своими краями — так
-   вся строка читается одной связанной системой, а не тремя блоками. */
+/* Живая материя — главный герой сцены. Занимает всю центральную
+   колонку (между CODE и SOUL), а не сжимается до скромной иконки:
+   размер завязан на доступную высоту Hero (vh), а не на ширину слов,
+   поэтому на широких экранах ядро остаётся большим и плотным, а не
+   растягивается в тонкий блин. */
 .hero__organism {
   position: relative;
   z-index: 2;
-  width: clamp(280px, 27vw, 460px);
+  width: clamp(360px, 56vh, 920px);
+  max-width: 100%;
   aspect-ratio: 1 / 1;
-  margin: 0 clamp(-38px, -3.6vw, -14px);
+  margin: 0 auto;
 }
 .hero__organism-canvas {
   display: block;
@@ -253,29 +257,35 @@
 }
 
 @media (max-width: 900px) {
-  .hero__organism { width: clamp(160px, 34vw, 300px); margin: 0 -8px; }
-  .hero__word { font-size: clamp(26px, 8vw, 46px); }
+  .hero__word { font-size: clamp(30px, 6.4vw, 52px); }
   .hero__tagline { font-size: clamp(22px, 7vw, 38px); }
 }
-@media (max-width: 600px) {
-  .hero__code-soul { gap: 2px; }
-  .hero__organism { width: 30vw; margin: 0 -4px; }
-  .hero__word { font-size: clamp(22px, 9vw, 34px); }
-  .hero__subtext { font-size: 13px; padding: 0 8px; }
-}
-@media (max-width: 420px) {
-  /* На самых узких экранах строка CODE—ядро—SOUL уже не помещается
-     в одну строку без потери читаемости — переносим ядро под слова,
-     но сохраняем ту же смысловую последовательность CODE → SOUL,
-     и организм остаётся визуально "между" ними по потоку. */
+
+/* На телефонах трём колонкам в ряд не хватает места, чтобы организм
+   оставался крупным и доминирующим — переносим его под CODE/SOUL,
+   но именно ЗДЕСЬ, а не в узкой строке, он должен занимать основную
+   часть экрана, как и на десктопе. Единая, простая, надёжная
+   раскладка для всех телефонов — без хрупких отрицательных отступов. */
+@media (max-width: 760px) {
   .hero__code-soul {
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: "code soul" "organism organism";
-    row-gap: 6px;
+    grid-template-areas:
+      "code soul"
+      "organism organism";
+    row-gap: clamp(8px, 3vw, 20px);
   }
-  .hero__word--code { grid-area: code; }
-  .hero__word--soul { grid-area: soul; }
-  .hero__organism { grid-area: organism; width: 48vw; margin: 0 auto; }
+  .hero__word--code { grid-area: code; justify-self: start; }
+  .hero__word--soul { grid-area: soul; justify-self: end; }
+  .hero__word { font-size: clamp(26px, 9vw, 42px); }
+  .hero__organism {
+    grid-area: organism;
+    width: min(84vw, 62vh, 520px);
+    margin: 4px auto 0;
+  }
+  .hero__tagline { font-size: clamp(24px, 8.5vw, 40px); margin-top: 14px; }
+}
+@media (max-width: 420px) {
+  .hero__subtext { font-size: 13px; padding: 0 8px; }
 }
 
 
@@ -374,8 +384,7 @@
    чтобы они не наезжали друг на друга. */
 @media (max-height: 760px) and (min-width: 901px) {
   .hero { padding-top: 110px; padding-bottom: 60px; }
-  .hero__organism { width: clamp(220px, 26vw, 380px); }
-  .hero__code-soul { margin-bottom: -4px; }
+  .hero__organism { width: clamp(260px, 42vh, 560px); }
   .hero__tagline { font-size: clamp(24px, 4vw, 42px); }
   .hero__subtext { margin-top: 12px; }
   .hero__meta--left { top: 14%; }
@@ -391,6 +400,7 @@
 }
 @media (max-width: 600px) {
   .hero {
+    min-height: 100vh;
     min-height: 100svh;
     padding: 120px var(--page-padding) 90px;
   }
