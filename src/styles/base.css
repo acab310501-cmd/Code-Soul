@@ -15,35 +15,20 @@ body {
     background-color 0.7s var(--ease-out),
     color 0.7s var(--ease-out);
 
-  /* Применяем текстуру только в светлой теме */
+  /* Едва заметное органическое зерно — часть единой SOUL-идентичности. */
   background-image: var(--bg-texture, none);
   background-size: 200px 200px;
 }
 
-[data-theme="dark"] body {
-  background-image: none;
-}
-
 /* SOUL: страница будто подсвечена изнутри — мягкое лаймовое биолюминесцентное
-   свечение сверху экрана, не декоративный градиент, а атмосфера темы. */
-[data-theme="light"] body::before {
+   свечение сверху экрана, не декоративный градиент, а атмосфера бренда. */
+body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   background: var(--bg-glow, none);
   pointer-events: none;
-}
-
-/* Радиальная "материя", которой одна тема перетекает в другую при
-   переключении CODE ⇄ SOUL. Управляется из Theme.js через clip-path. */
-.theme-transition {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  pointer-events: none;
-  opacity: 0;
-  clip-path: circle(0px at 50% 50%);
 }
 
 ::selection {
@@ -79,10 +64,6 @@ body {
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
   animation: grainShift 0.25s steps(2) infinite;
-}
-
-[data-theme="light"] .grain {
-  opacity: 0.025; /* меньше шума для светлой темы */
 }
 
 @keyframes grainShift {
@@ -174,10 +155,10 @@ body {
   border: 0;
 }
 
-/* Тени для светлой темы (ощущение бумаги) */
-[data-theme="light"] .work-case,
-[data-theme="light"] .service-card,
-[data-theme="light"] .journal-card,
-[data-theme="light"] .contact__container {
+/* Тени карточек — лёгкая объёмность на тёмном фоне */
+.work-case,
+.service-card,
+.journal-card,
+.contact__container {
     box-shadow: 0 8px 24px rgba(0,0,0,0.04);
 }

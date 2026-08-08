@@ -1,11 +1,13 @@
 :root {
-  /* COLORS (Dark Theme) */
-  --color-void: #050505;
-  --color-ink: #0d0d0d;
+  /* COLORS — единая идентичность SOUL: глубокий зелёно-чёрный, не чистый
+     #000000, с органическим лаймовым характером. Один бренд, одно
+     визуальное состояние — никаких переключаемых тем. */
+  --color-void: #070a05;
+  --color-ink: #0e1408;
   --color-paper: #f1f0eb;
-  --color-white: #ffffff;
-  --color-muted: #858585;
-  --color-muted-dark: #505050;
+  --color-white: #f1f0eb;
+  --color-muted: #869077;
+  --color-muted-dark: #4c5c3c;
   --color-acid: #d7ff3f;
 
   /* TYPOGRAPHY */
@@ -21,39 +23,25 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* UI */
-  --border-subtle: rgba(255, 255, 255, 0.12);
-  --border-medium: rgba(255, 255, 255, 0.2);
+  /* UI — лайм используется аккуратно, только как едва заметная энергия
+     на границах, не как декоративная заливка. */
+  --border-subtle: rgba(215, 255, 63, 0.09);
+  --border-medium: rgba(215, 255, 63, 0.18);
+
+  /* Мягкое биолюминесцентное свечение сверху страницы — источник света
+     всего сайта, отголосок SOUL-ядра из Hero. */
+  --bg-glow: radial-gradient(
+    circle at 50% 12%,
+    color-mix(in srgb, var(--color-acid) 12%, transparent) 0%,
+    color-mix(in srgb, var(--color-acid) 4%, transparent) 32%,
+    transparent 62%
+  );
+
+  --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 
   /* Z INDEX */
   --z-content: 10;
   --z-header: 100;
   --z-cursor: 1000;
   --z-grain: 1100;
-}
-
-/* SOUL PERSONALITY — не белая тема и не пастель. Это неоновый мир:
-   почти чёрный, но с тёплым зелёным подтоном, будто светится изнутри
-   тем же лаймом, что и слово SOUL. Обе личности бренда — тёмные;
-   отличается не яркость фона, а характер света в нём. */
-[data-theme="paper"],
-[data-theme="light"] {
-  --color-void: #070a04;
-  --color-ink: #0e1408;
-  --color-paper: #eafbdb;
-  --color-white: #eafbdb;
-  --color-muted: #7f9a68;
-  --color-muted-dark: #4c5c3c;
-
-  --border-subtle: rgba(215, 255, 63, 0.12);
-  --border-medium: rgba(215, 255, 63, 0.24);
-
-  --bg-glow: radial-gradient(
-    circle at 50% 15%,
-    color-mix(in srgb, var(--color-acid) 30%, transparent) 0%,
-    color-mix(in srgb, var(--color-acid) 10%, transparent) 30%,
-    transparent 62%
-  );
-
-  --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }

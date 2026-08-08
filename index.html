@@ -69,12 +69,7 @@
           <img
             src="images/logo/logo-icon.webp"
             alt=""
-            class="logo__image logo__image--dark"
-          />
-          <img
-            src="images/logo/logo-mono.webp"
-            alt=""
-            class="logo__image logo__image--light"
+            class="logo__image"
           />
           <span class="logo__name">CODE &amp; SOUL</span>
           <span class="logo__signal"></span>
@@ -93,14 +88,6 @@
             <span data-language="ru" class="language-switcher__active">RU</span>
             <span class="language-switcher__divider">/</span>
             <span data-language="en">EN</span>
-          </button>
-          <button class="theme-switcher" type="button" data-theme-switcher aria-label="Переключить на SOUL">
-            <span class="theme-switcher__track">
-              <span class="theme-switcher__option theme-switcher__option--code">CODE</span>
-              <span class="theme-switcher__option theme-switcher__option--soul">SOUL</span>
-              <span class="theme-switcher__thumb"></span>
-            </span>
-            <span class="theme-switcher__text visually-hidden">CODE</span>
           </button>
           <!-- Мобильная кнопка меню -->
           <button class="mobile-menu-button" aria-label="Открыть меню" aria-expanded="false">
@@ -134,13 +121,21 @@
             <span data-i18n="hero.status">Система онлайн</span>
           </div>
           <div class="hero__organism-wrap">
-            <h1 class="visually-hidden">Code &amp; Soul — мы создаём цифровые миры</h1>
-            <span class="hero__word hero__word--code" aria-hidden="true">CODE</span>
-            <div class="hero__organism">
-              <canvas class="hero__organism-canvas" data-organism></canvas>
-              <span class="hero__organism-mark" aria-hidden="true">×</span>
-            </div>
-            <span class="hero__word hero__word--soul" aria-hidden="true">SOUL</span>
+            <h1 class="hero__headline" aria-label="Code &amp; Soul — Мы создаём цифровые миры">
+              <span class="hero__code-soul" aria-hidden="true">
+                <span class="hero__word hero__word--code">CODE</span>
+                <span class="hero__word-x" aria-hidden="true">×</span>
+                <span class="hero__word hero__word--soul">SOUL</span>
+              </span>
+              <div class="hero__organism" aria-hidden="true">
+                <canvas class="hero__organism-canvas" data-organism></canvas>
+              </div>
+              <span class="hero__tagline" aria-hidden="true">
+                <span data-i18n="hero.line1">МЫ СОЗДАЁМ</span>
+                <span class="hero__tagline-accent"><span data-i18n="hero.line2">ЦИФРОВЫЕ</span> <span data-i18n="hero.line3">МИРЫ.</span></span>
+              </span>
+            </h1>
+            <p class="hero__subtext" data-i18n="hero.subtext">Объединяем код, дизайн и технологию, чтобы создавать цифровые продукты с характером.</p>
           </div>
           <div class="hero__manifesto">
             <span class="hero__manifesto-index">01 / 01</span>
@@ -566,8 +561,7 @@
 
       <!-- FOOTER -->
       <footer class="site-footer">
-        <img src="images/logo/logo-icon.webp" alt="" class="footer__logo footer__logo--dark" />
-        <img src="images/logo/logo-mono.webp" alt="" class="footer__logo footer__logo--light" />
+        <img src="images/logo/logo-icon.webp" alt="" class="footer__logo" />
         <span class="visually-hidden">Code & Soul</span>
         <span>MADE WITH CODE. BUILT WITH SOUL.</span>
         <span class="site-footer__telegram">

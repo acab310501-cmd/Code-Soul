@@ -18,7 +18,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SoulParticles } from "./components/SoulParticles.js";
 import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
-import { initTheme } from "./components/Theme.js";
 import { initLanguage, translations } from "./components/Language.js";
 import { initWork } from "./components/Work.js";
 import { initRouter } from "./components/Router.js";
@@ -47,7 +46,6 @@ document.addEventListener(
     safeInit("smoothScroll", initSmoothScroll);
     safeInit("cursor", initCursor);
     safeInit("language", initLanguage);
-    safeInit("theme", initTheme);
     safeInit("pixelText", initPixelText);
     safeInit("particleSystem", initParticleSystem);
     safeInit("organism", initOrganism);
