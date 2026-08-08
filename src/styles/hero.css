@@ -187,9 +187,9 @@
 .hero__organism {
   position: relative;
   z-index: 2;
-  width: clamp(300px, 40vw, 660px);
+  width: clamp(280px, 36vw, 620px);
   aspect-ratio: 1 / 1;
-  margin: 0 clamp(-30px, -3vw, -10px);
+  margin: 0;
 }
 .hero__organism-canvas {
   display: block;
@@ -210,7 +210,7 @@
 }
 
 @media (max-width: 900px) {
-  .hero__organism { width: clamp(240px, 50vw, 420px); margin: 0 -14px; }
+  .hero__organism { width: clamp(240px, 50vw, 420px); margin: 0; }
   .hero__word--code { font-size: clamp(16px, 2.4vw, 22px); }
   .hero__word--soul { font-size: clamp(26px, 8vw, 48px); }
 }
@@ -224,7 +224,7 @@
     justify-self: center;
   }
   .hero__word--code { order: 1; transform: none; }
-  .hero__organism { order: 2; width: 72vw; margin: -8px 0; }
+  .hero__organism { order: 2; width: 72vw; margin: 8px 0; }
   .hero__word--soul { order: 3; }
 }
 
