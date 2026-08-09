@@ -333,6 +333,13 @@
   z-index: var(--z-grain);
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  /* Критично: без явного opacity/pointer-events по умолчанию элемент
+     рендерится ПОЛНОСТЬЮ ВИДИМЫМ на любой загрузке (opacity наследуется
+     как 1), потому что JS выставляет эти значения только по клику —
+     а до первого клика их не выставляет никто. Это и было причиной
+     "ничего не видно на телефоне, пока не нажмёшь бургер". */
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -349,6 +356,9 @@
   padding: 80px 40px 40px;
   flex-direction: column;
   gap: 24px;
+  /* Тот же баг: без transform по умолчанию панель стоит на месте
+     (right:0) и видна поверх Hero с первого кадра. */
+  transform: translateX(100%);
   overflow-y: auto;
   box-shadow: -8px 0 40px rgba(0,0,0,0.5);
   transform: translateX(100%);

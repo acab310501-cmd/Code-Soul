@@ -1,13 +1,13 @@
 /**
  * Organism — главный герой Hero и символ бренда Code & Soul.
  *
- * Визуальный язык: не контур, не многоугольник, не залитая клякса.
- * Это облако светящихся нитей и пыли — как долгая выдержка нейронного
- * разряда или плазмы. Тонкие лаймовые нити (SOUL — энергия, жизнь)
- * веером расходятся из ядра к невидимому каркасу опорных точек
- * (CODE — структура, которая держит форму, но сама не видна как линия).
- * Нити рисуются аддитивным блендингом — там, где они пересекаются,
- * свечение само нарастает.
+ * Визуальный язык: живая органическая МАССА, а не тонкий контур или
+ * скелет из линий. В основе — несколько вложенных полупрозрачных
+ * слоёв мембраны (плотных к центру, тающих к краю), поверх которых
+ * плазменные нити веером расходятся из ядра к невидимому каркасу
+ * опорных точек, и пыль/искры добавляют текстуру. Всё рисуется
+ * аддитивным блендингом — там, где слои/нити пересекаются, свечение
+ * само нарастает, как в плазме или биолюминесценции.
  *
  * Метаморфоза: организм никогда не застывает в одной форме. У каждой
  * опорной точки и нити есть собственный "внутренний таймер" — раз в
@@ -143,7 +143,7 @@ export class Organism {
     // Нити — рисуются от точки у ядра к одному из якорей, с органичным
     // изгибом. Количество пропорционально числу якорей — форма остаётся
     // узнаваемой, но кривизна и охват каждой нити тоже медленно дрейфуют.
-    const filamentCount = Math.round(this.anchorCount * rand(2.6, 3.4));
+    const filamentCount = Math.round(this.anchorCount * rand(3.4, 4.4));
     this.filaments = Array.from({ length: filamentCount }, () => ({
       anchorIndex: Math.floor(Math.random() * this.anchorCount),
       startAngle: Math.random() * TAU,
@@ -372,12 +372,58 @@ export class Organism {
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
+    this.drawMembrane(ctx, lifeAlpha);
     this.drawFilaments(ctx, lifeAlpha, spark);
     this.drawDust(ctx, lifeAlpha);
     this.drawCore(ctx, lifeAlpha, spark);
     ctx.restore();
 
     this.drawAnchorMarks(ctx, structureAlpha);
+  }
+
+  // Сглаженная замкнутая кривая через набор точек — основа для
+  // заполненных слоёв мембраны (даёт органичный контур, а не
+  // многоугольник со острыми углами).
+  smoothPath(ctx, points) {
+    if (points.length < 3) return;
+    ctx.beginPath();
+    const first = points[0];
+    const last = points[points.length - 1];
+    const start = { x: (last.x + first.x) / 2, y: (last.y + first.y) / 2 };
+    ctx.moveTo(start.x, start.y);
+    for (let i = 0; i < points.length; i++) {
+      const p0 = points[i];
+      const p1 = points[(i + 1) % points.length];
+      const mid = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
+      ctx.quadraticCurveTo(p0.x, p0.y, mid.x, mid.y);
+    }
+    ctx.closePath();
+  }
+
+  // Живая МАССА, а не только контур из ниток: несколько вложенных
+  // полупрозрачных слоёв, построенных по тем же опорным точкам, но
+  // с разным масштабом — даёт настоящий объём органической материи,
+  // плотной в центре и мягко тающей к краю, вместо тонкого скелета
+  // на пустом месте.
+  drawMembrane(ctx, lifeAlpha) {
+    if (lifeAlpha <= 0) return;
+    const { cx, cy, baseRadius } = this;
+    const layers = [0.34, 0.55, 0.78, 1];
+
+    layers.forEach((scale, i) => {
+      const pts = this.anchors.map((a) => ({
+        x: cx + (a.x - cx) * scale,
+        y: cy + (a.y - cy) * scale,
+      }));
+      this.smoothPath(ctx, pts);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * scale * 1.2 || 1);
+      const alpha = (0.09 + i * 0.035) * lifeAlpha;
+      grad.addColorStop(0, `rgba(${this.colors.soul}, ${alpha * 1.6})`);
+      grad.addColorStop(0.7, `rgba(${this.colors.soul}, ${alpha})`);
+      grad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
   }
 
   // Мягкий органичный изгиб точки на кривой — не случайный дребезг,
@@ -417,9 +463,9 @@ export class Organism {
       const cxp = midX + nx * wobble;
       const cyp = midY + ny * wobble;
 
-      const alpha = 0.09 * f.alphaMix * lifeAlpha + spark * 0.05;
+      const alpha = 0.15 * f.alphaMix * lifeAlpha + spark * 0.08;
       ctx.strokeStyle = `rgba(${this.colors.soul}, ${alpha})`;
-      ctx.lineWidth = 0.6 * f.widthMix;
+      ctx.lineWidth = 0.9 * f.widthMix;
       ctx.beginPath();
       ctx.moveTo(sx, sy);
       ctx.quadraticCurveTo(cxp, cyp, ex, ey);
@@ -438,10 +484,10 @@ export class Organism {
       const wobble = this.curlOffset(0.3, t.phase, 14 * t.curl);
 
       const grad = ctx.createLinearGradient(anchor.x, anchor.y, ex, ey);
-      grad.addColorStop(0, `rgba(${this.colors.soul}, ${0.16 * lifeAlpha})`);
+      grad.addColorStop(0, `rgba(${this.colors.soul}, ${0.22 * lifeAlpha})`);
       grad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
       ctx.strokeStyle = grad;
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.7;
       ctx.beginPath();
       ctx.moveTo(anchor.x, anchor.y);
       ctx.quadraticCurveTo(midX + wobble, midY - wobble, ex, ey);
@@ -462,7 +508,7 @@ export class Organism {
       const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(this.time * d.twinkleSpeed + d.phase));
       const edgeFalloff = 1 - Math.min(1, d.radiusFrac / 1.3) * 0.6;
 
-      ctx.fillStyle = `rgba(${this.colors.soul}, ${0.5 * twinkle * edgeFalloff * lifeAlpha})`;
+      ctx.fillStyle = `rgba(${this.colors.soul}, ${0.65 * twinkle * edgeFalloff * lifeAlpha})`;
       ctx.beginPath();
       ctx.arc(x, y, d.size, 0, TAU);
       ctx.fill();
@@ -472,11 +518,11 @@ export class Organism {
   drawCore(ctx, lifeAlpha, spark) {
     if (lifeAlpha <= 0) return;
     const { cx, cy, baseRadius } = this;
-    const coreR = baseRadius * (0.22 + spark * 0.08);
+    const coreR = baseRadius * (0.3 + spark * 0.1);
 
     const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR);
-    grad.addColorStop(0, `rgba(${this.colors.soul}, ${(0.85 + spark * 0.15) * lifeAlpha})`);
-    grad.addColorStop(0.5, `rgba(${this.colors.soul}, ${0.35 * lifeAlpha})`);
+    grad.addColorStop(0, `rgba(${this.colors.soul}, ${(0.95 + spark * 0.05) * lifeAlpha})`);
+    grad.addColorStop(0.45, `rgba(${this.colors.soul}, ${0.5 * lifeAlpha})`);
     grad.addColorStop(1, `rgba(${this.colors.soul}, 0)`);
     ctx.fillStyle = grad;
     ctx.beginPath();

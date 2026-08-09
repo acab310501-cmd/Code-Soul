@@ -759,6 +759,11 @@ function initMobileMenu() {
   let isOpen = false;
   let menuContext = null;
 
+  // Явно фиксируем закрытое состояние в момент инициализации — не
+  // полагаемся только на CSS-дефолты (хотя они теперь тоже верны).
+  gsap.set(mobileMenu, { x: '100%' });
+  if (overlay) gsap.set(overlay, { opacity: 0, pointerEvents: 'none' });
+
   const openMenu = () => {
     if (isOpen) return;
     isOpen = true;
