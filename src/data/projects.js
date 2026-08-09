@@ -966,3 +966,266 @@ export const projects = [
     ],
   },
 ];
+
+/* ========================================
+   PENDING — READY, NO SCREENSHOTS YET
+
+   Flora Atelier и Ambient Garden полностью описаны в том же
+   формате, что и остальные проекты (category/description на
+   RU и EN, case study, technologies, url), но НЕ включены в
+   основной массив `projects`, потому что для них нет реальных
+   скриншотов в public/images/cases — а придумывать случайные
+   картинки или оставлять пустой src у <img> запрещено ТЗ (это
+   либо сломает карточку, либо потребует подставить чужой кадр).
+
+   Как только появятся реальные скриншоты (см. `image` и
+   `gallery` — это ожидаемые пути, файлов по ним пока нет),
+   нужно:
+   1) положить .webp в public/images/cases/ под этими именами
+      (или поменять пути на реальные);
+   2) перенести оба объекта из pendingProjects в конец массива
+      `projects` выше;
+   3) обновить work.count в src/components/Language.js
+      (RU: "08 ПРОЕКТОВ" → "10 ПРОЕКТОВ", EN аналогично) и
+      текст "08 PROJECTS / 2026" в index.html (`.work__footer`).
+======================================== */
+
+export const pendingProjects = [
+  /* ========================================
+     09 — FLORA ATELIER
+  ======================================== */
+  {
+    id: "flora-atelier",
+    number: "09",
+    title: "FLORA ATELIER",
+
+    category: {
+      ru: "WEB / BRAND / E-COMMERCE",
+      en: "WEB / BRAND / E-COMMERCE",
+    },
+
+    description: {
+      ru: "Премиальная флористическая студия, где каталог авторских букетов подан как атмосферное digital-пространство, а не обычный интернет-магазин.",
+      en: "A premium floristry studio where a catalogue of signature bouquets becomes an atmospheric digital space rather than an ordinary online shop.",
+    },
+
+    technologies: "React · Vite",
+
+    url: "https://flora-atelier.vercel.app/",
+
+    // TODO: скриншотов пока нет — путь ожидаемый, файла ещё нет.
+    image: "images/cases/flora-atelier-01.webp",
+
+    accent: "#d7ff3f",
+
+    featured: false,
+
+    case: {
+      ru: {
+        eyebrow: "CASE STUDY / 09",
+
+        introTitle: "ЦВЕТЫ — ЭТО ВСЕГДА ЭМОЦИЯ, А НЕ ТОЛЬКО ТОВАР.",
+
+        intro:
+          "Покупатели выбирают не только цветы, но и эмоции, которые они передают. Задачей было создать не каталог букетов, а цифровое пространство, которое передаёт атмосферу авторской флористической студии.",
+
+        challengeTitle: "ЗАДАЧА",
+
+        challenge:
+          "Создать современный сайт премиальной флористики, где визуальная эстетика бренда соединяется с удобным пользовательским опытом.",
+
+        solutionTitle: "РЕШЕНИЕ",
+
+        solution:
+          "Разработали уникальный дизайн в эстетике премиальной флористики: каталог авторских букетов с детальным описанием композиций, интерактивная галерея, плавные анимации и микроинтеракции, продуманная навигация и собственная визуальная система бренда.",
+
+        experienceTitle: "ЦИФРОВОЙ ОПЫТ",
+
+        experience:
+          "Сайт делает акцент на атмосферную подачу продукта — от первого экрана до карточки букета — и полностью адаптирован под desktop, tablet и mobile.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "React-приложение на Vite с компонентным каталогом, галереей и адаптивной вёрсткой.",
+
+        resultTitle: "РЕЗУЛЬТАТ",
+
+        result:
+          "Получился элегантный digital-продукт, который знакомит пользователя с философией студии, передаёт характер бренда и формирует ощущение премиального сервиса ещё до первого заказа.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "ОТКРЫТЬ ПРОЕКТ",
+
+        close: "ЗАКРЫТЬ CASE",
+      },
+
+      en: {
+        eyebrow: "CASE STUDY / 09",
+
+        introTitle: "FLOWERS ARE ALWAYS AN EMOTION, NOT JUST A PRODUCT.",
+
+        intro:
+          "Customers choose not just flowers, but the emotions they carry. The goal was to build a digital space that communicates the atmosphere of a signature floristry studio, not just a bouquet catalogue.",
+
+        challengeTitle: "THE CHALLENGE",
+
+        challenge:
+          "Create a modern site for a premium floristry brand where visual aesthetics meet a smooth user experience.",
+
+        solutionTitle: "THE SOLUTION",
+
+        solution:
+          "We designed a unique visual language for premium floristry: a catalogue of signature bouquets with detailed descriptions, an interactive gallery, smooth animations and micro-interactions, thoughtful navigation and a dedicated brand visual system.",
+
+        experienceTitle: "THE EXPERIENCE",
+
+        experience:
+          "The site leans into atmospheric product presentation — from the first screen to every bouquet card — fully adapted for desktop, tablet and mobile.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "A React application built with Vite, a component-based catalogue, gallery and responsive layout.",
+
+        resultTitle: "THE RESULT",
+
+        result:
+          "An elegant digital product that introduces visitors to the studio's philosophy, communicates the brand's character and creates a sense of premium service before the first order is placed.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "OPEN LIVE PROJECT",
+
+        close: "CLOSE CASE",
+      },
+    },
+
+    // TODO: галерея ожидает реальные скриншоты проекта.
+    gallery: [
+      "images/cases/flora-atelier-01.webp",
+      "images/cases/flora-atelier-02.webp",
+      "images/cases/flora-atelier-03.webp",
+    ],
+  },
+
+  /* ========================================
+     10 — AMBIENT GARDEN
+  ======================================== */
+  {
+    id: "ambient-garden",
+    number: "10",
+    title: "AMBIENT GARDEN",
+
+    category: {
+      ru: "WEB / CREATIVE TECHNOLOGY / AUDIO",
+      en: "WEB / CREATIVE TECHNOLOGY / AUDIO",
+    },
+
+    description: {
+      ru: "Цифровой сад звуков и настроений: шесть живых атмосфер, аудио-реактивная визуализация и честный звук без рекламы и лишнего интерфейса.",
+      en: "A digital garden of sounds and moods: six living atmospheres, audio-reactive visuals, and honest sound without ads or interface clutter.",
+    },
+
+    technologies: "JavaScript · Web Audio API",
+
+    url: "https://ambient-garden.vercel.app/",
+
+    // TODO: скриншотов пока нет — путь ожидаемый, файла ещё нет.
+    image: "images/cases/ambient-garden-01.webp",
+
+    accent: "#d7ff3f",
+
+    featured: false,
+
+    case: {
+      ru: {
+        eyebrow: "CASE STUDY / 10",
+
+        introTitle: "ИНОГДА НУЖЕН ПРОСТО ЧЕСТНЫЙ ЖИВОЙ ЗВУК.",
+
+        intro:
+          "Без рекламы, без лишнего интерфейса, без бесконечного количества настроек. Так появился Ambient Garden — цифровой сад звуков и настроений для работы, медитации или сна.",
+
+        challengeTitle: "ЗАДАЧА",
+
+        challenge:
+          "Создать атмосферное аудио-пространство с несколькими сценами звука, которое реагирует на пользователя и не отвлекает лишним интерфейсом.",
+
+        solutionTitle: "РЕШЕНИЕ",
+
+        solution:
+          "Реализовали шесть атмосфер — лес, дождь, костёр, море, город и сияние — на аудиоплеере на Web Audio API с плавным crossfade между сценами, audio-reactive визуализацией и превью звука при наведении.",
+
+        experienceTitle: "ЦИФРОВОЙ ОПЫТ",
+
+        experience:
+          "Фон реагирует на настоящий звук, добавлены sleep timer и breathing guide, управление доступно с клавиатуры и через наушники — с полной адаптацией под мобильные устройства и desktop.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "Нативный JavaScript и Web Audio API для аудио-реактивной визуализации, кроссфейда сцен и управления воспроизведением.",
+
+        resultTitle: "РЕЗУЛЬТАТ",
+
+        result:
+          "Получилось атмосферное цифровое пространство, которое не пытается имитировать природу, а создаёт место, в котором можно остановиться, сосредоточиться, расслабиться или уснуть.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "ОТКРЫТЬ ПРОЕКТ",
+
+        close: "ЗАКРЫТЬ CASE",
+      },
+
+      en: {
+        eyebrow: "CASE STUDY / 10",
+
+        introTitle: "SOMETIMES YOU JUST NEED HONEST, LIVING SOUND.",
+
+        intro:
+          "No ads. No interface clutter. No endless settings. That's how Ambient Garden came to be — a digital garden of sounds and moods for work, meditation or sleep.",
+
+        challengeTitle: "THE CHALLENGE",
+
+        challenge:
+          "Build an atmospheric audio space with several sound scenes that responds to the user without distracting interface noise.",
+
+        solutionTitle: "THE SOLUTION",
+
+        solution:
+          "We built six atmospheres — forest, rain, campfire, ocean, city and glow — on a Web Audio API player with smooth crossfade between scenes, audio-reactive visuals and hover previews.",
+
+        experienceTitle: "THE EXPERIENCE",
+
+        experience:
+          "The background reacts to real sound, with a sleep timer and a breathing guide, keyboard and headphone controls, fully adapted for mobile and desktop.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "Vanilla JavaScript and the Web Audio API power the audio-reactive visuals, scene crossfading and playback controls.",
+
+        resultTitle: "THE RESULT",
+
+        result:
+          "An atmospheric digital space that doesn't try to imitate nature — it creates a place to stop, focus, relax or fall asleep.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "OPEN LIVE PROJECT",
+
+        close: "CLOSE CASE",
+      },
+    },
+
+    // TODO: галерея ожидает реальные скриншоты проекта.
+    gallery: [
+      "images/cases/ambient-garden-01.webp",
+      "images/cases/ambient-garden-02.webp",
+      "images/cases/ambient-garden-03.webp",
+    ],
+  },
+];

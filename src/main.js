@@ -60,6 +60,7 @@ document.addEventListener(
     safeInit("aboutDepth", initAboutDepth);
     safeInit("journalAnimation", initJournalAnimation);
     safeInit("journalCinematicFocus", initJournalCinematicFocus);
+    safeInit("journalModal", initJournalModal);
 
     safeInit("header", initHeader);
     safeInit("heroAnimation", initHeroAnimation);
@@ -354,6 +355,77 @@ function initJournalAnimation() {
       gsap.to(visual, { rotateX: 0, rotateY: 0, duration: .8, ease: "power3.out" });
       if (symbol) gsap.to(symbol, { x: 0, y: 0, duration: .8, ease: "power3.out" });
     });
+  });
+}
+
+/* ========================================
+   JOURNAL — ARTICLE MODAL
+   Существующая механика карточек (hover, cinematic focus)
+   не трогается. Модалка — чистая надстройка: полный текст
+   статьи хранится прямо в карточке (.journal-card__full,
+   уже переведённый через data-i18n) и просто переносится
+   в общее модальное окно при клике.
+======================================== */
+
+function initJournalModal() {
+  const modal = document.querySelector("[data-journal-modal]");
+  const cards = document.querySelectorAll("[data-journal-card]");
+  if (!modal || !cards.length) return;
+
+  const panel = modal.querySelector(".journal-modal__panel");
+  const numberEl = modal.querySelector("[data-journal-modal-number]");
+  const categoryEl = modal.querySelector("[data-journal-modal-category]");
+  const titleEl = modal.querySelector("[data-journal-modal-title]");
+  const bodyEl = modal.querySelector("[data-journal-modal-body]");
+  let lastFocused = null;
+
+  function openModal(card) {
+    const number = card.querySelector(".journal-card__number")?.textContent || "";
+    const category = card.querySelector(".journal-card__category")?.textContent || "";
+    const title = card.querySelector(".journal-card__content h3")?.textContent || "";
+    const full = card.querySelector(".journal-card__full");
+
+    numberEl.textContent = number;
+    categoryEl.textContent = category;
+    titleEl.textContent = title;
+    bodyEl.innerHTML = full ? full.innerHTML : "";
+
+    lastFocused = document.activeElement;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    window.__codeSoulLenis?.stop();
+    panel.scrollTop = 0;
+    modal.querySelector(".journal-modal__close")?.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    window.__codeSoulLenis?.start();
+    if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+  }
+
+  cards.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("a, button")) return;
+      openModal(card);
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openModal(card);
+      }
+    });
+  });
+
+  modal.querySelectorAll("[data-journal-modal-close]").forEach((el) => {
+    el.addEventListener("click", closeModal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) closeModal();
   });
 }
 

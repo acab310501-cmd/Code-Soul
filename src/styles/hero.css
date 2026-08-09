@@ -267,6 +267,23 @@
    часть экрана, как и на десктопе. Единая, простая, надёжная
    раскладка для всех телефонов — без хрупких отрицательных отступов. */
 @media (max-width: 760px) {
+  /* Причина наложения hero__subtext и hero__manifesto на телефонах:
+     .hero — flex-контейнер с align-items:center, и на десктопе это
+     вертикально центрирует единственный flow-элемент (organism-wrap).
+     Но hero__manifesto/coordinates — position:absolute, «приклеенные»
+     к низу контейнера фиксированным отступом. Когда высота контента
+     organism-wrap (headline + organism + tagline + subtext) на узких
+     экранах приближается к высоте вьюпорта, центрирование толкает его
+     нижний край вниз — прямо в зону, где висит manifesto, отсюда
+     наложение текста. Меняем выравнивание на «от верха»: тогда
+     organism-wrap всегда начинается сразу под паддингом hero, а если
+     он выше доступной высоты — контейнер .hero (min-height, не
+     height) просто вырастет вслед за контентом, и абсолютно
+     позиционированные блоки внизу останутся под ним, а не поверх. */
+  .hero {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
   .hero__code-soul {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
