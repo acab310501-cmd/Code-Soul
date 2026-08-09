@@ -30,7 +30,7 @@ const translations = {
       title3: "ЦИФРОВЫЕ МИРЫ.",
       description:
         "Мы создаём цифровые продукты, которые имеют характер. Каждый проект — отдельная история.",
-      count: "08 ПРОЕКТОВ / 2026",
+      count: "10 ПРОЕКТОВ / 2026",
       footer: "БОЛЬШЕ МИРОВ УЖЕ СКОРО",
     },
 
@@ -143,6 +143,10 @@ const translations = {
       howWeWorkTitle: "КАК МЫ РАБОТАЕМ",
       howWeWork:
         "Меньше слов — больше результата. Мы не берём десятки проектов одновременно ради количества — мы уделяем внимание каждому клиенту, потому что именно детали делают хороший продукт отличным.",
+      connectTitle: "МЫ НА СВЯЗИ",
+      connectTelegram: "Telegram",
+      connectChannel: "Telegram-канал",
+      connectInstagram: "Instagram",
       value1Title: "CURIOSITY",
       value1Text: "Нам интересно исследовать новое, экспериментировать и постоянно становиться лучше.",
       value2Title: "CRAFT",
@@ -164,19 +168,19 @@ const translations = {
         "Пространство, где мы говорим о технологиях, дизайне, AI, коде и всём, что происходит между идеей и её воплощением.",
       readMore: "Читать",
       article1Category: "OUR PROCESS",
-      article1Title: "HOW WE WORK",
+      article1Title: "КАК МЫ РАБОТАЕМ",
       article1Text: "Хороший цифровой продукт не начинается с кода. Он начинается с понимания задачи, идеи и человека, для которого этот продукт создаётся.",
       article1Meta: "IDEA / DESIGN / CODE / SOUL",
       article1Body:
         "<h4>01 / IDEA</h4><p>Сначала мы пытаемся понять не то, каким должен быть сайт, а зачем он вообще нужен. Что должен изменить продукт? Для кого он создаётся? Какое впечатление должен оставить? Мы собираем контекст и превращаем идею в направление.</p><h4>02 / DIRECTION</h4><p>После этого появляется концепция. Мы определяем визуальное направление, характер продукта, структуру и ключевые сценарии — рождается ответ на вопрос «почему этот продукт должен выглядеть именно так?».</p><h4>03 / DESIGN</h4><p>Дизайн для нас — не украшение. Он должен помогать человеку понимать продукт, чувствовать бренд и совершать нужное действие. Мы работаем с типографикой, композицией, цветом, движением, деталями и взаимодействием.</p><h4>04 / CODE</h4><p>После этого дизайн становится настоящим продуктом. Мы пишем код, создаём компоненты, анимации, интерактивные элементы и связываем всё в единую систему.</p><h4>05 / SOUL</h4><p>Здесь начинается самое интересное: детали, которые невозможно описать техническим заданием. Микроанимации. Реакции. Атмосфера. Характер. То, благодаря чему продукт перестаёт быть просто интерфейсом.</p><h4>06 / LAUNCH</h4><p>Перед запуском мы проверяем адаптивность, скорость, взаимодействия, доступность, ошибки и поведение на разных устройствах. И только после этого продукт отправляется в мир.</p><p><em>Код создаёт систему. Дизайн создаёт форму. А Soul делает продукт живым.</em></p>",
       article2Category: "BEHIND THE SCENES",
-      article2Title: "WHAT HAPPENS OFF-SCREEN",
+      article2Title: "ЧТО ПРОИСХОДИТ ЗА КАДРОМ",
       article2Text: "Вы видите готовый экран. Мы видим сотни маленьких решений — размер шрифта, момент анимации, расстояние между элементами. Именно эти детали и создают качество.",
       article2Meta: "PROCESS / DETAIL / CRAFT",
       article2Body:
         "<p>Когда вы открываете готовый сайт, большинство решений остаются незаметными. Почему именно такой размер шрифта? Почему кнопка находится именно здесь? Почему анимация начинается именно в этот момент? Почему между двумя элементами именно столько пространства? Почему один объект движется, а другой остаётся неподвижным?</p><p>Для нас именно эти детали и создают качество. Мы проектируем не только то, что пользователь видит. Мы проектируем то, что он чувствует.</p><p>За одним экраном могут стоять десятки прототипов, часы тестирования, сотни строк кода и множество маленьких решений, которые пользователь никогда не заметит. И это нормально: хороший digital-продукт не заставляет человека думать о том, как он сделан. Он просто работает.</p>",
       article3Category: "WORKING TOGETHER",
-      article3Title: "WHAT WE NEED FROM YOU",
+      article3Title: "ЧТО НУЖНО ОТ ВАС",
       article3Text: "Вам не нужно знать, как написать техническое задание на 40 страниц. Нам гораздо важнее понять вас — и это можно сделать простыми словами.",
       article3Meta: "COLLABORATION / BRIEF / CLIENT",
       article3Body:
@@ -194,7 +198,7 @@ const translations = {
       article5Body:
         "<p>CODE — это структура. Логика. Точность. Система. Технология.</p><p>SOUL — это идея. Эмоция. Характер. Интуиция. Человеческий смысл.</p><p>Одно без другого работает не полностью. Технология без идеи становится холодной. Идея без технологии остаётся только идеей.</p><p>Мы соединяем их. Создаём продукты, в которых инженерия помогает выражать эмоцию, а дизайн помогает технологии быть понятной человеку.</p><p><em>Technology with a soul.</em></p>",
       article6Category: "AFTER LAUNCH",
-      article6Title: "LAUNCH IS NOT THE END",
+      article6Title: "ЗАПУСК — ЭТО НЕ КОНЕЦ",
       article6Text: "Запуск — это только момент, когда продукт начинает жить по-настоящему. Хороший digital-продукт может расти вместе с бизнесом.",
       article6Meta: "GROWTH / SUPPORT / PRODUCT",
       article6Body:
@@ -232,7 +236,7 @@ const translations = {
         location: "Краснодар, Россия · МСК",
         telegramPersonal: "@codeandsoul",
         telegramChannel: "t.me/codesoull",
-        instagram: "Instagram — скоро",
+        instagram: "@codeandsoul.studio",
       },
       form: {
         nameLabel: "Как вас зовут?",
@@ -298,7 +302,7 @@ const translations = {
       title3: "DIGITAL WORLDS.",
       description:
         "We create digital products with character. Every project is a story of its own.",
-      count: "08 PROJECTS / 2026",
+      count: "10 PROJECTS / 2026",
       footer: "MORE WORLDS ARE COMING",
     },
 
@@ -411,6 +415,10 @@ const translations = {
       howWeWorkTitle: "HOW WE WORK",
       howWeWork:
         "Fewer words, more results. We don't take on dozens of projects just for the sake of volume — we give each client real attention, because details are what turn a good product into a great one.",
+      connectTitle: "GET IN TOUCH",
+      connectTelegram: "Telegram",
+      connectChannel: "Telegram channel",
+      connectInstagram: "Instagram",
       value1Title: "CURIOSITY",
       value1Text: "We love exploring what is new, experimenting and constantly becoming better.",
       value2Title: "CRAFT",
@@ -500,7 +508,7 @@ const translations = {
         location: "Krasnodar, Russia · Moscow time",
         telegramPersonal: "@codeandsoul",
         telegramChannel: "t.me/codesoull",
-        instagram: "Instagram — coming soon",
+        instagram: "@codeandsoul.studio",
       },
       form: {
         nameLabel: "What's your name?",

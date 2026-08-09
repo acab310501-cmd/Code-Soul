@@ -11,8 +11,15 @@
     var(--page-padding)
     clamp(130px, 16vw, 230px);
 
-  background: var(--color-paper);
-  color: var(--color-void);
+  /* Раньше секция использовала переменные "наоборот": --color-paper
+     (это near-white ТЕКСТОВЫЙ цвет сайта, а не фон) как background, и
+     --color-void (тёмный фон сайта) как color. Из-за этого вкладка
+     "О нас" превращалась в единственную светлую секцию на фоне тёмного
+     SOUL-сайта — ровно то наложение старой светлой темы, от которой
+     концепция отказалась. Приводим к тому же тёмному фону + светлому
+     тексту, что и остальные секции (Hero/Work/Journal). */
+  background: var(--color-void);
+  color: var(--color-paper);
 
   overflow: hidden;
 }
@@ -41,7 +48,7 @@
 
   letter-spacing: .1em;
 
-  color: #666;
+  color: rgba(255,255,255,.45);
 }
 
 
@@ -50,7 +57,7 @@
 
   height: 1px;
 
-  background: rgba(0,0,0,.18);
+  background: rgba(255,255,255,.2);
 }
 
 
@@ -136,7 +143,7 @@
 
   font-size: 8px;
 
-  color: #888;
+  color: rgba(255,255,255,.4);
 }
 
 
@@ -151,7 +158,7 @@
 
   text-transform: uppercase;
 
-  color: #666;
+  color: rgba(255,255,255,.6);
 }
 
 
@@ -189,7 +196,7 @@
 
   letter-spacing: -.08em;
 
-  color: #111;
+  color: var(--color-paper);
 }
 
 
@@ -230,7 +237,7 @@
 
   border-radius: 50%;
 
-  background: var(--color-void);
+  background: var(--color-paper);
 
   transition:
     transform .8s
@@ -283,7 +290,7 @@
   gap: 100px;
 
   border-top:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 
   padding-top: 25px;
 }
@@ -303,7 +310,7 @@
 
   line-height: 1.5;
 
-  color: #777;
+  color: rgba(255,255,255,.45);
 }
 
 
@@ -345,7 +352,7 @@
 
   text-transform: uppercase;
 
-  color: #666;
+  color: rgba(255,255,255,.62);
 }
 
 
@@ -368,38 +375,69 @@
     repeat(4, 1fr);
 
   border-top:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 
   border-left:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 }
 
 
 .about-value {
 
+  position: relative;
+  z-index: 0;
+
   min-height: 330px;
 
   padding: 25px;
 
+  overflow: hidden;
+
   border-right:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 
   border-bottom:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 
   transition:
     background-color .6s
-    cubic-bezier(.22,1,.36,1),
-    color .6s
     cubic-bezier(.22,1,.36,1);
+}
+
+
+.about-value__visual {
+  position: absolute;
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+
+  opacity: .1;
+  filter: grayscale(1) contrast(1.15);
+
+  transform: scale(1.06);
+
+  transition:
+    opacity .7s cubic-bezier(.22,1,.36,1),
+    transform 1s cubic-bezier(.22,1,.36,1);
+}
+
+
+.about-value__content {
+  position: relative;
+  z-index: 1;
 }
 
 
 .about-value:hover {
 
-  background: var(--color-void);
+  background: color-mix(in srgb, var(--color-acid) 7%, transparent);
+}
 
-  color: var(--color-paper);
+
+.about-value:hover .about-value__visual {
+  opacity: .22;
+  transform: scale(1.14);
 }
 
 
@@ -413,7 +451,7 @@
 
   font-size: 8px;
 
-  color: #777;
+  color: rgba(255,255,255,.4);
 }
 
 
@@ -428,6 +466,8 @@
   font-weight: 500;
 
   letter-spacing: -.04em;
+
+  color: var(--color-paper);
 }
 
 
@@ -445,13 +485,13 @@
 
   text-transform: uppercase;
 
-  color: #666;
+  color: rgba(255,255,255,.55);
 }
 
 
 .about-value:hover p {
 
-  color: #aaa;
+  color: rgba(255,255,255,.8);
 }
 
 
@@ -484,7 +524,7 @@
 
   letter-spacing: .12em;
 
-  color: #777;
+  color: rgba(255,255,255,.5);
 }
 
 
@@ -689,7 +729,7 @@
     100px;
 
   border-top:
-    1px solid rgba(0,0,0,.18);
+    1px solid rgba(255,255,255,.15);
 
   padding-top: 45px;
 }
@@ -702,7 +742,7 @@
   padding-top: 15px;
 
   border-top:
-    1px solid rgba(0,0,0,.1);
+    1px solid rgba(255,255,255,.1);
 }
 
 
@@ -716,7 +756,7 @@
 
   letter-spacing: .1em;
 
-  color: #777;
+  color: rgba(255,255,255,.5);
 }
 
 
@@ -747,7 +787,7 @@
 
   text-transform: uppercase;
 
-  color: #666;
+  color: rgba(255,255,255,.62);
 }
 
 
@@ -767,6 +807,62 @@
   max-width: 650px;
 
   margin-top: 0;
+}
+
+
+/* ========================================
+   SOCIAL / CONNECT
+======================================== */
+
+.about__social {
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 14px;
+}
+
+
+.about__social-link {
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-paper);
+
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px;
+
+  transition:
+    background-color .5s cubic-bezier(.22,1,.36,1),
+    border-color .5s cubic-bezier(.22,1,.36,1),
+    color .5s cubic-bezier(.22,1,.36,1);
+}
+
+
+.about__social-link span {
+  color: var(--color-acid);
+}
+
+
+.about__social-link:hover {
+
+  background: var(--color-acid);
+  border-color: var(--color-acid);
+  color: var(--color-void);
+}
+
+
+.about__social-link:hover span {
+  color: var(--color-void);
 }
 
 

@@ -965,32 +965,7 @@ export const projects = [
       "images/cases/Streams-Hub-06.webp",
     ],
   },
-];
 
-/* ========================================
-   PENDING — READY, NO SCREENSHOTS YET
-
-   Flora Atelier и Ambient Garden полностью описаны в том же
-   формате, что и остальные проекты (category/description на
-   RU и EN, case study, technologies, url), но НЕ включены в
-   основной массив `projects`, потому что для них нет реальных
-   скриншотов в public/images/cases — а придумывать случайные
-   картинки или оставлять пустой src у <img> запрещено ТЗ (это
-   либо сломает карточку, либо потребует подставить чужой кадр).
-
-   Как только появятся реальные скриншоты (см. `image` и
-   `gallery` — это ожидаемые пути, файлов по ним пока нет),
-   нужно:
-   1) положить .webp в public/images/cases/ под этими именами
-      (или поменять пути на реальные);
-   2) перенести оба объекта из pendingProjects в конец массива
-      `projects` выше;
-   3) обновить work.count в src/components/Language.js
-      (RU: "08 ПРОЕКТОВ" → "10 ПРОЕКТОВ", EN аналогично) и
-      текст "08 PROJECTS / 2026" в index.html (`.work__footer`).
-======================================== */
-
-export const pendingProjects = [
   /* ========================================
      09 — FLORA ATELIER
   ======================================== */
@@ -1013,8 +988,7 @@ export const pendingProjects = [
 
     url: "https://flora-atelier.vercel.app/",
 
-    // TODO: скриншотов пока нет — путь ожидаемый, файла ещё нет.
-    image: "images/cases/flora-atelier-01.webp",
+    image: "images/cases/Flora_Atelier1.webp",
 
     accent: "#d7ff3f",
 
@@ -1102,11 +1076,13 @@ export const pendingProjects = [
       },
     },
 
-    // TODO: галерея ожидает реальные скриншоты проекта.
     gallery: [
-      "images/cases/flora-atelier-01.webp",
-      "images/cases/flora-atelier-02.webp",
-      "images/cases/flora-atelier-03.webp",
+      "images/cases/Flora_Atelier1.webp",
+      "images/cases/Flora_Atelier2.webp",
+      "images/cases/Flora_Atelier3.webp",
+      "images/cases/Flora_Atelier4.webp",
+      "images/cases/Flora_Atelier5.webp",
+      "images/cases/Flora_Atelier6.webp",
     ],
   },
 
@@ -1132,8 +1108,7 @@ export const pendingProjects = [
 
     url: "https://ambient-garden.vercel.app/",
 
-    // TODO: скриншотов пока нет — путь ожидаемый, файла ещё нет.
-    image: "images/cases/ambient-garden-01.webp",
+    image: "images/cases/Ambient_Garden1.webp",
 
     accent: "#d7ff3f",
 
@@ -1221,11 +1196,11 @@ export const pendingProjects = [
       },
     },
 
-    // TODO: галерея ожидает реальные скриншоты проекта.
     gallery: [
-      "images/cases/ambient-garden-01.webp",
-      "images/cases/ambient-garden-02.webp",
-      "images/cases/ambient-garden-03.webp",
+      "images/cases/Ambient_Garden1.webp",
+      "images/cases/Ambient_Garden2.webp",
+      "images/cases/Ambient_Garden3.webp",
+      "images/cases/Ambient_Garden4.webp",
     ],
   },
 ];
