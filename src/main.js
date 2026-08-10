@@ -669,7 +669,7 @@ function initContactAnimation() {
   if (!form || !success) return;
 
   // ПРОКСИ-URL для отправки (Cloudflare Worker)
-  const TELEGRAM_PROXY_URL = 'https://code-soul-telegram.workers.dev'; // замените на ваш реальный URL
+  const TELEGRAM_PROXY_URL = "https://code-soul-telegram.acab310501.workers.dev/"; // замените на ваш реальный URL
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
