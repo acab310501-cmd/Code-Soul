@@ -50,12 +50,17 @@ body::before {
   color: var(--color-acid);
 }
 
-/* GRAIN */
+/* GRAIN
+   Раньше слой был 200%×200% (то есть в 4 раза больше площади экрана),
+   хотя сдвиг в анимации ниже — максимум ±2%. Браузеру приходилось
+   растрировать/композитить в 4 раза больше пикселей на каждый кадр,
+   бесконечно, на любой странице сайта — на слабых мобильных GPU это
+   заметный вклад в лаги. С запасом на сдвиг хватает 112%. */
 .grain {
   position: fixed;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
   z-index: var(--z-grain);
   pointer-events: none;
   opacity: 0.045;
@@ -64,6 +69,10 @@ body::before {
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
   animation: grainShift 0.25s steps(2) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
 }
 
 @keyframes grainShift {

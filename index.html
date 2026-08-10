@@ -683,7 +683,7 @@
       <!-- JOURNAL MODAL -->
       <div class="journal-modal" data-journal-modal aria-hidden="true">
         <div class="journal-modal__overlay" data-journal-modal-close></div>
-        <div class="journal-modal__panel" role="dialog" aria-modal="true" aria-labelledby="journalModalTitle">
+        <div class="journal-modal__panel" role="dialog" aria-modal="true" aria-labelledby="journalModalTitle" data-lenis-prevent>
           <button class="journal-modal__close" type="button" data-journal-modal-close aria-label="Закрыть">
             <span></span><span></span>
           </button>
@@ -702,13 +702,26 @@
         <img src="images/logo/logo-icon.webp" alt="" class="footer__logo" />
         <span class="visually-hidden">Code & Soul</span>
         <span>MADE WITH CODE. BUILT WITH SOUL.</span>
-        <span class="site-footer__telegram">
-          <a href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">@codeandsoul</a>
-          <span class="site-footer__dot" aria-hidden="true">·</span>
-          <a href="https://t.me/codesoull" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">t.me/codesoull</a>
-          <span class="site-footer__dot" aria-hidden="true">·</span>
-          <a href="https://www.instagram.com/codeandsoul.studio/" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">@codeandsoul.studio</a>
-        </span>
+        <div class="site-footer__social">
+          <a class="site-footer__social-link" href="https://t.me/codeandsoul" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
+            <span class="site-footer__social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.05 3.55 2.9 10.68c-1.25.5-1.24 1.19-.23 1.5l4.65 1.45 1.8 5.5c.22.55.44.77.76.77.32 0 .49-.15.7-.36l1.98-1.9 4.15 3.06c.76.42 1.31.2 1.5-.7l2.72-12.8c.29-1.15-.35-1.65-1.08-1.65Zm-11.9 9.4 8.02-5.06c.38-.23.72-.1.44.15L10.9 14.6l-.28 3.19-.94-4.05Z" fill="currentColor"/></svg>
+            </span>
+            <span class="site-footer__social-label" data-i18n="footer.telegramLabel">наш телеграм</span>
+          </a>
+          <a class="site-footer__social-link" href="https://t.me/codesoull" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
+            <span class="site-footer__social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.05 3.55 2.9 10.68c-1.25.5-1.24 1.19-.23 1.5l4.65 1.45 1.8 5.5c.22.55.44.77.76.77.32 0 .49-.15.7-.36l1.98-1.9 4.15 3.06c.76.42 1.31.2 1.5-.7l2.72-12.8c.29-1.15-.35-1.65-1.08-1.65Zm-11.9 9.4 8.02-5.06c.38-.23.72-.1.44.15L10.9 14.6l-.28 3.19-.94-4.05Z" fill="currentColor"/></svg>
+            </span>
+            <span class="site-footer__social-label" data-i18n="footer.channelLabel">наш телеграм канал</span>
+          </a>
+          <a class="site-footer__social-link" href="https://www.instagram.com/codeandsoul.studio/" target="_blank" rel="noopener noreferrer" data-cursor="OPEN">
+            <span class="site-footer__social-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><circle cx="17.15" cy="6.85" r="1.1" fill="currentColor"/></svg>
+            </span>
+            <span class="site-footer__social-label" data-i18n="footer.instagramLabel">инстаграм</span>
+          </a>
+        </div>
         <span>2026 — NOW</span>
       </footer>
     </div>

@@ -8,6 +8,12 @@ const translations = {
       start: "Начать проект",
     },
 
+    footer: {
+      telegramLabel: "наш телеграм",
+      channelLabel: "наш телеграм канал",
+      instagramLabel: "инстаграм",
+    },
+
     home: {
       eyebrow: "02 / О НАС",
       title1: "НЕЗАВИСИМАЯ",
@@ -278,6 +284,12 @@ const translations = {
       about: "About",
       journal: "Journal",
       start: "Start a project",
+    },
+
+    footer: {
+      telegramLabel: "our telegram",
+      channelLabel: "our telegram channel",
+      instagramLabel: "instagram",
     },
 
     home: {

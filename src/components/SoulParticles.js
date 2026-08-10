@@ -78,15 +78,15 @@ export class SoulParticles {
   getParticleSettings() {
     if (this.width < 480) {
       return {
-        step: 7,
-        max: 3000
+        step: 6,
+        max: 4000
       };
     }
 
     if (this.width < 768) {
       return {
-        step: 6,
-        max: 5000
+        step: 5,
+        max: 6000
       };
     }
 

@@ -379,6 +379,16 @@ function initJournalModal() {
   const bodyEl = modal.querySelector("[data-journal-modal-body]");
   let lastFocused = null;
 
+  // iOS/WebKit не прокручивает пальцем overflow:auto-элемент, пока на
+  // нём активен transform (используется для анимации открытия) — как
+  // только анимация долистала до конца, снимаем transform полностью
+  // классом is-settled, чтобы контент нормально листался.
+  panel.addEventListener("transitionend", (event) => {
+    if (event.target === panel && event.propertyName === "transform" && modal.classList.contains("is-open")) {
+      panel.classList.add("is-settled");
+    }
+  });
+
   function openModal(card) {
     const number = card.querySelector(".journal-card__number")?.textContent || "";
     const category = card.querySelector(".journal-card__category")?.textContent || "";
@@ -391,6 +401,7 @@ function initJournalModal() {
     bodyEl.innerHTML = full ? full.innerHTML : "";
 
     lastFocused = document.activeElement;
+    panel.classList.remove("is-settled");
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -400,6 +411,7 @@ function initJournalModal() {
   }
 
   function closeModal() {
+    panel.classList.remove("is-settled");
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";

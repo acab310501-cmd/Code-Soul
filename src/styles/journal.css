@@ -301,6 +301,17 @@
   opacity: .8;
 }
 
+/* Тач-экраны не умеют "отпускать" :hover — после тапа состояние может
+   залипнуть до следующего тапа в другое место, и укрупнённый (scale
+   1.35) паттерн зависает на весь экран. На устройствах без настоящего
+   курсора просто держим halftone в спокойном виде всегда. */
+@media (hover: none) {
+  .journal-card:hover .journal-card__halftone {
+    transform: rotate(-8deg) scale(1.15);
+    opacity: .45;
+  }
+}
+
 
 .journal-card__halftone span {
   aspect-ratio: 1;
@@ -800,6 +811,16 @@
   }
 
 
+  /* На тач-экранах :hover может «залипать» после тапа — трансформация
+     из hover-состояния (rotate/scale/непрозрачность) остаётся висеть
+     на экране, а не возвращается обратно, и на весь экран (карточка
+     теперь во всю ширину) это читается странно/тревожно. Плюс сам
+     halftone-паттерн по умолчанию делаем чуть спокойнее на мобильном. */
+  .journal-card__halftone {
+    opacity: .28;
+  }
+
+
   .journal-card__content h3 {
     font-size: 12vw;
   }
@@ -874,7 +895,9 @@
   max-height: min(84vh, 820px);
 
   overflow-y: auto;
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 
   padding: clamp(36px, 6vw, 64px) clamp(24px, 5vw, 56px) clamp(40px, 6vw, 64px);
 
@@ -887,6 +910,18 @@
 
 .journal-modal.is-open .journal-modal__panel {
   transform: translateY(0) scale(1);
+}
+
+/* iOS/WebKit не даёт нормально прокручивать пальцем элемент с
+   overflow-y:auto, пока на нём (или на предке) активен ненулевой
+   transform — он ломает нативный momentum-скролл. Наша анимация
+   открытия использует transform, поэтому как только она долистала
+   до конечного состояния, снимаем transform полностью (не просто
+   обнуляем translate/scale — именно убираем свойство), чтобы
+   контент модалки снова считался обычным прокручиваемым блоком.
+   Класс добавляется через JS по transitionend. */
+.journal-modal.is-open .journal-modal__panel.is-settled {
+  transform: none;
 }
 
 .journal-modal__close {

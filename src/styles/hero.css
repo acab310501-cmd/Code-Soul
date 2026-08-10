@@ -284,6 +284,22 @@
     flex-direction: column;
     justify-content: flex-start;
   }
+  /* Дополнительная страховка: раньше .hero__manifesto оставался
+     position:absolute, и на очень коротких/высоких экранах всё равно
+     мог зацепить последнюю строку subtext — под все размеры
+     телефонов px-координаты не подобрать. Убираем его из абсолютного
+     позиционирования вовсе и переводим в обычный поток: тогда он
+     физически не может наложиться на текст выше — просто идёт
+     следующим блоком после organism-wrap, с гарантированным отступом,
+     при любой высоте контента. */
+  .hero__manifesto {
+    position: static;
+    width: auto;
+    max-width: 340px;
+    margin: 28px auto 0;
+    align-items: center;
+    text-align: center;
+  }
   .hero__code-soul {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
@@ -427,12 +443,10 @@
   }
   .hero__meta--left { top: 100px; }
   .hero__meta--left .eyebrow { display: none; }
-  .hero__manifesto {
-    left: var(--page-padding);
-    right: auto;
-    bottom: 105px;
-    width: 165px;
-  }
+  /* .hero__manifesto здесь больше не позиционируется абсолютно (см.
+     правило в @media max-width:760px) — оставлять узкий width:165px
+     из старой абсолютной раскладки не нужно, тексту теперь доступна
+     вся ширина колонки. */
   .hero__coordinates, .hero__side-word { display: none; }
   .hero__scroll { bottom: 30px; }
 }
