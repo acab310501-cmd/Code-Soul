@@ -1,23 +1,13 @@
-const ALLOWED_ORIGINS = [
-  "https://acab310501-cmd.github.io",
-  "http://localhost:5173",
-  "http://localhost:5174",
-];
-
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get("Origin") || "";
-
+    // CORS
     const corsHeaders = {
-      "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin)
-        ? origin
-        : "https://acab310501-cmd.github.io",
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Max-Age": "86400",
     };
 
-    // CORS preflight
+    // Preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -37,88 +27,139 @@ export default {
       const data = await request.json();
 
       const {
-        name,
-        email,
-        telegram,
-        projects,
-        project,
-        budget,
-        message,
+        name = "",
+        email = "",
+        telegram = "",
+        projects = "",
+        budget = "",
+        message = "",
       } = data;
 
-      // Поддерживаем оба варианта названия поля
-      const projectList = projects || project || "Не указано";
+      // Проверяем секреты
+      if (!env.TELEGRAM_BOT_TOKEN) {
+        console.error("TELEGRAM_BOT_TOKEN is missing");
 
-      const telegramMessage = `
-📩 Новая заявка с Code & Soul
-
-👤 Имя: ${name || "Не указано"}
-📧 Email: ${email || "Не указано"}
-📱 Telegram: ${telegram || "Не указан"}
-📌 Проект: ${projectList}
-💰 Бюджет: ${budget || "Не указан"}
-
-💬 Сообщение:
-${message || "Не указано"}
-      `.trim();
-
-      const token = env.TELEGRAM_BOT_TOKEN;
-      const chatId = env.TELEGRAM_CHAT_ID;
-
-      if (!token || !chatId) {
-        console.error("Missing Telegram environment variables");
-
-        return new Response("Server misconfigured", {
-          status: 500,
-          headers: corsHeaders,
-        });
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Telegram bot token is not configured",
+          }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders,
+            },
+          }
+        );
       }
 
-      const telegramResponse = await fetch(
-        `https://api.telegram.org/bot${token}/sendMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: telegramMessage,
+      if (!env.TELEGRAM_CHAT_ID) {
+        console.error("TELEGRAM_CHAT_ID is missing");
+
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Telegram chat ID is not configured",
           }),
-        }
-      );
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders,
+            },
+          }
+        );
+      }
+
+      const telegramMessage = `
+📩 <b>Новая заявка с Code &amp; Soul</b>
+
+👤 <b>Имя:</b> ${escapeHtml(name)}
+📧 <b>Email:</b> ${escapeHtml(email)}
+📱 <b>Telegram:</b> ${escapeHtml(telegram)}
+📌 <b>Проект:</b> ${escapeHtml(projects)}
+💰 <b>Бюджет:</b> ${escapeHtml(budget)}
+
+💬 <b>Сообщение:</b>
+${escapeHtml(message)}
+      `.trim();
+
+      const telegramUrl =
+        `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+      const telegramResponse = await fetch(telegramUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: env.TELEGRAM_CHAT_ID,
+          text: telegramMessage,
+          parse_mode: "HTML",
+        }),
+      });
+
+      const telegramResult = await telegramResponse.text();
+
+      console.log("Telegram response:", telegramResult);
 
       if (!telegramResponse.ok) {
-        const errorText = await telegramResponse.text();
-
-        console.error("Telegram API error:", errorText);
-
-        return new Response("Failed to send message", {
-          status: 500,
-          headers: corsHeaders,
-        });
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Telegram API error",
+            details: telegramResult,
+          }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders,
+            },
+          }
+        );
       }
 
       return new Response(
         JSON.stringify({
           success: true,
-          message: "Заявка успешно отправлена",
+          message: "Application sent successfully",
         }),
         {
           status: 200,
           headers: {
-            ...corsHeaders,
             "Content-Type": "application/json",
+            ...corsHeaders,
           },
         }
       );
     } catch (error) {
       console.error("Worker error:", error);
 
-      return new Response("Internal error", {
-        status: 500,
-        headers: corsHeaders,
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Internal server error",
+          details: error.message,
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
     }
   },
 };
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
