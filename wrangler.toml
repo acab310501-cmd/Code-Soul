@@ -3,5 +3,4 @@ main = "worker.js"
 compatibility_date = "2024-01-01"
 
 [vars]
-TELEGRAM_BOT_TOKEN = 8895498820:AAHCG44-nIEFvuA12hfjG1-3sOe2dcEgctg
-TELEGRAM_CHAT_ID = 8954112485
+TELEGRAM_CHAT_ID = "8954112485"
