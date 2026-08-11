@@ -172,21 +172,3 @@
     gap: 10px;
   }
 }
-
-/* LIGHT THEME adjustments */
-[data-theme="light"] .soul-section {
-  background: var(--color-void);
-  color: var(--color-paper);
-}
-[data-theme="light"] .soul-section__noise {
-  opacity: .025;
-}
-[data-theme="light"] .soul-section__eyebrow,
-[data-theme="light"] .soul-section__small,
-[data-theme="light"] .soul-section__description,
-[data-theme="light"] .soul-section__manifesto {
-  color: var(--color-muted);
-}
-[data-theme="light"] .soul-section__line {
-  background: var(--border-subtle);
-}

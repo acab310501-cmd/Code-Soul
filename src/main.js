@@ -11,6 +11,7 @@ import "./styles/base.css";
 import "./styles/header.css";
 import "./styles/hero.css";
 import './styles/contact.css';
+import './styles/404.css';
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -186,8 +187,7 @@ function initSoulParticles() {
     canvas.__soulParticles = system;
     currentSystem = system;
 
-    system.setTheme(document.documentElement.dataset.theme === "light" || document.documentElement.dataset.theme === "paper" ? "paper" : "dark");
-    window.addEventListener("code-soul:theme", (event) => { system.setTheme(event.detail.theme); });
+    system.setTheme("dark");
 
     const section = canvas.closest('.soul-section');
     if (!section) return;

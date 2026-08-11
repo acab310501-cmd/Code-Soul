@@ -212,8 +212,7 @@ export class Organism {
     );
     this.observer.observe(canvas);
 
-    window.addEventListener("code-soul:theme", (event) => this.setTheme(event.detail.theme));
-    this.setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    this.setTheme("dark");
 
     // Если лоадер успевает открыть сцену синхронно — красиво переигрываем
     // рождение день в день с ним. Но это бонус, а не условие видимости.

@@ -17,15 +17,30 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const PAGES = ["home", "work", "services", "about", "journal", "contact"];
 const DEFAULT_PAGE = "home";
+const NOT_FOUND_PAGE = "notfound";
 
 function parsePage() {
-  const raw = (location.hash || "").replace(/^#\/?/, "").trim();
-  return PAGES.includes(raw) ? raw : DEFAULT_PAGE;
+  const hash = location.hash || "";
+
+  // Пустой хэш или обычный якорь внутри страницы (например "#soul" —
+  // кнопка "Листайте вниз" на Hero) — это не маршрут, а точка на
+  // главной странице. Настоящий маршрут всегда начинается с "#/".
+  if (!hash.startsWith("#/")) return DEFAULT_PAGE;
+
+  const raw = hash.replace(/^#\/?/, "").trim();
+  if (!raw) return DEFAULT_PAGE;
+
+  return PAGES.includes(raw) ? raw : NOT_FOUND_PAGE;
 }
 
 export function initRouter() {
   const allPageEls = () => document.querySelectorAll("[data-page]");
   const navLinks = () => document.querySelectorAll('a[href^="#/"]');
+  const defaultTitle = document.title;
+  const notFoundTitle =
+    (document.documentElement.lang || "").startsWith("en")
+      ? "404 — World not found — Code & Soul"
+      : "404 — Мир не найден — Code & Soul";
 
   function applyPage(page, { isFirstLoad = false } = {}) {
     allPageEls().forEach((el) => {
@@ -36,6 +51,8 @@ export function initRouter() {
       const linkPage = link.getAttribute("href").replace(/^#\/?/, "") || "home";
       link.classList.toggle("is-current", linkPage === page);
     });
+
+    document.title = page === NOT_FOUND_PAGE ? notFoundTitle : defaultTitle;
 
     /*
       КРИТИЧНЫЙ БАГ (найден и исправлен): здесь стояло

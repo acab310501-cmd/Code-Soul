@@ -14,9 +14,4 @@ export const THEME_COLORS = {
     accent: "#d7ff3f",
     void: "#050505",
   },
-  light: {
-    text: "#eafbdb",
-    accent: "#d7ff3f",
-    void: "#070a04",
-  },
 };

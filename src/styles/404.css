@@ -1,0 +1,170 @@
+/* ========================================
+   404 — WORLD NOT FOUND
+
+   Примечание: подготовленного изображения public/images/404.webp
+   в проекте нет (несмотря на бриф), поэтому "взрыв" за цифрами
+   собран на CSS — тот же приём, что и hero__glow в hero.css
+   (radial-gradient + blur), плюс общий .grain-шум сайта. Если
+   изображение 404.webp появится в public/images/, его можно
+   подключить как background-image на .page-404__glow без других
+   правок.
+======================================== */
+
+.page-404 {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 140px var(--page-padding) 80px;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Гигантский полупрозрачный водяной знак на фоне — тот же дух,
+   что и лаймовое "дыхание" сайта, только текстом. */
+.page-404__ghost {
+  position: absolute;
+  left: 50%;
+  bottom: -2%;
+  translate: -50% 0;
+  width: 100%;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(80px, 18vw, 260px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border-medium);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.page-404__container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.page-404__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.page-404__figure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 18px 0 8px;
+}
+
+.page-404__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46vw;
+  height: 46vw;
+  max-width: 620px;
+  max-height: 620px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-acid) 22%, transparent) 0%,
+    color-mix(in srgb, var(--color-acid) 6%, transparent) 45%,
+    transparent 72%
+  );
+  filter: blur(34px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.page-404__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(34px, 6vw, 84px);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--color-paper);
+  text-shadow: 0 0 60px color-mix(in srgb, var(--color-acid) 45%, transparent);
+}
+
+.page-404__subtitle {
+  margin-top: 28px;
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--color-paper);
+}
+
+.page-404__hint {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-acid);
+}
+
+.page-404__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  padding: 20px 32px;
+  border: 1px solid var(--border-medium);
+  border-radius: 999px;
+  color: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    border-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out),
+    transform 0.4s var(--ease-out),
+    background 0.4s var(--ease-out);
+}
+
+.page-404__cta span:last-child {
+  transition: translate 0.4s var(--ease-out);
+}
+
+.page-404__cta:hover,
+.page-404__cta:focus-visible {
+  border-color: var(--color-acid);
+  color: var(--color-void);
+  background: var(--color-acid);
+  transform: translateY(-3px);
+}
+
+.page-404__cta:hover span:last-child,
+.page-404__cta:focus-visible span:last-child {
+  translate: 4px 0;
+}
+
+@media (max-width: 640px) {
+  .page-404 {
+    padding: 120px 20px 64px;
+  }
+  .page-404__cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-404__cta {
+    transition: none;
+  }
+}

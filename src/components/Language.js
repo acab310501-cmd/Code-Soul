@@ -8,6 +8,14 @@ const translations = {
       start: "Начать проект",
     },
 
+    notfound: {
+      eyebrow: "404 / МИР НЕ НАЙДЕН",
+      title: "WORLD NOT FOUND",
+      subtitle: "Похоже, этого цифрового мира не существует.",
+      hint: "Но другие миры всё ещё здесь.",
+      cta: "Вернуться в наш мир",
+    },
+
     footer: {
       telegramLabel: "наш телеграм",
       channelLabel: "наш телеграм канал",
@@ -284,6 +292,14 @@ const translations = {
       about: "About",
       journal: "Journal",
       start: "Start a project",
+    },
+
+    notfound: {
+      eyebrow: "404 / WORLD NOT FOUND",
+      title: "WORLD NOT FOUND",
+      subtitle: "Looks like this digital world doesn't exist.",
+      hint: "But other worlds are still here.",
+      cta: "Back to our world",
     },
 
     footer: {
