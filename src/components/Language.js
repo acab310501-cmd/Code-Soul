@@ -6,6 +6,11 @@ const translations = {
       about: "О нас",
       journal: "Журнал",
       start: "Начать проект",
+      ariaMain: "Основная навигация",
+      ariaMobile: "Мобильная навигация",
+      ariaLanguageSwitch: "Переключить язык",
+      ariaMenuOpen: "Открыть меню",
+      ariaMenuClose: "Закрыть меню",
     },
 
     notfound: {
@@ -257,6 +262,7 @@ const translations = {
         namePlaceholder: "Ваше имя",
         emailLabel: "Как с вами связаться?",
         emailPlaceholder: "Email",
+        telegramLabel: "Ваш телеграм",
         telegramPlaceholder: "@telegram",
         projectLabel: "Что будем создавать?",
         website: "Сайт",
@@ -292,6 +298,11 @@ const translations = {
       about: "About",
       journal: "Journal",
       start: "Start a project",
+      ariaMain: "Main navigation",
+      ariaMobile: "Mobile navigation",
+      ariaLanguageSwitch: "Switch language",
+      ariaMenuOpen: "Open menu",
+      ariaMenuClose: "Close menu",
     },
 
     notfound: {
@@ -543,6 +554,7 @@ const translations = {
         namePlaceholder: "Your name",
         emailLabel: "How can we reach you?",
         emailPlaceholder: "Email",
+        telegramLabel: "Your telegram",
         telegramPlaceholder: "@telegram",
         projectLabel: "What are we creating?",
         website: "Website",
@@ -592,6 +604,17 @@ export function initLanguage() {
       });
       if (typeof value === "string") {
         element.innerHTML = value;
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+      const path = element.dataset.i18nAria.split(".");
+      let value = data;
+      path.forEach((key) => {
+        value = value?.[key];
+      });
+      if (typeof value === "string") {
+        element.setAttribute("aria-label", value);
       }
     });
 
