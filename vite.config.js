@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/Code-Soul/'
+  base: '/'   // было '/Code-Soul/'
 })
