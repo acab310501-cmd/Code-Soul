@@ -93,11 +93,13 @@ export function initParticleSystem() {
   }
 
 
+  let rafId = null;
+
   function render(time) {
     // Пауза при скрытой вкладке — экономим CPU/GPU,
     // как и в остальных canvas-движках проекта.
     if (document.hidden) {
-      requestAnimationFrame(render);
+      rafId = requestAnimationFrame(render);
       return;
     }
 
@@ -149,9 +151,20 @@ export function initParticleSystem() {
     });
 
 
-    requestAnimationFrame(render);
+    rafId = requestAnimationFrame(render);
   }
 
+  function start() {
+    if (rafId) return;
+    rafId = requestAnimationFrame(render);
+  }
+
+  function stop() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
 
   resize();
   createParticles();
@@ -166,6 +179,22 @@ export function initParticleSystem() {
     { passive: true }
   );
 
-
-  requestAnimationFrame(render);
+  // Роутер скрывает Hero (display:none), когда пользователь
+  // переходит на другую "страницу" — без этой проверки анимация
+  // продолжала бы рендериться вхолостую на невидимом canvas.
+  const section = canvas.closest(".hero");
+  if (section && "IntersectionObserver" in window) {
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) start();
+          else stop();
+        });
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(section);
+  } else {
+    start();
+  }
 }

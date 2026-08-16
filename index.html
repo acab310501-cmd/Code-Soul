@@ -74,7 +74,7 @@
           <span class="logo__name">CODE &amp; SOUL</span>
           <span class="logo__signal"></span>
         </a>
-        <nav class="navigation" aria-label="Основная навигация">
+        <nav class="navigation" aria-label="Основная навигация" data-i18n-aria="nav.ariaMain">
           <a href="#/work" data-i18n="nav.work">Проекты</a>
           <a href="#/services" data-i18n="nav.services">Услуги</a>
           <a href="#/about" data-i18n="nav.about">О нас</a>
@@ -84,13 +84,13 @@
           <a href="#/contact" class="header-project-link" data-cursor="START">
             <span data-i18n="nav.start">Начать проект</span><span>↗</span>
           </a>
-          <button class="language-switcher" type="button" data-language-switcher aria-label="Переключить язык">
+          <button class="language-switcher" type="button" data-language-switcher aria-label="Переключить язык" data-i18n-aria="nav.ariaLanguageSwitch">
             <span data-language="ru" class="language-switcher__active">RU</span>
             <span class="language-switcher__divider">/</span>
             <span data-language="en">EN</span>
           </button>
           <!-- Мобильная кнопка меню -->
-          <button class="mobile-menu-button" aria-label="Открыть меню" aria-expanded="false">
+          <button class="mobile-menu-button" aria-label="Открыть меню" data-i18n-aria="nav.ariaMenuOpen" aria-expanded="false">
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -98,7 +98,7 @@
 
       <!-- Мобильное меню -->
       <div class="mobile-menu-overlay"></div>
-      <nav class="mobile-menu" aria-label="Мобильная навигация">
+      <nav class="mobile-menu" aria-label="Мобильная навигация" data-i18n-aria="nav.ariaMobile">
         <a href="#/work" data-i18n="nav.work">Проекты</a>
         <a href="#/services" data-i18n="nav.services">Услуги</a>
         <a href="#/about" data-i18n="nav.about">О нас</a>
@@ -627,7 +627,8 @@
                 <div class="contact__field-group">
                   <label for="contactEmail" data-i18n="contact.form.emailLabel">Как с вами связаться?</label>
                   <input id="contactEmail" name="email" type="email" autocomplete="email" placeholder="Email" data-i18n-placeholder="contact.form.emailPlaceholder" required />
-                  <input id="contactTelegram" name="telegram" type="text" placeholder="@telegram" data-i18n-placeholder="contact.form.telegramPlaceholder" />
+                  <label for="contactTelegram" class="visually-hidden" data-i18n="contact.form.telegramLabel">Ваш телеграм</label>
+                  <input id="contactTelegram" name="telegram" type="text" autocomplete="off" placeholder="@telegram" data-i18n-placeholder="contact.form.telegramPlaceholder" />
                 </div>
               </div>
               <div class="contact__step reveal-contact">

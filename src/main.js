@@ -692,8 +692,12 @@ function initContactAnimation() {
     const email = emailInput?.value?.trim() || 'Не указано';
     const telegram = telegramInput?.value?.trim() || 'Не указано';
     const message = messageInput?.value?.trim() || 'Не указано';
-    const projects = Array.from(projectCheckboxes).map(cb => cb.value).join(', ') || 'Не выбрано';
-    const budget = budgetRadio?.value || 'Не указан';
+    // Берём видимый текст лейбла (он уже правильно локализован —
+    // ₽ для RU, € для EN), а не служебный value="..." атрибута.
+    const projects = Array.from(projectCheckboxes)
+      .map(cb => cb.closest('label')?.querySelector('span')?.textContent?.trim() || cb.value)
+      .join(', ') || 'Не выбрано';
+    const budget = budgetRadio?.closest('label')?.querySelector('span')?.textContent?.trim() || budgetRadio?.value || 'Не указан';
 
     const payload = { name, email, telegram, projects, budget, message };
 
