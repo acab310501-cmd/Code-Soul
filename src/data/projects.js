@@ -1203,4 +1203,137 @@ export const projects = [
       "images/cases/Ambient_Garden4.webp",
     ],
   },
+
+  /* ========================================
+     11 — SOUL TOUCH
+  ======================================== */
+
+  {
+    id: "soul-touch",
+    number: "11",
+    title: "SOUL TOUCH",
+
+    category: {
+      ru: "WEB / PREMIUM WELLNESS EXPERIENCE",
+      en: "WEB / PREMIUM WELLNESS EXPERIENCE",
+    },
+
+    description: {
+      ru: "Сайт премиальной студии массажа: атмосфера тишины и заботы передана через свет, темп анимаций и звук ещё до первого визита в студию.",
+      en: "A premium massage studio site where atmosphere comes first: light, animation pacing and sound set the mood before the first visit.",
+    },
+
+    technologies: "HTML · CSS · JavaScript",
+
+    url: "https://soul-touch-wwyb.vercel.app/",
+
+    image: "images/cases/soul-touch-01.webp",
+
+    accent: "#d7ff3f",
+
+    featured: false,
+
+    telegramCta: {
+      label: {
+        ru: "БОЛЬШЕ ПРОЕКТОВ В НАШЕМ ТЕЛЕГРАМ КАНАЛЕ",
+        en: "MORE PROJECTS IN OUR TELEGRAM CHANNEL",
+      },
+      url: "https://t.me/fullcodecoul",
+    },
+
+    case: {
+      ru: {
+        eyebrow: "CASE STUDY / 11",
+
+        introTitle: "МАССАЖ — ЭТО НЕ УСЛУГА, А РИТУАЛ.",
+
+        intro:
+          "Задачей было создать сайт, который передаёт атмосферу тишины и заботы ещё до первого визита в студию — через свет, темп анимаций и звук.",
+
+        challengeTitle: "ЗАДАЧА",
+
+        challenge:
+          "Построить премиальный сайт студии массажа, который продаёт не прайс-лист, а ощущение заботы: от первого экрана до записи к конкретному мастеру.",
+
+        solutionTitle: "РЕШЕНИЕ",
+
+        solution:
+          "Разработан премиальный визуальный стиль в тёплой золотисто-шоколадной палитре. Собрана команда из 20 мастеров — с фото, специализацией и личной историей каждого. Реализован калькулятор стоимости, где услуга, длительность и допы считаются в реальном времени, а также атмосферная галерея студии и коллаж в разделе философии.",
+
+        experienceTitle: "ЦИФРОВОЙ ОПЫТ",
+
+        experience:
+          "На каждой секции настроены кастомный курсор, фоновый звук и плавные анимации. Форма записи проведёт клиента через выбор мастера, услуги, даты и времени — с полной адаптацией под мобильные устройства.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "Лёгкий стек на HTML, CSS и JavaScript: расчёт стоимости в реальном времени, кастомный курсор и плавные анимации без лишнего веса страницы.",
+
+        resultTitle: "РЕЗУЛЬТАТ",
+
+        result:
+          "Получился не сайт-визитка, а атмосферный цифровой ритуал: от выбора массажа до записи к конкретному мастеру — всё в одном плавном сценарии, который сам по себе уже расслабляет.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "ОТКРЫТЬ ПРОЕКТ",
+
+        close: "ЗАКРЫТЬ CASE",
+      },
+
+      en: {
+        eyebrow: "CASE STUDY / 11",
+
+        introTitle: "MASSAGE ISN'T A SERVICE. IT'S A RITUAL.",
+
+        intro:
+          "The goal was a site that communicates the studio's atmosphere of quiet and care before the first visit — through light, animation pacing and sound.",
+
+        challengeTitle: "THE CHALLENGE",
+
+        challenge:
+          "Build a premium massage studio site that sells a feeling of care, not a price list — from the first screen to booking a specific therapist.",
+
+        solutionTitle: "THE SOLUTION",
+
+        solution:
+          "We developed a premium visual identity in a warm gold-and-chocolate palette. A team of 20 therapists was presented with photos, specializations and personal stories. A real-time pricing calculator handles service, duration and add-ons, alongside an atmospheric studio gallery and a philosophy-section collage.",
+
+        experienceTitle: "THE EXPERIENCE",
+
+        experience:
+          "Every section runs on a custom cursor, ambient background sound and smooth animation. The booking form walks the client through choosing a therapist, service, date and time — fully adapted for mobile.",
+
+        buildTitle: "BUILD",
+
+        build:
+          "A lightweight HTML, CSS and JavaScript stack: real-time price calculation, a custom cursor and smooth animation without unnecessary page weight.",
+
+        resultTitle: "THE RESULT",
+
+        result:
+          "Not just a brochure site, but an atmospheric digital ritual: from choosing a massage to booking a specific therapist, all in one smooth scenario that's relaxing in itself.",
+
+        galleryLabel: "THE EXPERIENCE",
+
+        live: "OPEN LIVE PROJECT",
+
+        close: "CLOSE CASE",
+      },
+    },
+
+    gallery: [
+      "images/cases/soul-touch-01.webp",
+      "images/cases/soul-touch-02.webp",
+      "images/cases/soul-touch-03.webp",
+      "images/cases/soul-touch-04.webp",
+      "images/cases/soul-touch-05.webp",
+      "images/cases/soul-touch-06.webp",
+      "images/cases/soul-touch-07.webp",
+      "images/cases/soul-touch-08.webp",
+      "images/cases/soul-touch-09.webp",
+      "images/cases/soul-touch-10.webp",
+    ],
+  },
 ];

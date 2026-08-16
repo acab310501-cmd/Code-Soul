@@ -49,7 +49,7 @@ const translations = {
       title3: "ЦИФРОВЫЕ МИРЫ.",
       description:
         "Мы создаём цифровые продукты, которые имеют характер. Каждый проект — отдельная история.",
-      count: "10 ПРОЕКТОВ / 2026",
+      count: "11 ПРОЕКТОВ / 2026",
       footer: "БОЛЬШЕ МИРОВ УЖЕ СКОРО",
     },
 
@@ -341,7 +341,7 @@ const translations = {
       title3: "DIGITAL WORLDS.",
       description:
         "We create digital products with character. Every project is a story of its own.",
-      count: "10 PROJECTS / 2026",
+      count: "11 PROJECTS / 2026",
       footer: "MORE WORLDS ARE COMING",
     },
 

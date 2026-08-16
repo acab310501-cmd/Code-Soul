@@ -144,6 +144,10 @@ function renderCaseStudy(project, language) {
         <a href="${project.url}" target="_blank" rel="noopener noreferrer" class="work-case__live" data-cursor="OPEN">
           <span>${data.live}</span><strong>↗</strong>
         </a>
+        ${project.telegramCta ? `
+        <a href="${project.telegramCta.url}" target="_blank" rel="noopener noreferrer" class="work-case__telegram">
+          <span>${project.telegramCta.label[language]}</span><strong>↗</strong>
+        </a>` : ""}
       </div>
     </div>
   `;

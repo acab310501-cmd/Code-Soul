@@ -827,7 +827,8 @@
 }
 
 
-.work-case__live {
+.work-case__live,
+.work-case__telegram {
   display: flex;
 
   align-items: center;
@@ -860,7 +861,15 @@
 }
 
 
-.work-case__live strong {
+.work-case__telegram {
+  margin-top: -1px;
+
+  opacity: .7;
+}
+
+
+.work-case__live strong,
+.work-case__telegram strong {
   font-size: 28px;
 
   font-weight: 400;
@@ -870,15 +879,19 @@
 }
 
 
-.work-case__live:hover {
+.work-case__live:hover,
+.work-case__telegram:hover {
   padding-left: 15px;
   padding-right: 15px;
 
   color: var(--color-acid);
+
+  opacity: 1;
 }
 
 
-.work-case__live:hover strong {
+.work-case__live:hover strong,
+.work-case__telegram:hover strong {
   transform: translate(8px, -8px);
 }
 
