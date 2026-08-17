@@ -15,7 +15,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
   Роутер просто скрывает все, кроме активной группы.
 */
 
-const PAGES = ["home", "work", "services", "about", "journal", "contact"];
+const PAGES = ["home", "work", "services", "about", "journal", "reviews", "contact", "privacy"];
 const DEFAULT_PAGE = "home";
 const NOT_FOUND_PAGE = "notfound";
 

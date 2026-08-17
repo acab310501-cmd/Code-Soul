@@ -315,6 +315,97 @@
   color: var(--color-void);
 }
 
+.contact__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+  box-shadow: none;
+}
+
+.contact__button:disabled:hover {
+  transform: none;
+  background: var(--color-acid);
+  color: var(--color-void);
+  border-color: var(--color-acid);
+  box-shadow: none;
+}
+
+/* ========================================
+   CONSENT CHECKBOX
+======================================== */
+
+.contact__step--consent {
+  margin-top: -10px;
+}
+
+.contact__consent {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.contact__consent input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact__consent-box {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 5px;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.contact__consent-box::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 10px;
+  margin: 3px auto 0;
+  border-right: 2px solid var(--color-void);
+  border-bottom: 2px solid var(--color-void);
+  transform: rotate(40deg) scale(0);
+  transition: transform 0.25s ease;
+}
+
+.contact__consent input:checked + .contact__consent-box {
+  background: var(--color-acid);
+  border-color: var(--color-acid);
+}
+
+.contact__consent input:checked + .contact__consent-box::after {
+  transform: rotate(40deg) scale(1);
+}
+
+.contact__consent input:focus-visible + .contact__consent-box {
+  outline: 2px solid var(--color-acid);
+  outline-offset: 2px;
+}
+
+.contact__consent-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.contact__consent-text a {
+  color: var(--color-paper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s ease;
+}
+
+.contact__consent-text a:hover {
+  color: var(--color-acid);
+}
+
 .contact__privacy {
   max-width: 260px;
   margin: 0;

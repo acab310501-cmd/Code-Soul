@@ -4,6 +4,7 @@ import "./styles/services.css";
 import "./styles/soul.css";
 import "./styles/about.css";
 import "./styles/journal.css";
+import "./styles/reviews.css";
 import "./styles/work.css";
 import "./styles/reset.css";
 import "./styles/variables.css";
@@ -12,6 +13,7 @@ import "./styles/header.css";
 import "./styles/hero.css";
 import './styles/contact.css';
 import './styles/404.css';
+import './styles/privacy.css';
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,6 +23,7 @@ import { initSmoothScroll } from "./components/SmoothScroll.js";
 import { initCursor } from "./components/Cursor.js";
 import { initLanguage, translations } from "./components/Language.js";
 import { initWork } from "./components/Work.js";
+import { initReviews } from "./components/Reviews.js";
 import { initRouter } from "./components/Router.js";
 import { initPixelText } from "./components/PixelText.js";
 import { initParticleSystem } from "./components/ParticleSystem.js";
@@ -51,14 +54,17 @@ document.addEventListener(
     safeInit("particleSystem", initParticleSystem);
     safeInit("organism", initOrganism);
     safeInit("contactAnimation", initContactAnimation);
+    safeInit("contactConsentGate", initContactConsentGate);
     safeInit("contactMagic", initContactMagic);
     safeInit("mobileMenu", initMobileMenu);
 
     safeInit("work", initWork);
+    safeInit("reviews", initReviews);
     safeInit("servicesV2", initServicesV2);
     safeInit("soulParticles", initSoulParticles);
     safeInit("aboutAnimation", initAboutAnimation);
     safeInit("aboutDepth", initAboutDepth);
+    safeInit("aboutFaq", initAboutFaq);
     safeInit("journalAnimation", initJournalAnimation);
     safeInit("journalCinematicFocus", initJournalCinematicFocus);
     safeInit("journalModal", initJournalModal);
@@ -274,6 +280,73 @@ function initAboutDepth() {
       gsap.to(targets, {
         opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, stagger: 0.12, ease: "power4.out", overwrite: "auto"
       });
+    }
+  });
+}
+
+/* ========================================
+   ABOUT — FAQ ACCORDION
+======================================== */
+
+function initAboutFaq() {
+  const items = document.querySelectorAll("[data-faq-item]");
+  if (!items.length) return;
+
+  items.forEach((item) => {
+    const trigger = item.querySelector("[data-faq-trigger]");
+    const body = item.querySelector("[data-faq-body]");
+    if (!trigger || !body) return;
+
+    gsap.set(body, { height: 0, opacity: 0 });
+
+    trigger.addEventListener("click", () => {
+      const isOpen = trigger.getAttribute("aria-expanded") === "true";
+
+      if (isOpen) {
+        closeFaqItem(trigger, body);
+        return;
+      }
+
+      // Аккордеон: закрываем остальные открытые вопросы перед раскрытием текущего.
+      items.forEach((other) => {
+        if (other === item) return;
+        const otherTrigger = other.querySelector("[data-faq-trigger]");
+        const otherBody = other.querySelector("[data-faq-body]");
+        if (otherTrigger?.getAttribute("aria-expanded") === "true") {
+          closeFaqItem(otherTrigger, otherBody);
+        }
+      });
+
+      openFaqItem(trigger, body);
+    });
+  });
+}
+
+function openFaqItem(trigger, body) {
+  trigger.setAttribute("aria-expanded", "true");
+  gsap.killTweensOf(body);
+  gsap.set(body, { height: "auto" });
+  const targetHeight = body.offsetHeight;
+  gsap.fromTo(
+    body,
+    { height: 0, opacity: 0 },
+    {
+      height: targetHeight, opacity: 1, duration: 0.7, ease: "power3.out",
+      onComplete() {
+        body.style.height = "auto";
+        ScrollTrigger.refresh();
+      }
+    }
+  );
+}
+
+function closeFaqItem(trigger, body) {
+  trigger.setAttribute("aria-expanded", "false");
+  gsap.killTweensOf(body);
+  gsap.to(body, {
+    height: 0, opacity: 0, duration: 0.5, ease: "power3.inOut",
+    onComplete() {
+      ScrollTrigger.refresh();
     }
   });
 }
@@ -633,6 +706,26 @@ function initServicesV2() {
   };
   window.addEventListener('code-soul:language', onLanguageChange);
   window.__servicesLanguageHandler = onLanguageChange;
+}
+
+/* ========================================
+   CONTACT — CONSENT GATE
+======================================== */
+
+function initContactConsentGate() {
+  const form = document.getElementById("contactForm");
+  if (!form) return;
+
+  const consent = document.getElementById("contactConsent");
+  const button = form.querySelector(".contact__button");
+  if (!consent || !button) return;
+
+  const update = () => {
+    button.disabled = !consent.checked;
+  };
+
+  update();
+  consent.addEventListener("change", update);
 }
 
 /* ========================================

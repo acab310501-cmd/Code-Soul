@@ -5,6 +5,7 @@ const translations = {
       services: "Услуги",
       about: "О нас",
       journal: "Журнал",
+      reviews: "Отзывы",
       start: "Начать проект",
       ariaMain: "Основная навигация",
       ariaMobile: "Мобильная навигация",
@@ -176,6 +177,20 @@ const translations = {
       value4Text: "Технологии дают возможности. Душа даёт им смысл.",
       statementSmall: "ЭТО CODE & SOUL.",
       statement: "ТЕХНОЛОГИЯ<br>С ХАРАКТЕРОМ.",
+      faqTitle: "ЧАСТЫЕ ВОПРОСЫ",
+      faqSubtitle: "То, что обычно спрашивают перед тем, как оставить заявку.",
+      faq1Q: "Сколько стоит сайт?",
+      faq1A: "Зависит от задачи: лендинг стоит от 80 000 ₽, а сложный интерактивный проект — от 150 000 ₽. Точную цифру называем после короткого созвона или переписки, когда понимаем объём работы.",
+      faq2Q: "Сколько по срокам?",
+      faq2A: "В среднем от 1 до 6 недель — зависит от сложности проекта и скорости обратной связи с вашей стороны. Точные сроки фиксируем перед стартом, чтобы вы точно знали, к какой дате ждать результат.",
+      faq3Q: "А если результат не понравится?",
+      faq3A: "Мы показываем макет и ключевые решения на этапе разработки, а не только в самом конце — так неожиданностей почти не бывает. Если что-то не откликается, вносим правки в рамках согласованного объёма работ.",
+      faq4Q: "Работаете ли вы с правками после сдачи проекта?",
+      faq4A: "Да, мы остаёмся на связи и после запуска: помогаем с небольшими правками, отвечаем на вопросы и, если нужно, обсуждаем развитие проекта дальше — новые разделы, функции или интеграции.",
+      faq5Q: "Нужно ли готовить техническое задание?",
+      faq5A: "Нет, не обязательно. Достаточно рассказать о бизнесе, задаче и референсах простыми словами — структуру и техническую часть мы возьмём на себя.",
+      faq6Q: "Как проходит оплата?",
+      faq6A: "Обычно предоплата на старте и остаток по факту сдачи проекта; для более длительных проектов можем разбить оплату на этапы. Условия фиксируем заранее, до начала работы.",
     },
 
     journal: {
@@ -224,6 +239,29 @@ const translations = {
         "<p>Запуск — это только момент, когда продукт начинает жить по-настоящему. После этого появляются реальные пользователи, реальные сценарии и реальные данные.</p><p>Мы можем анализировать поведение пользователей, находить слабые места, улучшать интерфейс, добавлять новые функции, оптимизировать производительность и развивать продукт дальше. Digital-продукт не обязательно должен оставаться неизменным годами — он может расти вместе с бизнесом.</p><p><em>Поэтому для нас хороший запуск — это не финальная точка. Это начало следующего этапа.</em></p>",
       footerLeft: "БОЛЬШЕ МЫСЛЕЙ УЖЕ СКОРО",
       footerRight: "CODE × SOUL",
+    },
+
+    reviews: {
+      label: "ОТЗЫВЫ КЛИЕНТОВ",
+      title1: "ЧТО ГОВОРЯТ",
+      title2: "КЛИЕНТЫ.",
+      subtitle: "Реальные слова людей, для которых мы делали проекты — без купюр и без приглаживания.",
+      viewProject: "Смотреть проект",
+      footerLeft: "СПАСИБО, ЧТО ДОВЕРЯЕТЕ НАМ СВОИ ПРОЕКТЫ",
+    },
+
+    privacy: {
+      eyebrow: "ПРАВОВАЯ ИНФОРМАЦИЯ",
+      title: "ПОЛИТИКА<br>КОНФИДЕНЦИАЛЬНОСТИ",
+      intro: "Этот документ объясняет, какие данные мы собираем через форму заявки на сайте, зачем они нужны и как мы с ними обращаемся.",
+      backCta: "Вернуться назад",
+      body:
+        "<h4>1. Какие данные мы собираем</h4><p>Когда вы отправляете форму заявки на этом сайте, мы получаем указанные вами имя, email, телеграм (если вы его оставили), выбранный тип проекта, бюджет и текст сообщения. Мы не собираем никакие данные автоматически, кроме тех, что вы сами вводите в форму.</p>" +
+        "<h4>2. Зачем нам эти данные</h4><p>Данные используются только для одной цели — чтобы связаться с вами по поводу вашей заявки, обсудить проект и, при необходимости, подготовить коммерческое предложение. Мы не используем их для рассылок, рекламы или передачи третьим лицам в маркетинговых целях.</p>" +
+        "<h4>3. Как данные передаются и где хранятся</h4><p>При отправке формы данные передаются через прокси-сервер (Cloudflare Worker) напрямую в наш рабочий чат в Telegram — именно там мы читаем и обрабатываем заявки. Отдельной базы данных с вашими данными мы не ведём: сообщение хранится в истории переписки Telegram, доступной только участникам нашей команды.</p>" +
+        "<h4>4. Кому мы передаём данные</h4><p>Мы не продаём, не сдаём в аренду и не передаём ваши данные третьим лицам. Единственные, кто видит содержимое заявки — это команда Code &amp; Soul.</p>" +
+        "<h4>5. Ваши права</h4><p>Вы можете в любой момент запросить у нас информацию о том, какие данные мы получили от вас, попросить их удалить или отозвать согласие на обработку. Для этого достаточно написать нам на email или в Telegram, указанные ниже.</p>" +
+        "<h4>6. Как с нами связаться по вопросам персональных данных</h4><p>По любым вопросам, связанным с этой политикой или с вашими данными, пишите на <a href=\"mailto:coode.and.soul@gmail.com\">coode.and.soul@gmail.com</a> или в Telegram <a href=\"https://t.me/codeandsoul\" target=\"_blank\" rel=\"noopener noreferrer\">@codeandsoul</a>.</p>",
     },
 
     hero: {
@@ -282,7 +320,8 @@ const translations = {
           opt4: "500 000 ₽+",
         },
         submit: "Начать проект",
-        privacy: "Никакого спама. Только разговор о вашем проекте."
+        privacy: "Никакого спама. Только разговор о вашем проекте.",
+        consent: "Согласен(на) с <a href=\"#/privacy\" data-cursor=\"OPEN\">политикой конфиденциальности</a>"
       },
       success: {
         title: "Отлично. Начинаем.",
@@ -297,6 +336,7 @@ const translations = {
       services: "Services",
       about: "About",
       journal: "Journal",
+      reviews: "Reviews",
       start: "Start a project",
       ariaMain: "Main navigation",
       ariaMobile: "Mobile navigation",
@@ -468,6 +508,20 @@ const translations = {
       value4Text: "Technology gives us possibilities. Soul gives them meaning.",
       statementSmall: "THIS IS CODE & SOUL.",
       statement: "TECHNOLOGY<br>WITH CHARACTER.",
+      faqTitle: "FREQUENTLY ASKED",
+      faqSubtitle: "What people usually ask before sending a request.",
+      faq1Q: "How much does a website cost?",
+      faq1A: "It depends on the task: a landing page starts from $1,000, a complex interactive project from $1,800. We give you an exact number after a short call or chat, once we understand the scope.",
+      faq2Q: "How long does it take?",
+      faq2A: "On average 1 to 6 weeks, depending on how complex the project is and how quickly we hear back from you. We lock in the timeline before starting, so you know exactly when to expect the result.",
+      faq3Q: "What if I don't like the result?",
+      faq3A: "We show the design and key decisions during development, not just at the very end, so surprises are rare. If something doesn't land, we make revisions within the agreed scope of work.",
+      faq4Q: "Do you handle edits after the project is delivered?",
+      faq4A: "Yes, we stay in touch after launch: we help with small edits, answer questions, and if needed, talk through what's next for the project — new sections, features or integrations.",
+      faq5Q: "Do I need to prepare a technical spec?",
+      faq5A: "No, not at all. It's enough to tell us about your business, the task and any references in plain words — we take care of the structure and technical side.",
+      faq6Q: "How does payment work?",
+      faq6A: "Usually a deposit upfront and the balance on delivery; for longer projects we can split payment into stages. We fix the terms in advance, before work begins.",
     },
 
     journal: {
@@ -516,6 +570,29 @@ const translations = {
         "<p>Launch is just the moment a product starts truly living. After that come real users, real scenarios, and real data.</p><p>We can analyze user behavior, find weak spots, improve the interface, add new features, optimize performance, and keep developing the product. A digital product doesn't have to stay the same for years — it can grow alongside the business.</p><p><em>So for us, a good launch isn't the finish line. It's the start of the next stage.</em></p>",
       footerLeft: "MORE THOUGHTS ARE COMING",
       footerRight: "CODE × SOUL",
+    },
+
+    reviews: {
+      label: "CLIENT REVIEWS",
+      title1: "WHAT CLIENTS",
+      title2: "ARE SAYING.",
+      subtitle: "Real words from the people we've built projects for — unfiltered, unpolished.",
+      viewProject: "View project",
+      footerLeft: "THANK YOU FOR TRUSTING US WITH YOUR PROJECTS",
+    },
+
+    privacy: {
+      eyebrow: "LEGAL INFORMATION",
+      title: "PRIVACY<br>POLICY",
+      intro: "This page explains what data we collect through the request form on this site, why we need it, and how we handle it.",
+      backCta: "Go back",
+      body:
+        "<h4>1. What data we collect</h4><p>When you submit the request form on this site, we receive the name, email, telegram handle (if you leave one), project type, budget and message you provide. We don't collect any data automatically beyond what you type into the form.</p>" +
+        "<h4>2. Why we collect it</h4><p>We use this data for one purpose only — to get in touch about your request, discuss the project, and, where relevant, prepare a proposal. We don't use it for newsletters, advertising, or marketing purposes.</p>" +
+        "<h4>3. How the data is transmitted and stored</h4><p>When you submit the form, the data is sent through a proxy server (a Cloudflare Worker) straight into our team's working chat on Telegram — that's where we read and process requests. We don't keep a separate database of your data: the message lives in Telegram's chat history, accessible only to our team.</p>" +
+        "<h4>4. Who we share data with</h4><p>We don't sell, rent or share your data with third parties. The only people who see the content of your request are the Code &amp; Soul team.</p>" +
+        "<h4>5. Your rights</h4><p>You can ask us at any time what data we've received from you, request its deletion, or withdraw your consent to processing. Just write to us at the email or Telegram below.</p>" +
+        "<h4>6. How to reach us about your data</h4><p>For any questions about this policy or your data, email <a href=\"mailto:coode.and.soul@gmail.com\">coode.and.soul@gmail.com</a> or message us on Telegram <a href=\"https://t.me/codeandsoul\" target=\"_blank\" rel=\"noopener noreferrer\">@codeandsoul</a>.</p>",
     },
 
     hero: {
@@ -574,7 +651,8 @@ const translations = {
           opt4: "€5K+",
         },
         submit: "Start a project",
-        privacy: "No spam. Just a conversation about your project."
+        privacy: "No spam. Just a conversation about your project.",
+        consent: "I agree to the <a href=\"#/privacy\" data-cursor=\"OPEN\">privacy policy</a>"
       },
       success: {
         title: "Perfect. Let's begin.",

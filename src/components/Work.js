@@ -254,6 +254,26 @@ function closeCase(project, scrollBack = true) {
   activeCase = null;
 }
 
+// Открывает конкретный кейс по id проекта (переиспользуется, например,
+// со страницы «Отзывы» — deep-link «Смотреть проект»). Если кейс уже
+// открыт — ничего не делает, чтобы не сбрасывать анимацию повторно.
+export function openProjectCase(id) {
+  const project = document.querySelector(`[data-project-id="${id}"]`);
+  if (!project) return;
+  if (activeCase === id) {
+    setTimeout(() => {
+      project.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return;
+  }
+  if (activeCase) {
+    const previous = document.querySelector(`[data-project-id="${activeCase}"]`);
+    if (previous) closeCase(previous, false);
+  }
+  openCase(project);
+  activeCase = id;
+}
+
 function animateProjects() {
   const items = document.querySelectorAll("[data-project]");
   if (!items.length) return;
